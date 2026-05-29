@@ -390,7 +390,7 @@ function ContentSlide({ s }: { s: typeof MAAEF_SECTIONS[0] }) {
             ))}
           </div>
 
-          <div className="maaef-mono text-[9px] tracking-[0.14em] text-[#f4f1ee]/40 hidden md:grid grid-cols-[auto_1fr_auto] gap-x-3.5 gap-y-1.5 border-t border-[#f4f1ee]/10 pt-3.5 max-w-[340px] select-none">
+          <div className="maaef-mono text-[9px] tracking-[0.14em] text-[#f4f1ee]/40 grid grid-cols-[auto_1fr_auto] gap-x-3.5 gap-y-1.5 border-t border-[#f4f1ee]/10 pt-3.5 max-w-[340px] select-none">
             <span>CH</span>
             <span className="text-[#f4f1ee]">
               {s.ch}.{s.label}
