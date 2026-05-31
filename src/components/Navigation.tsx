@@ -19,10 +19,6 @@ export default function Navigation() {
   const pathname = usePathname();
   const isBlog = pathname?.startsWith("/blog");
 
-  if (pathname?.startsWith("/writingspace")) {
-    return null;
-  }
-  
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const drawingRef = useRef(false);
   const pathsRef = useRef<PathSegment[]>([]);
@@ -258,6 +254,10 @@ export default function Navigation() {
     };
   }, [pathname]);
 
+  if (pathname?.startsWith("/writingspace")) {
+    return null;
+  }
+
   const isHome = pathname === "/";
   const isAbout = pathname === "/about";
   const isWork = pathname === "/work";
@@ -305,6 +305,7 @@ export default function Navigation() {
               alt="Maaef Logo"
               width={80}
               height={24}
+              style={{ height: 'auto' }}
               className="h-8 w-auto object-contain brightness-0 invert"
             />
           )}

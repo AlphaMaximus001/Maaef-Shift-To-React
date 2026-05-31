@@ -524,28 +524,32 @@ export default function StudioPage() {
 
   // RENDER MAIN BLOG CMS WRITING ENVIRONMENT IF AUTHORIZED
   return (
-    <div className="min-h-screen bg-[#070707] text-[#f4f1ee] font-sans flex flex-col h-screen max-h-screen overflow-hidden">
+    <div className="min-h-screen bg-[#050505] text-[#f4f1ee] font-sans flex flex-col h-screen max-h-screen overflow-hidden antialiased">
       
-      {/* 1. Spacious Clean Header Navigation */}
-      <header className="h-20 border-b border-white/10 flex items-center justify-between px-8 bg-[#0a0a0a] z-10 flex-shrink-0 relative select-none">
+      {/* 1. Spacious Premium Header Navigation */}
+      <header className="h-24 border-b border-white/5 flex items-center justify-between px-12 bg-[#090909]/95 backdrop-blur-md z-20 flex-shrink-0 relative select-none">
         
         {/* Left: Branding & Core Navigation */}
-        <div className="flex items-center gap-8">
-          <Link href="/blog" className="flex items-center gap-2 text-sm text-white/50 hover:text-white transition duration-300 no-underline font-semibold">
-            <span>← Public Blog</span>
+        <div className="flex items-center gap-10">
+          <Link href="/blog" className="flex items-center gap-3 text-[11px] font-mono uppercase tracking-[0.2em] text-white/40 hover:text-white transition-all duration-300 no-underline">
+            <span className="text-xs">←</span>
+            <span>Public Blog</span>
           </Link>
           <span className="w-[1px] h-6 bg-white/10" />
-          <h2 className="text-xl font-bold font-serif text-white tracking-tight">Writing Terminal</h2>
+          <div className="flex flex-col">
+            <h2 className="text-lg font-bold font-serif text-white tracking-tight leading-none m-0">Writing Terminal</h2>
+            <span className="text-[9px] font-mono text-white/30 uppercase tracking-widest mt-1">MAAEF EDITORIAL SYSTEM</span>
+          </div>
         </div>
 
         {/* Center: Separated View Navigation Buttons */}
-        <div className="flex items-center gap-4 select-none">
+        <div className="flex items-center gap-6 select-none bg-[#050505] border border-white/5 p-1 rounded-sm">
           <button
             onClick={() => setActiveView("archives")}
-            className={`px-6 py-2.5 rounded-sm font-mono text-xs uppercase tracking-widest transition-all duration-300 cursor-pointer ${
+            className={`px-8 py-2.5 rounded-sm font-mono text-[10px] uppercase tracking-[0.2em] transition-all duration-300 cursor-pointer ${
               activeView === "archives"
-                ? "bg-white text-black font-bold"
-                : "border border-white/10 text-white/50 hover:text-white hover:border-white/20"
+                ? "bg-white text-black font-bold shadow-lg"
+                : "text-white/40 hover:text-white hover:bg-white/[0.02]"
             }`}
           >
             All Blogs
@@ -553,10 +557,10 @@ export default function StudioPage() {
           
           <button
             onClick={handleInitializeNew}
-            className={`px-6 py-2.5 rounded-sm font-mono text-xs uppercase tracking-widest transition-all duration-300 cursor-pointer ${
+            className={`px-8 py-2.5 rounded-sm font-mono text-[10px] uppercase tracking-[0.2em] transition-all duration-300 cursor-pointer ${
               activeView === "editor"
-                ? "bg-white text-black font-bold"
-                : "border border-white/10 text-white/50 hover:text-white hover:border-white/20"
+                ? "bg-white text-black font-bold shadow-lg"
+                : "text-white/40 hover:text-white hover:bg-white/[0.02]"
             }`}
           >
             {selectedPost ? "Edit Blog" : "New Blog +"}
@@ -564,19 +568,19 @@ export default function StudioPage() {
         </div>
 
         {/* Right Actions */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-6">
           {activeView === "editor" ? (
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-6">
               <button
                 onClick={() => setActiveView("archives")}
-                className="text-xs uppercase font-mono tracking-widest text-white/50 hover:text-white cursor-pointer transition py-2"
+                className="text-[10px] uppercase font-mono tracking-[0.2em] text-white/45 hover:text-white cursor-pointer transition-colors py-2"
               >
                 Discard
               </button>
               <button
                 onClick={handleSave}
                 disabled={isSaving}
-                className="font-mono text-xs uppercase tracking-widest bg-[#e40521] text-white hover:bg-[#ff0c2b] px-6 py-2.5 rounded-sm font-bold transition-all duration-300 cursor-pointer disabled:opacity-50"
+                className="font-mono text-[10px] uppercase tracking-[0.2em] bg-[#e40521] text-white hover:bg-[#ff0c2b] px-8 py-3 rounded-sm font-bold transition-all duration-300 cursor-pointer disabled:opacity-50 hover:shadow-[0_0_20px_rgba(228,5,33,0.3)]"
               >
                 {isSaving ? "Saving..." : "Save Post"}
               </button>
@@ -584,7 +588,7 @@ export default function StudioPage() {
           ) : (
             <button
               onClick={handleInitializeNew}
-              className="font-mono text-xs uppercase tracking-widest bg-[#e40521] text-white hover:bg-[#ff0c2b] px-6 py-2.5 rounded-sm font-bold transition duration-300 cursor-pointer"
+              className="font-mono text-[10px] uppercase tracking-[0.2em] bg-[#e40521] text-white hover:bg-[#ff0c2b] px-8 py-3 rounded-sm font-bold transition-all duration-300 cursor-pointer hover:shadow-[0_0_20px_rgba(228,5,33,0.3)]"
             >
               Compose New +
             </button>
@@ -595,25 +599,25 @@ export default function StudioPage() {
 
       {/* Restore backup banner */}
       {showBackupBanner && backupDraft && (
-        <div className="bg-[#0f0f0f] border-b border-white/10 px-8 py-3.5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 select-none animate-fadeIn flex-shrink-0">
+        <div className="bg-[#0c0c0c] border-b border-white/5 px-12 py-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 select-none animate-fadeIn flex-shrink-0">
           <div className="flex items-center gap-3">
             <span className="w-2 h-2 rounded-full bg-[#e40521] animate-pulse" />
-            <p className="text-xs text-white/80 font-mono tracking-wide m-0">
-              [UNSAVED LOCAL DRAFT DETECTED] &mdash; Last composed: <span className="text-white font-semibold">&ldquo;{backupDraft.title || "Untitled Post"}&rdquo;</span>
+            <p className="text-[10px] text-white/50 font-mono tracking-[0.15em] uppercase m-0">
+              [UNSAVED LOCAL DRAFT] &mdash; &ldquo;{backupDraft.title || "Untitled Post"}&rdquo;
             </p>
           </div>
           <div className="flex items-center gap-3">
             <button
               type="button"
               onClick={handleRestoreBackup}
-              className="px-4 py-1.5 rounded-sm font-mono text-[10px] uppercase tracking-widest bg-white text-black font-bold transition hover:bg-white/90 cursor-pointer"
+              className="px-5 py-2 rounded-sm font-mono text-[9px] uppercase tracking-[0.15em] bg-white text-black font-bold transition hover:bg-white/90 cursor-pointer"
             >
               Restore Draft
             </button>
             <button
               type="button"
               onClick={handleDiscardBackup}
-              className="px-4 py-1.5 rounded-sm font-mono text-[10px] uppercase tracking-widest border border-white/10 text-white/50 transition hover:text-white hover:border-white/20 cursor-pointer bg-transparent"
+              className="px-5 py-2 rounded-sm font-mono text-[9px] uppercase tracking-[0.15em] border border-white/10 text-white/55 transition hover:text-white hover:border-white/20 cursor-pointer bg-transparent"
             >
               Discard Backup
             </button>
@@ -622,18 +626,18 @@ export default function StudioPage() {
       )}
 
       {/* 2. Main Dashboard Canvas */}
-      <div className="flex-1 overflow-hidden relative z-10 min-h-0 bg-[#070707]">
+      <div className="flex-1 overflow-hidden relative z-10 min-h-0 bg-[#050505]">
         
         {/* VIEW 1: ALL BLOGS LIST & BOARD */}
         {activeView === "archives" ? (
-          <div className="h-full flex flex-col p-8 sm:p-10 md:p-12 max-w-[1300px] mx-auto overflow-hidden">
+          <div className="h-full flex flex-col px-12 py-10 md:px-16 md:py-14 max-w-[1400px] mx-auto overflow-hidden">
             
             {/* Header filters and stats */}
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-white/10 pb-8 mb-10 gap-6 select-none flex-shrink-0">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end border-b border-white/5 pb-10 mb-10 gap-6 select-none flex-shrink-0">
               <div>
-                <h1 className="font-serif text-4xl font-bold tracking-tight mb-2">Editorial Archives</h1>
-                <p className="text-sm text-white/50 font-sans leading-relaxed">
-                  Archive dispatches to hide them from the public feed, or choose to edit and delete existing records.
+                <h1 className="font-serif text-4xl sm:text-5xl font-bold tracking-tight mb-3 text-white">Editorial Archives</h1>
+                <p className="text-xs text-white/40 font-sans tracking-wide leading-relaxed max-w-xl">
+                  Manage dispatches across the MAAEF platform. Archive dispatches to hide them from public streams, or edit and remove records.
                 </p>
               </div>
 
@@ -644,12 +648,12 @@ export default function StudioPage() {
                   placeholder="Search articles by title or tag..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full bg-[#0b0b0b] border border-white/15 focus:border-white/30 focus:outline-none px-5 py-3 text-sm text-[#f4f1ee] placeholder-white/30 rounded-sm"
+                  className="w-full bg-[#0a0a0a] border border-white/5 focus:border-white/20 focus:outline-none px-6 py-3.5 text-xs text-[#f4f1ee] placeholder-white/20 rounded-sm font-mono tracking-wider transition-all duration-300"
                 />
                 {searchQuery && (
                   <button
                     onClick={() => setSearchQuery("")}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-xs text-white/40 hover:text-white font-mono cursor-pointer"
+                    className="absolute right-5 top-1/2 -translate-y-1/2 text-[9px] text-white/30 hover:text-white font-mono cursor-pointer transition-colors"
                   >
                     [clear]
                   </button>
@@ -658,20 +662,20 @@ export default function StudioPage() {
             </div>
 
             {/* List and Grid Container */}
-            <div className="flex-1 overflow-y-auto custom-scrollbar pr-2 min-h-0">
+            <div className="flex-1 overflow-y-auto pr-2 min-h-0 custom-scrollbar-thin">
               {isLoading ? (
                 <div className="py-44 text-center select-none">
-                  <span className="text-sm text-white/30 animate-pulse tracking-[0.28em] uppercase">Reading dispatches from local disk...</span>
+                  <span className="text-[10px] text-white/30 animate-pulse tracking-[0.3em] font-mono uppercase">READING DISPATCHES FROM LOCAL STORAGE...</span>
                 </div>
               ) : filteredPosts.length === 0 ? (
-                <div className="py-32 border border-dashed border-white/10 p-10 text-center select-none rounded-sm">
-                  <span className="font-mono text-xs text-white/30 uppercase tracking-widest block mb-3">NO DISPATCHES FOUND</span>
-                  <p className="text-sm text-white/50 max-w-[380px] mx-auto font-sans leading-relaxed">
-                    Create a new dispatch record to populate your editorial directory.
+                <div className="py-36 border border-dashed border-white/5 p-12 text-center select-none rounded-sm bg-[#080808]/50">
+                  <span className="font-mono text-[10px] text-white/30 uppercase tracking-[0.25em] block mb-4">NO DISPATCHES FOUND</span>
+                  <p className="text-xs text-white/45 max-w-[340px] mx-auto font-sans leading-relaxed">
+                    Start new dispatch records to populate your editorial directory.
                   </p>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 pb-10">
                   {filteredPosts.map((post, idx) => {
                     const serial = String(idx + 1).padStart(2, "0");
                     const coverUrl = post.mainImage?.url;
@@ -679,18 +683,18 @@ export default function StudioPage() {
                     return (
                       <div
                         key={post._id}
-                        className={`border rounded-sm p-7 bg-[#0b0b0b] hover:bg-white/[0.005] hover:border-white/20 transition-all duration-300 flex flex-col justify-between min-h-[300px] ${
-                          post.isArchived ? "border-white/5 opacity-50" : "border-white/10"
+                        className={`border rounded-sm px-8 py-8 bg-[#090909] hover:bg-[#0c0c0c] hover:border-white/15 transition-all duration-500 flex flex-col justify-between min-h-[320px] shadow-[0_4px_30px_rgba(0,0,0,0.3)] hover:-translate-y-1 ${
+                          post.isArchived ? "border-white/5 opacity-40 hover:opacity-75" : "border-white/5"
                         }`}
                       >
                         <div>
                           {/* Top Row Indicators */}
-                          <div className="flex justify-between items-center mb-5 select-none">
-                            <span className="text-xs text-white/40 font-semibold font-mono">#{serial}</span>
-                            <span className={`text-[10px] font-mono uppercase tracking-widest px-3 py-1 rounded-sm border ${
+                          <div className="flex justify-between items-center mb-6 select-none">
+                            <span className="text-[10px] text-white/30 font-semibold font-mono tracking-wider">#{serial}</span>
+                            <span className={`text-[8px] font-mono uppercase tracking-[0.2em] px-2.5 py-1 rounded-sm border ${
                               post.isArchived 
-                                ? "border-white/10 text-white/30 bg-transparent" 
-                                : "border-red text-red bg-red/5 font-semibold"
+                                ? "border-white/5 text-white/30 bg-transparent" 
+                                : "border-[#e40521] text-[#e40521] bg-[#e40521]/5 font-semibold"
                             }`}>
                               {post.isArchived ? "Archived" : "Published"}
                             </span>
@@ -698,24 +702,24 @@ export default function StudioPage() {
 
                           {/* Cover Image Thumbnail Preview */}
                           {coverUrl && (
-                            <div className="w-full h-36 bg-[#0a0a0a] border border-white/5 rounded-sm overflow-hidden mb-4 relative select-none">
+                            <div className="w-full h-40 bg-[#050505] border border-white/5 rounded-sm overflow-hidden mb-5 relative select-none">
                               <img
                                 src={coverUrl}
                                 alt={post.title}
-                                className="absolute inset-0 w-full h-full object-cover grayscale brightness-95 hover:grayscale-0 transition duration-500"
+                                className="absolute inset-0 w-full h-full object-cover grayscale brightness-90 hover:grayscale-0 transition-all duration-700 hover:scale-105"
                               />
                             </div>
                           )}
 
                           {/* Title & Categories */}
-                          <h3 className="font-serif text-xl font-bold tracking-tight mb-3 line-clamp-2 leading-snug">
+                          <h3 className="font-serif text-xl sm:text-2xl font-bold tracking-tight mb-4 text-white line-clamp-2 leading-tight">
                             {post.title}
                           </h3>
-                          <div className="flex flex-wrap gap-2 select-none mb-5">
+                          <div className="flex flex-wrap gap-2 select-none mb-6">
                             {post.categories?.map((cat) => (
                               <span
                                 key={cat.title}
-                                className="text-[9px] font-mono tracking-widest text-white/40 uppercase border border-white/10 px-2.5 py-1 rounded-sm bg-[#070707]"
+                                className="text-[8px] font-mono tracking-[0.2em] text-white/35 uppercase border border-white/5 px-3 py-1 rounded-sm bg-[#050505]"
                               >
                                 {cat.title}
                               </span>
@@ -723,28 +727,28 @@ export default function StudioPage() {
                           </div>
                         </div>
 
-                        {/* Bottom Row Actions (Separated Spaced Buttons) */}
-                        <div className="border-t border-white/5 pt-5 flex justify-between items-center mt-4 select-none">
-                          <span className="text-xs font-mono text-white/35 uppercase">
+                        {/* Bottom Row Actions */}
+                        <div className="border-t border-white/5 pt-6 flex justify-between items-center mt-5 select-none">
+                          <span className="text-[9px] font-mono text-white/30 uppercase tracking-[0.15em]">
                             {post.publishedAt ? new Date(post.publishedAt).toLocaleDateString("en-US", { month: "short", day: "2-digit", year: "numeric" }) : "DRAFT"}
                           </span>
                           
                           <div className="flex items-center gap-3">
                             <button
                               onClick={() => handleToggleArchive(post)}
-                              className="text-[10px] font-mono uppercase tracking-widest border border-white/10 hover:border-white/30 px-3 py-1.5 rounded-sm text-white/60 hover:text-white cursor-pointer transition bg-[#070707]"
+                              className="text-[9px] font-mono uppercase tracking-[0.15em] border border-white/10 hover:border-white/30 px-3.5 py-2 rounded-sm text-white/60 hover:text-white cursor-pointer transition-colors bg-[#050505]"
                             >
                               {post.isArchived ? "Publish" : "Archive"}
                             </button>
                             <button
                               onClick={() => loadPostIntoForm(post)}
-                              className="text-[10px] font-mono uppercase tracking-widest bg-white text-black hover:bg-white/90 px-3.5 py-1.5 rounded-sm cursor-pointer transition font-bold"
+                              className="text-[9px] font-mono uppercase tracking-[0.15em] bg-white text-black hover:bg-white/90 px-4 py-2 rounded-sm cursor-pointer transition-colors font-bold"
                             >
                               Edit
                             </button>
                             <button
                               onClick={() => handleDeleteFromList(post)}
-                              className="text-[10px] font-mono uppercase tracking-widest border border-white/10 text-white/30 hover:border-red hover:text-red px-3 py-1.5 rounded-sm cursor-pointer transition bg-transparent"
+                              className="text-[9px] font-mono uppercase tracking-[0.15em] border border-white/10 text-white/30 hover:border-[#e40521] hover:text-[#e40521] px-3.5 py-2 rounded-sm cursor-pointer transition-colors bg-transparent"
                             >
                               Delete
                             </button>
@@ -760,378 +764,116 @@ export default function StudioPage() {
 
           </div>
         ) : (
-          
-          /* VIEW 2: UNIFIED ENLARGED BLOG POST WRITER & EDITOR */
-          <div className="h-full flex flex-col min-h-0 bg-[#070707]">
+          /* VIEW 2: UNIFIED COMPACT BEAUTIFULLY SPACED BLOG POST WRITER & EDITOR */
+          <div className="h-full flex flex-col min-h-0 bg-[#050505]">
             
             {/* Editor Subheader Toggles */}
-            <div className="h-14 border-b border-white/10 bg-[#0a0a0a] px-8 flex items-center justify-between select-none flex-shrink-0">
-              <span className="text-xs font-mono tracking-widest text-white/40 uppercase">
-                {selectedPost ? `EDITING DISPATCH RECORD :: ${slug}` : "NEW DISPATCH COMPOSITION BUFFER"}
+            <div className="h-16 border-b border-white/5 bg-[#090909] px-12 flex items-center justify-between select-none flex-shrink-0">
+              <span className="text-[10px] font-mono tracking-[0.2em] text-white/30 uppercase">
+                {selectedPost ? `EDITING DISPATCH :: ${slug}` : "NEW DISPATCH COMPOSITION BUFFER"}
               </span>
 
               {/* Write vs Preview Separated Buttons */}
               <div className="flex items-center gap-3 select-none">
                 <button
                   onClick={() => setEditorTab("write")}
-                  className={`px-4 py-1.5 rounded-sm font-mono text-[10px] uppercase tracking-wider cursor-pointer transition ${
+                  className={`px-5 py-2 rounded-sm font-mono text-[9px] uppercase tracking-[0.15em] cursor-pointer transition-all duration-300 ${
                     editorTab === "write"
-                      ? "bg-white text-black font-semibold"
-                      : "border border-white/10 text-white/50 hover:text-white"
+                      ? "bg-white text-black font-bold shadow-md"
+                      : "border border-white/5 text-white/40 hover:text-white hover:bg-white/[0.01]"
                   }`}
                 >
                   Write Content
                 </button>
                 <button
                   onClick={() => setEditorTab("preview")}
-                  className={`px-4 py-1.5 rounded-sm font-mono text-[10px] uppercase tracking-wider cursor-pointer transition ${
+                  className={`px-5 py-2 rounded-sm font-mono text-[9px] uppercase tracking-[0.15em] cursor-pointer transition-all duration-300 ${
                     editorTab === "preview"
-                      ? "bg-white text-black font-semibold"
-                      : "border border-white/10 text-white/50 hover:text-white"
+                      ? "bg-white text-black font-bold shadow-md"
+                      : "border border-white/5 text-white/40 hover:text-white hover:bg-white/[0.01]"
                   }`}
                 >
                   Live Preview
                 </button>
               </div>
-            </div>            {/* TAB CONTENT: WRITING EDITOR WORKSPACE */}
+            </div>
+
+            {/* TAB CONTENT: WRITING EDITOR WORKSPACE */}
             {editorTab === "write" ? (
-              <div className="flex-1 overflow-y-auto custom-scrollbar p-6 sm:p-8 min-h-0 bg-[#050505]">
-                <div className="max-w-[1350px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+              <div className="flex-1 overflow-y-auto pr-2 p-12 sm:p-16 md:p-20 min-h-0 bg-[#050505] custom-scrollbar-thin">
+                <div className="max-w-[850px] mx-auto flex flex-col gap-12">
                   
-                  {/* Left Column: Post Composition (Col span 7 or 8) */}
-                  <div className="lg:col-span-7 xl:col-span-8 flex flex-col gap-6">
-                    
-                    {/* Massive focused title */}
-                    <div className="flex flex-col gap-2">
-                      <label className="text-[10px] font-mono text-white/40 uppercase tracking-widest select-none">
-                        POST TITLE
-                      </label>
-                      <input
-                        type="text"
-                        placeholder="Title of dispatch..."
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
-                        className="w-full bg-transparent border-none focus:outline-none font-serif text-2xl sm:text-3xl font-bold text-white placeholder-white/10 leading-tight border-b border-white/10 pb-4 focus:border-white/20 transition-colors"
-                      />
-                    </div>
-
-                    {/* Large Content Editor Textarea */}
-                    <div className="flex flex-col gap-2 min-h-[500px]">
-                      <label className="text-[10px] font-mono text-white/40 uppercase tracking-wider select-none">
-                        MARKDOWN BODY COMPOSITION
-                      </label>
-                      <textarea
-                        placeholder="Start typing your editorial story here in standard Markdown..."
-                        value={markdownBody}
-                        onChange={(e) => setMarkdownBody(e.target.value)}
-                        className="w-full bg-[#0b0b0b] border border-white/15 focus:border-white/30 focus:outline-none p-6 text-base leading-relaxed text-[#f4f1ee] placeholder-white/25 resize-none transition rounded-sm custom-scrollbar min-h-[600px] lg:min-h-[700px] font-sans"
-                      />
-                    </div>
-
-                  </div>
-
-                  {/* Right Column: Settings & Configuration Panel (Col span 5 or 4) */}
-                  <div className="lg:col-span-5 xl:col-span-4 flex flex-col gap-6 select-none">
-                    
-                    {/* 1. Publishing Options Box */}
-                    <div className="border border-white/10 rounded-sm p-5 bg-[#0b0b0b] flex flex-col gap-4">
-                      <div className="text-xs font-mono text-white/40 uppercase tracking-widest select-none">
-                        Publishing Status
+                  {/* Status Toggle (Publish/Draft Option) */}
+                  <div className="border border-white/5 rounded-sm p-8 bg-[#090909] flex flex-col gap-4 select-none shadow-[0_4px_30px_rgba(0,0,0,0.3)]">
+                    <div className="flex items-center justify-between">
+                      <div className="flex flex-col gap-1.5">
+                        <span className="text-[10px] font-mono text-white/30 uppercase tracking-[0.2em]">Publishing Status</span>
+                        <span className="text-xs text-white/50 font-sans tracking-wide">
+                          {isArchived ? "Draft (Keep this dispatch private/archived)" : "Publish (Make this dispatch live immediately)"}
+                        </span>
                       </div>
-                      <div className="flex items-center justify-between bg-[#070707] border border-white/10 p-3 rounded-sm">
-                        <span className="text-xs font-mono text-white/60">Status</span>
-                        <div className="flex items-center gap-2">
-                          <span className={`text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded-sm border ${
-                            isArchived 
-                              ? "border-white/10 text-white/30 bg-transparent" 
-                              : "border-[#e40521] text-[#e40521] bg-[#e40521]/5 font-semibold"
-                          }`}>
-                            {isArchived ? "Draft (Archived)" : "Live"}
-                          </span>
-                          
-                          {/* Toggle Switch */}
-                          <button
-                            type="button"
-                            onClick={() => setIsArchived(!isArchived)}
-                            className="relative inline-flex h-5 w-9 flex-shrink-0 cursor-pointer rounded-full border border-white/10 bg-white/5 transition-colors duration-200 ease-in-out focus:outline-none"
-                          >
-                            <span
-                              aria-hidden="true"
-                              className={`pointer-events-none inline-block h-4 w-4 transform rounded-full shadow ring-0 transition duration-200 ease-in-out mt-[1px] ml-[1px] ${
-                                isArchived ? "translate-x-0 bg-white/40" : "translate-x-4 bg-[#e40521]"
-                              }`}
-                            />
-                          </button>
-                        </div>
-                      </div>
-                      <p className="text-[10px] text-white/40 font-sans leading-normal m-0">
-                        {isArchived 
-                          ? "This post will be kept as a local draft/archive and will not be displayed on the public blog feed." 
-                          : "This post will be live and accessible to the public immediately or at the scheduled date."}
-                      </p>
-                    </div>
-
-                    {/* 2. Cover Photo Upload Box & Cover URL */}
-                    <div className="border border-white/10 rounded-sm p-5 bg-[#0b0b0b]">
-                      <div className="text-xs font-mono text-white/40 uppercase tracking-widest mb-3 select-none">
-                        Cover Visual
-                      </div>
-                      
-                      <input
-                        type="file"
-                        accept="image/*"
-                        ref={fileInputRef}
-                        onChange={handleImageUpload}
-                        className="hidden"
-                      />
-                      
-                      {mainImageUrl ? (
-                        <div className="w-full h-36 rounded-sm border border-white/5 overflow-hidden relative select-none group">
-                          <img
-                            src={mainImageUrl}
-                            alt="Cover preview"
-                            className="absolute inset-0 w-full h-full object-cover grayscale brightness-95 group-hover:grayscale-0 transition duration-500"
-                          />
-                          <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity duration-300">
-                            <button
-                              type="button"
-                              onClick={() => fileInputRef.current?.click()}
-                              className="bg-white text-black font-mono text-[9px] uppercase px-3 py-1.5 rounded-sm cursor-pointer transition font-semibold hover:bg-white/90 mr-2"
-                            >
-                              Replace
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => setMainImageUrl("")}
-                              className="bg-black/70 text-white font-mono text-[9px] uppercase px-3 py-1.5 rounded-sm cursor-pointer transition font-semibold hover:bg-red hover:text-white border border-white/10"
-                            >
-                              Remove
-                            </button>
-                          </div>
-                        </div>
-                      ) : (
+                      <div className="flex items-center gap-4">
+                        <span className={`text-[9px] font-mono uppercase tracking-[0.15em] px-3 py-1 rounded-sm border ${
+                          isArchived 
+                            ? "border-white/10 text-white/30 bg-transparent" 
+                            : "border-[#e40521] text-[#e40521] bg-[#e40521]/5 font-semibold"
+                        }`}>
+                          {isArchived ? "Draft" : "Published"}
+                        </span>
+                        
+                        {/* Toggle Switch */}
                         <button
                           type="button"
-                          onClick={() => fileInputRef.current?.click()}
-                          className="w-full h-24 border border-dashed border-white/10 hover:border-white/30 hover:bg-white/[0.005] transition-all duration-300 rounded-sm flex flex-col justify-center items-center cursor-pointer p-4"
+                          onClick={() => setIsArchived(!isArchived)}
+                          className="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border border-white/10 bg-white/5 transition-colors duration-300 ease-in-out focus:outline-none"
                         >
-                          <svg
-                            width="16"
-                            height="16"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            className="text-white/40 mb-2"
-                          >
-                            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12" />
-                          </svg>
-                          <span className="font-mono text-[10px] text-white/50 uppercase tracking-wider">
-                            {uploadStatus.includes("visual") ? uploadStatus : "Upload Cover Image"}
-                          </span>
+                          <span
+                            aria-hidden="true"
+                            className={`pointer-events-none inline-block h-4 w-4 transform rounded-full shadow-lg ring-0 transition duration-300 ease-in-out mt-[3px] ml-[3px] ${
+                              isArchived ? "translate-x-0 bg-white/30" : "translate-x-5 bg-[#e40521]"
+                            }`}
+                          />
                         </button>
-                      )}
-
-                      <div className="flex flex-col gap-3 mt-4">
-                        <div className="flex flex-col gap-1">
-                          <label className="text-[9px] font-mono text-white/40 uppercase tracking-wider select-none">
-                            Cover Image Path URL
-                          </label>
-                          <input
-                            type="text"
-                            placeholder="Auto-filled or custom path"
-                            value={mainImageUrl}
-                            onChange={(e) => setMainImageUrl(e.target.value)}
-                            className="bg-[#050505] border border-white/15 focus:border-white/30 focus:outline-none px-3 py-2 text-xs text-white rounded-sm placeholder-white/20"
-                          />
-                        </div>
-
-                        <div className="flex flex-col gap-1">
-                          <label className="text-[9px] font-mono text-white/40 uppercase tracking-wider select-none">
-                            Alt Description
-                          </label>
-                          <input
-                            type="text"
-                            placeholder="Alt text detail"
-                            value={mainImageAlt}
-                            onChange={(e) => setMainImageAlt(e.target.value)}
-                            className="bg-[#050505] border border-white/15 focus:border-white/30 focus:outline-none px-3 py-2 text-xs text-white/80 rounded-sm placeholder-white/20"
-                          />
-                        </div>
                       </div>
                     </div>
+                  </div>
 
-                    {/* 3. Metadata Config Box */}
-                    <div className="border border-white/10 rounded-sm p-5 bg-[#0b0b0b] flex flex-col gap-4">
-                      <div className="text-xs font-mono text-white/40 uppercase tracking-widest select-none">
-                        Metadata Config
-                      </div>
-                      
-                      {/* Slug Input */}
-                      <div className="flex flex-col gap-1.5">
-                        <div className="flex justify-between items-center w-full select-none">
-                          <label className="text-[9px] font-mono text-white/40 uppercase tracking-wider">
-                            SLUG PATH
-                          </label>
-                          <button
-                            type="button"
-                            onClick={() => setIsSlugLocked(!isSlugLocked)}
-                            className="font-mono text-[8px] text-[#e40521] hover:underline uppercase cursor-pointer bg-transparent border-none"
-                          >
-                            {isSlugLocked ? "Edit" : "Lock"}
-                          </button>
-                        </div>
-                        <input
-                          type="text"
-                          placeholder="slug-path"
-                          value={slug}
-                          disabled={isSlugLocked}
-                          onChange={(e) => setSlug(e.target.value)}
-                          className="bg-[#050505] border border-white/15 focus:border-white/30 focus:outline-none px-3 py-2 text-xs text-white placeholder-white/25 rounded-sm disabled:opacity-60 transition"
-                        />
-                      </div>
+                  {/* Massive focused title */}
+                  <div className="flex flex-col gap-4">
+                    <label className="text-[10px] font-mono text-white/30 uppercase tracking-[0.2em] select-none">
+                      POST TITLE
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Title of dispatch..."
+                      value={title}
+                      onChange={(e) => setTitle(e.target.value)}
+                      className="w-full bg-transparent border-none focus:outline-none font-serif text-4xl sm:text-5xl font-bold text-white placeholder-white/5 leading-tight border-b border-white/5 pb-5 focus:border-white/20 transition-all duration-300"
+                    />
+                  </div>
 
-                      {/* Publish Date Input */}
-                      <div className="flex flex-col gap-1.5">
-                        <label className="text-[9px] font-mono text-white/40 uppercase tracking-wider select-none">
-                          PUBLISH DATE
-                        </label>
-                        <input
-                          type="datetime-local"
-                          value={publishedAt}
-                          onChange={(e) => setPublishedAt(e.target.value)}
-                          className="bg-[#050505] border border-white/15 focus:border-white/30 focus:outline-none px-3 py-2 text-xs text-white rounded-sm transition"
-                        />
-                      </div>
-                    </div>
-
-                    {/* 4. Taxonomy & Contributor Box */}
-                    <div className="border border-white/10 rounded-sm p-5 bg-[#0b0b0b] flex flex-col gap-4">
-                      <div className="text-xs font-mono text-white/40 uppercase tracking-widest select-none">
-                        Taxonomy & Contributor
-                      </div>
-                      
-                      {/* Categories */}
-                      <div className="flex flex-col gap-1.5">
-                        <label className="text-[9px] font-mono text-white/40 uppercase tracking-wider select-none">
-                          CATEGORIES (CSV)
-                        </label>
-                        <input
-                          type="text"
-                          placeholder="Design, Strategy, Film"
-                          value={categoryString}
-                          onChange={(e) => setCategoryString(e.target.value)}
-                          className="bg-[#050505] border border-white/15 focus:border-white/30 focus:outline-none px-3 py-2 text-xs text-white placeholder-white/25 rounded-sm transition uppercase tracking-wider"
-                        />
-                        {suggestedCategories.length > 0 && (
-                          <div className="flex flex-wrap gap-1.5 mt-1.5 select-none">
-                            <span className="text-[8px] font-mono text-white/30 uppercase tracking-widest self-center mr-1">
-                              Pills:
-                            </span>
-                            {suggestedCategories.map((cat) => {
-                              const isActive = categoryString
-                                .split(",")
-                                .map((c) => c.trim())
-                                .includes(cat);
-                              return (
-                                <button
-                                  key={cat}
-                                  type="button"
-                                  onClick={() => handleAddCategory(cat)}
-                                  className={`text-[8px] font-mono uppercase tracking-widest px-2 py-0.5 rounded-sm border transition duration-200 cursor-pointer ${
-                                    isActive
-                                      ? "border-[#e40521] text-[#e40521] bg-[#e40521]/5 font-semibold"
-                                      : "border-white/10 text-white/40 bg-[#050505] hover:border-white/30 hover:text-white"
-                                  }`}
-                                >
-                                  {cat}
-                                </button>
-                              );
-                            })}
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Contributor Avatar & Signature */}
-                      <div className="flex flex-col gap-2 pt-3 border-t border-white/5">
-                        <label className="text-[9px] font-mono text-white/40 uppercase tracking-wider select-none">
-                          CONTRIBUTOR
-                        </label>
-                        <div className="flex gap-3 items-center">
-                          <div className="relative select-none flex-shrink-0">
-                            <input
-                              type="file"
-                              accept="image/*"
-                              ref={authorImageInputRef}
-                              onChange={handleAuthorImageUpload}
-                              className="hidden"
-                            />
-                            <div
-                              onClick={() => authorImageInputRef.current?.click()}
-                              className="w-10 h-10 rounded-full border border-white/10 hover:border-white/30 bg-[#050505] overflow-hidden flex items-center justify-center cursor-pointer transition-all duration-300 relative group"
-                              title="Upload Avatar"
-                            >
-                              {authorImage ? (
-                                <img
-                                  src={authorImage}
-                                  alt="Contributor Avatar"
-                                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                                />
-                              ) : (
-                                <svg
-                                  width="14"
-                                  height="14"
-                                  viewBox="0 0 24 24"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  strokeWidth="2"
-                                  className="text-white/30 group-hover:text-white transition-colors"
-                                >
-                                  <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 11a4 4 0 100-8 4 4 0 000 8z" />
-                                </svg>
-                              )}
-                              <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity duration-300">
-                                <span className="text-[7px] font-mono text-white uppercase tracking-tighter">UP</span>
-                              </div>
-                            </div>
-                          </div>
-                          
-                          <div className="flex-1 flex flex-col gap-1">
-                            <input
-                              type="text"
-                              placeholder="Contributor name"
-                              value={authorName}
-                              onChange={(e) => setAuthorName(e.target.value)}
-                              className="w-full bg-[#050505] border border-white/15 focus:border-white/30 focus:outline-none px-3 py-1.5 text-xs text-white/80 placeholder-white/25 rounded-sm transition"
-                            />
-                            <input
-                              type="text"
-                              placeholder="Avatar Path URL"
-                              value={authorImage}
-                              onChange={(e) => setAuthorImage(e.target.value)}
-                              className="w-full bg-[#050505] border border-white/15 focus:border-white/30 focus:outline-none px-3 py-1 text-[10px] text-white/35 placeholder-white/20 rounded-sm transition"
-                            />
-                          </div>
-                        </div>
-                        {uploadStatus.includes("avatar") && (
-                          <span className="text-[8px] font-mono text-[#e40521] uppercase tracking-wider block mt-1">
-                            {uploadStatus}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-
+                  {/* Large Content Editor Textarea */}
+                  <div className="flex flex-col gap-4 min-h-[500px]">
+                    <label className="text-[10px] font-mono text-white/30 uppercase tracking-[0.2em] select-none">
+                      MARKDOWN BODY COMPOSITION
+                    </label>
+                    <textarea
+                      placeholder="Start typing your editorial story here in standard Markdown..."
+                      value={markdownBody}
+                      onChange={(e) => setMarkdownBody(e.target.value)}
+                      className="w-full bg-[#090909] border border-white/5 focus:border-white/15 focus:outline-none p-10 text-base leading-relaxed text-[#f4f1ee] placeholder-white/15 resize-none transition-all duration-300 rounded-sm min-h-[600px] font-sans shadow-[0_4px_30px_rgba(0,0,0,0.3)] focus:shadow-[0_8px_40px_rgba(0,0,0,0.4)] animate-fadeIn"
+                    ></textarea>
                   </div>
 
                 </div>
               </div>
             ) : (
-              
               /* TAB CONTENT: PREVIEW WORKSPACE */
-              <div className="flex-1 overflow-y-auto custom-scrollbar bg-[#050505] min-h-0">
-                <BlogPostContent post={previewPost} />
+              <div className="flex-1 overflow-y-auto pr-2 p-12 sm:p-16 md:p-20 min-h-0 bg-[#050505] custom-scrollbar-thin">
+                <div className="max-w-[850px] mx-auto animate-fadeIn">
+                  <BlogPostContent post={previewPost} />
+                </div>
               </div>
-
             )}
 
           </div>
@@ -1140,12 +882,16 @@ export default function StudioPage() {
       </div>
 
       {/* Status Footer */}
-      <footer className="h-10 border-t border-white/10 bg-[#0a0a0a] z-10 flex-shrink-0 flex items-center px-8 justify-between select-none">
-        <div className="font-mono text-xs tracking-wide text-white/35 uppercase">
-          Status: <span className="text-white/60">{logMessage}</span>
+      <footer className="h-12 border-t border-white/5 bg-[#090909] z-20 flex-shrink-0 flex items-center px-12 justify-between select-none">
+        <div className="font-mono text-[10px] tracking-[0.15em] text-white/30 uppercase">
+          SYSTEM STATUS: <span className="text-white/60 font-semibold">{logMessage}</span>
+        </div>
+        <div className="font-mono text-[9px] tracking-[0.15em] text-white/20 uppercase">
+          MAAEF OS V1.0.0
         </div>
       </footer>
 
     </div>
   );
 }
+
