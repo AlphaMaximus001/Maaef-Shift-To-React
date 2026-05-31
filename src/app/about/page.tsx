@@ -1,403 +1,148 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { gsap } from "gsap";
 import Footer from "@/components/Footer";
 
-// Brand dial assets
-const DIAL_LOGOS = [
-  { index: 0, imgSrc: "/images/logo1.png", videoSrc: "/videos/studio-video1.mp4", label: "Brand 1" },
-  { index: 1, imgSrc: "/images/logo2.png", videoSrc: "/videos/studio-video2.mp4", label: "Brand 2" },
-  { index: 2, imgSrc: "/images/logo3.png", videoSrc: "/videos/studio-video3.mp4", label: "Brand 3" },
-];
-
 export default function AboutPage() {
-  const videoRef = useRef<HTMLVideoElement | null>(null);
-  const bgContainerRef = useRef<HTMLDivElement | null>(null);
-  const brandDialRef = useRef<HTMLDivElement | null>(null);
-
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [videoSrc, setVideoSrc] = useState("/videos/studio-video1.mp4");
-  const [isMuted, setIsMuted] = useState(true);
-  const [inFullscreen, setInFullscreen] = useState(false);
-
-  const dialAngleRef = useRef(0);
-  const isDraggingRef = useRef(false);
-  const dragStartAngleRef = useRef(0);
-  const dragDialStartRef = useRef(0);
-  const loopCountRef = useRef(0);
-
-  const LOGO_SPACING = 55; // degrees
-  const ACTIVE_DEG = 225; // center visible arc
-  const FULL_CYCLE = LOGO_SPACING * 3; // full rotation arc wrap
-
-  // Setup ambient opacity and start video play on mount
-  useEffect(() => {
-    if (bgContainerRef.current) {
-      gsap.set(bgContainerRef.current, { opacity: 0.2 });
-    }
-    if (videoRef.current) {
-      videoRef.current.muted = true;
-      const playPromise = videoRef.current.play();
-      if (playPromise !== undefined) playPromise.catch(() => {});
-    }
-  }, []);
-
-  // Sync mute state on active video tag
-  useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.muted = isMuted;
-    }
-  }, [isMuted]);
-
-  // Wrap angle to full cycle bounds
-  const wrapAngle = (a: number) => {
-    return ((a % FULL_CYCLE) + FULL_CYCLE * 100) % FULL_CYCLE;
-  };
-
-  // Re-position logos along the circular arc
-  const positionLogos = (currentAngle: number) => {
-    const brandDial = brandDialRef.current;
-    if (!brandDial) return;
-
-    const logoElements = brandDial.querySelectorAll<HTMLDivElement>(".dial-logo");
-    const DIAL_SIZE = brandDial.offsetWidth;
-    const CENTER = DIAL_SIZE / 2;
-    const LOGO_R = DIAL_SIZE * 0.36;
-
-    logoElements.forEach((logo, i) => {
-      const rawOffset = i * LOGO_SPACING + currentAngle;
-      const wrappedOffset = wrapAngle(rawOffset);
-      const centered = wrappedOffset - LOGO_SPACING; // range [-55, 110]
-      const angle = ACTIVE_DEG + centered;
-      const rad = (angle * Math.PI) / 180;
-
-      logo.style.left = `${CENTER + LOGO_R * Math.cos(rad)}px`;
-      logo.style.top = `${CENTER + LOGO_R * Math.sin(rad)}px`;
-      logo.style.transform = "translate(-50%, -50%)";
-
-      // Toggle active visual highlight state
-      const atCenter =
-        Math.abs(wrapAngle(rawOffset)) < 5 || Math.abs(wrapAngle(rawOffset) - FULL_CYCLE) < 5;
-      logo.classList.toggle("active", atCenter);
-    });
-  };
-
-  // Helper to compute angle from center of dial to pointer coords
-  const getPointerAngle = (clientX: number, clientY: number) => {
-    const brandDial = brandDialRef.current;
-    if (!brandDial) return 0;
-    const rect = brandDial.getBoundingClientRect();
-    const cx = rect.left + rect.width / 2;
-    const cy = rect.top + rect.height / 2;
-    return Math.atan2(clientY - cy, clientX - cx) * (180 / Math.PI);
-  };
-
-  // Rotate to specific logo index with GSAP transitions
-  const rotateTo = (logoIndex: number) => {
-    const targetMod = -logoIndex * LOGO_SPACING;
-    let delta = targetMod - dialAngleRef.current;
-    const halfCycle = FULL_CYCLE / 2;
-    delta = (((delta + halfCycle) % FULL_CYCLE + FULL_CYCLE) % FULL_CYCLE) - halfCycle;
-    const target = dialAngleRef.current + delta;
-
-    const tempObj = { v: dialAngleRef.current };
-    gsap.to(tempObj, {
-      v: target,
-      duration: 0.4,
-      ease: "power2.out",
-      onUpdate: () => {
-        dialAngleRef.current = tempObj.v;
-        positionLogos(tempObj.v);
-      },
-      onComplete: () => {
-        dialAngleRef.current = target;
-        positionLogos(target);
-        setActiveIndex(logoIndex);
-        switchVideo(logoIndex);
-      },
-    });
-  };
-
-  // Switch video background with custom cross-fade opacity
-  const switchVideo = (idx: number) => {
-    const bgContainer = bgContainerRef.current;
-    const video = videoRef.current;
-    if (!bgContainer || !video) return;
-
-    const targetSrc = DIAL_LOGOS[idx].videoSrc;
-    loopCountRef.current = 0;
-
-    gsap.to(bgContainer, {
-      opacity: 0,
-      duration: 0.3,
-      onComplete: () => {
-        // Direct DOM update ensures the new video loads instantly without timing lag or batching delays
-        video.src = targetSrc;
-        setVideoSrc(targetSrc);
-        video.load();
-        video.currentTime = 0;
-        const p = video.play();
-        if (p !== undefined) p.catch(() => {});
-        gsap.to(bgContainer, { opacity: 1, duration: 0.6 });
-      },
-    });
-  };
-
-  // Dial Snap-to-closest logo spacing logic
-  const snapDial = () => {
-    const snap = Math.round(dialAngleRef.current / LOGO_SPACING) * LOGO_SPACING;
-    const newIdx = (((-Math.round(snap / LOGO_SPACING)) % 3) + 3) % 3;
-
-    const tempObj = { v: dialAngleRef.current };
-    gsap.to(tempObj, {
-      v: snap,
-      duration: 0.4,
-      ease: "power2.out",
-      onUpdate: () => {
-        dialAngleRef.current = tempObj.v;
-        positionLogos(tempObj.v);
-      },
-      onComplete: () => {
-        dialAngleRef.current = snap;
-        positionLogos(snap);
-        setActiveIndex(newIdx);
-        switchVideo(newIdx);
-      },
-    });
-  };
-
-  // Drag handlers
-  const handleDragStart = (clientX: number, clientY: number) => {
-    isDraggingRef.current = true;
-    dragStartAngleRef.current = getPointerAngle(clientX, clientY);
-    dragDialStartRef.current = dialAngleRef.current;
-  };
-
-  const handleDragMove = (clientX: number, clientY: number) => {
-    if (!isDraggingRef.current) return;
-    const angle = getPointerAngle(clientX, clientY);
-    dialAngleRef.current = dragDialStartRef.current + (angle - dragStartAngleRef.current);
-    positionLogos(dialAngleRef.current);
-  };
-
-  const handleDragEnd = () => {
-    if (!isDraggingRef.current) return;
-    isDraggingRef.current = false;
-    snapDial();
-  };
-
-  // Setup drag event listeners on window
-  useEffect(() => {
-    const onMouseMove = (e: MouseEvent) => {
-      handleDragMove(e.clientX, e.clientY);
-    };
-    const onMouseUp = () => {
-      handleDragEnd();
-    };
-
-    const onTouchMove = (e: TouchEvent) => {
-      if (e.touches.length > 0) {
-        handleDragMove(e.touches[0].clientX, e.touches[0].clientY);
-      }
-    };
-    const onTouchEnd = () => {
-      handleDragEnd();
-    };
-
-    window.addEventListener("mousemove", onMouseMove);
-    window.addEventListener("mouseup", onMouseUp);
-    window.addEventListener("touchmove", onTouchMove, { passive: true });
-    window.addEventListener("touchend", onTouchEnd);
-
-    // Initial positioning on mount
-    positionLogos(0);
-
-    const onResize = () => {
-      positionLogos(dialAngleRef.current);
-    };
-    window.addEventListener("resize", onResize);
-
-    return () => {
-      window.removeEventListener("mousemove", onMouseMove);
-      window.removeEventListener("mouseup", onMouseUp);
-      window.removeEventListener("touchmove", onTouchMove);
-      window.removeEventListener("touchend", onTouchEnd);
-      window.removeEventListener("resize", onResize);
-    };
-  }, []);
-
-  // Listen for fullscreen toggle event changes
-  useEffect(() => {
-    const handleFSChange = () => {
-      const isFS = !!(document.fullscreenElement || (document as any).webkitFullscreenElement);
-      setInFullscreen(isFS);
-      if (!isFS) {
-        if (screen.orientation && (screen.orientation as any).unlock) {
-          (screen.orientation as any).unlock();
-        }
-        gsap.to(bgContainerRef.current, { opacity: 1, duration: 0.4 });
-      }
-    };
-
-    document.addEventListener("fullscreenchange", handleFSChange);
-    document.addEventListener("webkitfullscreenchange", handleFSChange);
-
-    return () => {
-      document.removeEventListener("fullscreenchange", handleFSChange);
-      document.removeEventListener("webkitfullscreenchange", handleFSChange);
-    };
-  }, []);
-
-  const triggerFullscreen = () => {
-    const el = bgContainerRef.current;
-    if (!el) return;
-
-    const requestFS = el.requestFullscreen || (el as any).webkitRequestFullscreen;
-    if (requestFS) {
-      requestFS.call(el).then(() => {
-        if (screen.orientation && (screen.orientation as any).lock) {
-          (screen.orientation as any).lock("landscape").catch(() => {});
-        }
-      }).catch(() => {});
-    } else if (videoRef.current && (videoRef.current as any).webkitEnterFullscreen) {
-      (videoRef.current as any).webkitEnterFullscreen();
-    }
-  };
-
-  const handleVideoEnded = () => {
-    loopCountRef.current += 1;
-    if (loopCountRef.current >= 2) {
-      rotateTo((activeIndex + 1) % 3);
-    } else if (videoRef.current) {
-      videoRef.current.currentTime = 0;
-      videoRef.current.play().catch(() => {});
-    }
-  };
-
-  const handleWheel = (e: React.WheelEvent) => {
-    const next = e.deltaY > 0 ? (activeIndex + 1) % 3 : (activeIndex + 2) % 3;
-    rotateTo(next);
-  };
-
   return (
     <>
       <div className="noise-overlay" />
 
-      <main>
-        {/* PINHOLE BRAND SHOWCASE SECTION */}
-        <section className="pinhole-section relative min-h-screen bg-brand-dark overflow-hidden flex flex-col items-center justify-center">
-          <div id="pinhole-title-container" className="absolute top-[15%] left-0 w-full text-center z-[40] pointer-events-none px-6 select-none hidden">
-            <h3 className="text-[10px] md:text-xs uppercase tracking-[0.3em] text-red mb-3">
-              Trusted Partners
-            </h3>
-            <h2 className="serif text-2xl md:text-4xl text-white mb-2 tracking-tight">
-              Engineering Attention Globally
-            </h2>
-            <p className="text-gray-500 text-sm font-light uppercase tracking-wider">
-              Explore Broadcast Works
+      {/* Centered Watermark Backdrop — Fixed for premium parallax effect */}
+      <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-0 overflow-hidden bg-[#050505]">
+        <Image
+          src="/images/logo.png"
+          alt="Maaef Logo Watermark"
+          width={1000}
+          height={330}
+          className="w-[90%] max-w-[1100px] h-auto object-contain opacity-[0.015] select-none filter brightness-0 invert"
+          priority
+        />
+      </div>
+
+      {/* Main container with direct inline style top clearance to override all caching */}
+      <main 
+        className="relative z-10 text-white min-h-screen select-none overflow-x-hidden"
+        style={{ paddingTop: "350px", paddingBottom: "96px" }}
+      >
+        
+        {/* SEO Text Content Container */}
+        <section 
+          className="relative max-w-[900px] mx-auto px-6 md:px-12 flex flex-col gap-20 md:gap-28"
+          style={{ width: "100%", maxWidth: "900px", marginLeft: "auto", marginRight: "auto" }}
+        >
+          
+          {/* Centered Intro Section — Symmetrical, clear of the header, and spacious */}
+          <div 
+            className="flex flex-col gap-10"
+            style={{ 
+              display: "flex",
+              flexDirection: "column",
+              gap: "40px",
+              textAlign: "center", 
+              maxWidth: "800px", 
+              marginLeft: "auto", 
+              marginRight: "auto" 
+            }}
+          >
+            {/* Paragraph 1 — Centered Editorial Statement */}
+            <p 
+              className="serif text-[clamp(1.3rem,2.8vw,2.2rem)] font-light leading-[1.4] tracking-tight text-white"
+              style={{ textAlign: "center", margin: "0 auto", color: "#ffffff" }}
+            >
+              Maaef Media House is a creative agency based in Lucknow, India. We build brands, produce content, and design experiences that make people stop scrolling and actually pay attention. We call it engineering attention — and it is the only thing we care about getting right.
+            </p>
+            
+            {/* Paragraph 2 — Centered Secondary Narrative */}
+            <p 
+              className="text-neutral-400 text-base md:text-lg font-light leading-relaxed"
+              style={{ textAlign: "center", margin: "0 auto", maxWidth: "700px" }}
+            >
+              Founded in Lucknow, we work with startups, SMEs, and growing brands who want their communications to actually work. Not just look good — work. That means a brand film that drives enquiries. A social media presence that builds trust. A website that converts. A visual identity that people remember the next day.
             </p>
           </div>
 
-          <div
-            ref={bgContainerRef}
-            id="pinhole-bg-container"
-            className="absolute inset-0 z-1"
-          >
-            {/* Fullscreen Trigger */}
-            <button
-              onClick={triggerFullscreen}
-              id="fullscreen-btn"
-              title="Watch fullscreen"
-              aria-label="Open video fullscreen"
-              className="absolute bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 px-5.5 py-2.5 bg-black/55 backdrop-blur-md border border-white/25 rounded-full text-white text-[10px] tracking-[0.2em] uppercase cursor-pointer hover:bg-white hover:text-black hover:border-white transition-all duration-300 select-none hover-trigger"
-            >
-              <svg
-                width="14"
-                height="14"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" />
-              </svg>
-              Watch Fullscreen
-            </button>
-
-            <video
-              ref={videoRef}
-              src={videoSrc}
-              autoPlay
-              muted
-              playsInline
-              onEnded={handleVideoEnded}
-              className="w-full h-full object-cover bg-black select-none"
-            />
-          </div>
-
-          {/* BRAND DIAL — Circular Selector */}
-          <div
-            ref={brandDialRef}
-            id="brand-dial"
-            onWheel={handleWheel}
-            className="brand-dial"
-          >
-            <div className="dial-ring" />
-
-            {/* Mute Center button */}
-            <button
-              onClick={() => setIsMuted(prev => !prev)}
-              id="pinhole-mute-btn"
-              className="dial-mute hover-trigger"
-              title="Toggle Sound"
-            >
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill={isMuted ? "none" : "#fff"}
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
-                {isMuted ? (
-                  <>
-                    <line x1="23" y1="9" x2="17" y2="15" />
-                    <line x1="17" y1="9" x2="23" y2="15" />
-                  </>
-                ) : (
-                  <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07" />
-                )}
-              </svg>
-            </button>
-
-            {/* Dial logos on the arc */}
-            {DIAL_LOGOS.map((logo, i) => (
-              <div
-                key={logo.index}
-                onClick={() => rotateTo(logo.index)}
-                className={`dial-logo hover-trigger ${
-                  activeIndex === logo.index ? "active" : ""
-                }`}
-                data-index={logo.index}
-                data-video={logo.videoSrc}
-              >
-                <Image
-                  src={logo.imgSrc}
-                  alt={logo.label}
-                  width={40}
-                  height={40}
-                  className="w-[50%] h-[50%] object-contain select-none pointer-events-none"
-                />
+          {/* Capabilities List — Strictly aligned grid columns to ensure vertical start parity */}
+          <div className="flex flex-col gap-10 border-t border-white/[0.08] pt-20">
+            <h2 className="serif text-xl md:text-2xl uppercase tracking-wider text-[#e40521]">
+              What we do:
+            </h2>
+            <div className="flex flex-col list-none p-0">
+              <div className="flex flex-col md:flex-row md:items-start gap-4 md:gap-8 py-6 border-b border-white/[0.04] transition-colors hover:border-[#e40521]/40">
+                <div className="serif text-lg md:text-xl text-white tracking-wide w-full md:w-[40%] flex-shrink-0 mb-1 md:mb-0">
+                  - Video Production:
+                </div>
+                <div className="text-neutral-400 text-sm md:text-base font-light leading-relaxed w-full md:w-[60%] text-left">
+                  Brand films, reels, product videos, documentaries, event coverage
+                </div>
               </div>
-            ))}
+              <div className="flex flex-col md:flex-row md:items-start gap-4 md:gap-8 py-6 border-b border-white/[0.04] transition-colors hover:border-[#e40521]/40">
+                <div className="serif text-lg md:text-xl text-white tracking-wide w-full md:w-[40%] flex-shrink-0 mb-1 md:mb-0">
+                  - Brand Strategy:
+                </div>
+                <div className="text-neutral-400 text-sm md:text-base font-light leading-relaxed w-full md:w-[60%] text-left">
+                  Positioning, messaging, visual identity, brand guidelines
+                </div>
+              </div>
+              <div className="flex flex-col md:flex-row md:items-start gap-4 md:gap-8 py-6 border-b border-white/[0.04] transition-colors hover:border-[#e40521]/40">
+                <div className="serif text-lg md:text-xl text-white tracking-wide w-full md:w-[40%] flex-shrink-0 mb-1 md:mb-0">
+                  - Graphic Design:
+                </div>
+                <div className="text-neutral-400 text-sm md:text-base font-light leading-relaxed w-full md:w-[60%] text-left">
+                  Logos, marketing collateral, packaging, presentations
+                </div>
+              </div>
+              <div className="flex flex-col md:flex-row md:items-start gap-4 md:gap-8 py-6 border-b border-white/[0.04] transition-colors hover:border-[#e40521]/40">
+                <div className="serif text-lg md:text-xl text-white tracking-wide w-full md:w-[40%] flex-shrink-0 mb-1 md:mb-0">
+                  - Photography:
+                </div>
+                <div className="text-neutral-400 text-sm md:text-base font-light leading-relaxed w-full md:w-[60%] text-left">
+                  Product, lifestyle, corporate, and editorial photography
+                </div>
+              </div>
+              <div className="flex flex-col md:flex-row md:items-start gap-4 md:gap-8 py-6 border-b border-white/[0.04] transition-colors hover:border-[#e40521]/40">
+                <div className="serif text-lg md:text-xl text-white tracking-wide w-full md:w-[40%] flex-shrink-0 mb-1 md:mb-0">
+                  - Web Design:
+                </div>
+                <div className="text-neutral-400 text-sm md:text-base font-light leading-relaxed w-full md:w-[60%] text-left">
+                  Clean, functional websites built to represent your brand properly
+                </div>
+              </div>
+              <div className="flex flex-col md:flex-row md:items-start gap-4 md:gap-8 py-6 border-b border-white/[0.04] transition-colors hover:border-[#e40521]/40">
+                <div className="serif text-lg md:text-xl text-white tracking-wide w-full md:w-[40%] flex-shrink-0 mb-1 md:mb-0">
+                  - Social Media Content:
+                </div>
+                <div className="text-neutral-400 text-sm md:text-base font-light leading-relaxed w-full md:w-[60%] text-left">
+                  Ongoing content creation, direction, and production for digital platforms
+                </div>
+              </div>
+            </div>
           </div>
+
+          {/* Paragraph 3 — Manifesto Block */}
+          <div className="border-t border-white/[0.08] pt-20">
+            <p className="text-neutral-300 text-lg md:text-xl font-light leading-relaxed max-w-[750px]">
+              We are a small, committed team. We do not outsource strategy. We do not hand off creative direction. We sit with the brief, figure out what needs to be said, and then say it as powerfully as we can — in video, image, or design.
+            </p>
+          </div>
+
+          {/* Paragraph 4 — Geography Highlight */}
+          <div className="pt-4">
+            <p 
+              className="text-[#e40521] text-xs md:text-sm font-bold uppercase tracking-[0.25em] font-mono leading-relaxed max-w-[750px]"
+              style={{ color: "#e40521" }}
+            >
+              Based in Lucknow, Uttar Pradesh, India. Working with clients across India and internationally.
+            </p>
+          </div>
+
+          {/* Paragraph 5 — Ecosystem footer */}
+          <div className="border-t border-white/[0.08] pt-20 pb-16">
+            <p className="text-neutral-500 text-xs md:text-sm font-light leading-relaxed max-w-[750px]">
+              Maaef Media House is part of the Maaef group of businesses, which includes Maaef Studios (print production), Maaef Afterhours (community events), and Maaef Enterprises Private Limited (government supply and tenders).
+            </p>
+          </div>
+
         </section>
 
         {/* FOOTER */}

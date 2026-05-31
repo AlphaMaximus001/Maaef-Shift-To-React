@@ -260,6 +260,7 @@ export default function Navigation() {
 
   const isHome = pathname === "/";
   const isAbout = pathname === "/about";
+  const isWork = pathname === "/work";
   const isExpertise = pathname === "/expertise";
 
   if (isExpertise && !isOpen) {
@@ -309,8 +310,8 @@ export default function Navigation() {
           )}
         </Link>
 
-        {isAbout && (
-          <div className="hidden md:flex items-center gap-8 z-[60]">
+        {(isAbout || isWork) && (
+          <div className={`hidden md:flex items-center gap-8 z-[60] transition-opacity duration-300 ${isOpen ? "opacity-0 pointer-events-none" : ""}`}>
             <Link
               href="/"
               className="text-[11px] uppercase tracking-[0.2em] text-white/60 hover:text-white transition-colors duration-300 hover-trigger"
@@ -319,9 +320,19 @@ export default function Navigation() {
             </Link>
             <Link
               href="/about"
-              className="text-[11px] uppercase tracking-[0.2em] text-white font-bold hover:text-[#e40521] transition-colors duration-300 hover-trigger"
+              className={`text-[11px] uppercase tracking-[0.2em] transition-colors duration-300 hover-trigger ${
+                isAbout ? "text-white font-bold hover:text-[#e40521]" : "text-white/60 hover:text-white"
+              }`}
             >
-              Clients
+              About
+            </Link>
+            <Link
+              href="/work"
+              className={`text-[11px] uppercase tracking-[0.2em] transition-colors duration-300 hover-trigger ${
+                isWork ? "text-white font-bold hover:text-[#e40521]" : "text-white/60 hover:text-white"
+              }`}
+            >
+              Work
             </Link>
             <Link
               href="/services"
@@ -342,7 +353,7 @@ export default function Navigation() {
           {!isHome && (
             <Link
               href="/contact"
-              className="hidden md:block text-xs uppercase tracking-widest hover:text-[#e40521] transition hover-trigger font-bold no-underline text-white mr-4"
+              className={`hidden md:block text-xs uppercase tracking-widest hover:text-[#e40521] transition hover-trigger font-bold no-underline text-white mr-4 transition-opacity duration-300 ${isOpen ? "opacity-0 pointer-events-none" : ""}`}
             >
               Start Project
             </Link>
@@ -403,16 +414,17 @@ export default function Navigation() {
               Home
             </span>
           </Link>
+
           <Link
-            href="/about"
+            href="/work"
             onClick={toggleMenu}
             className="menu-link group relative overflow-hidden inline-block hover-trigger cursor-pointer pointer-events-auto py-2"
           >
             <span className="serif text-[10vw] md:text-8xl lg:text-9xl text-white pb-2 md:pb-6 block">
-              Clients
+              Work
             </span>
             <span className="absolute top-0 left-0 serif text-[10vw] md:text-8xl lg:text-9xl text-red-600 w-full pb-2 md:pb-6 block">
-              Clients
+              Work
             </span>
           </Link>
           <Link

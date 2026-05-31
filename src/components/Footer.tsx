@@ -98,7 +98,12 @@ export default function Footer() {
               </li>
               <li>
                 <Link href="/about" className="text-gray-500 hover:text-white transition duration-300 hover-trigger inline-block no-underline">
-                  Clients
+                  About
+                </Link>
+              </li>
+              <li>
+                <Link href="/work" className="text-gray-500 hover:text-white transition duration-300 hover-trigger inline-block no-underline">
+                  Work
                 </Link>
               </li>
               <li>

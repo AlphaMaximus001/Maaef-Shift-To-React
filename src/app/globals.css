@@ -106,7 +106,7 @@ html.intro-done {
   overflow-y: auto;
   overflow-x: hidden;
   height: auto;
-  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
 }
 
 body.intro-done {
@@ -134,6 +134,8 @@ body::after, .noise-overlay {
   pointer-events: none;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
   opacity: .4;
+  transform: translate3d(0, 0, 0);
+  will-change: transform;
 }
 
 body.sanity-studio-active::after,
