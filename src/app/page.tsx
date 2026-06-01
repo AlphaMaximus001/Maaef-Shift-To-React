@@ -364,7 +364,7 @@ function ContentSlide({ s }: { s: typeof MAAEF_SECTIONS[0] }) {
                 key={i}
                 className="block"
                 style={{
-                  color: i === s.redLine ? "#e40521" : "#f4f1ee",
+                  color: i === s.redLine ? "#7a0e0e" : "#f4f1ee",
                   fontStyle: i === s.italicLine ? "italic" : "normal",
                   fontWeight: i === s.italicLine ? "600" : "700",
                 }}

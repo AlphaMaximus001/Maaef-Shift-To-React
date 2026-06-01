@@ -270,12 +270,12 @@ export default function Navigation() {
         id="main-nav"
       >
         <div className="logo serif text-[22px] font-bold tracking-[-0.02em] text-white">
-          Maaef<span className="text-[#e40521]">.</span>
+          Maaef<span className="text-[#7a0e0e]">.</span>
         </div>
         <div className="nav-right flex items-center gap-8">
           <Link
             href="/contact"
-            className="nav-label text-[11px] font-semibold tracking-[0.15em] uppercase text-white/85 hover:text-[#e40521] transition hover-trigger no-underline"
+            className="nav-label text-[11px] font-semibold tracking-[0.15em] uppercase text-white/85 hover:text-[#7a0e0e] transition hover-trigger no-underline"
           >
             Start Project
           </Link>
@@ -323,7 +323,7 @@ export default function Navigation() {
             <Link
               href="/about"
               className={`text-[11px] uppercase tracking-[0.2em] transition-colors duration-300 hover-trigger inline-block no-underline ${
-                isAbout ? "text-white font-bold hover:text-[#e40521]" : "text-white/60 hover:text-white"
+                isAbout ? "text-white font-bold hover:text-[#7a0e0e]" : "text-white/60 hover:text-white"
               }`}
             >
               About
@@ -331,7 +331,7 @@ export default function Navigation() {
             <Link
               href="/work"
               className={`text-[11px] uppercase tracking-[0.2em] transition-colors duration-300 hover-trigger inline-block no-underline ${
-                isWork ? "text-white font-bold hover:text-[#e40521]" : "text-white/60 hover:text-white"
+                isWork ? "text-white font-bold hover:text-[#7a0e0e]" : "text-white/60 hover:text-white"
               }`}
             >
               Work
@@ -366,7 +366,7 @@ export default function Navigation() {
           {!isHome && (
             <Link
               href="/contact"
-              className={`hidden md:block text-xs uppercase tracking-widest hover:text-[#e40521] transition hover-trigger font-bold no-underline text-white mr-4 transition-opacity duration-300 ${isOpen ? "opacity-0 pointer-events-none" : ""}`}
+              className={`hidden md:block text-xs uppercase tracking-widest hover:text-[#7a0e0e] transition hover-trigger font-bold no-underline text-white mr-4 transition-opacity duration-300 ${isOpen ? "opacity-0 pointer-events-none" : ""}`}
             >
               Start Project
             </Link>

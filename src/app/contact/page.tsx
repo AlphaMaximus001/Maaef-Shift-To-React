@@ -99,7 +99,7 @@ function ContactFormContent() {
 
   return (
     <div className="w-full max-w-4xl z-10 relative">
-      <h2 className="text-xs uppercase tracking-[0.3em] text-[#e40521] mb-20 text-center font-bold">
+      <h2 className="text-xs uppercase tracking-[0.3em] text-[#7a0e0e] mb-20 text-center font-bold">
         Start the Project
       </h2>
       <div id="form-container" className="relative min-h-[350px]">
@@ -123,8 +123,8 @@ function ContactFormContent() {
                 setName(e.target.value);
                 setNameError(false);
               }}
-              className={`w-full bg-transparent border-b text-2xl md:text-6xl py-4 md:py-8 text-white placeholder-neutral-800 focus:outline-none focus:border-[#e40521] transition-colors duration-300 hover-trigger ${
-                nameError ? "input-error border-[#e40521]" : "border-white/20"
+              className={`w-full bg-transparent border-b text-2xl md:text-6xl py-4 md:py-8 text-white placeholder-neutral-800 focus:outline-none focus:border-[#7a0e0e] transition-colors duration-300 hover-trigger ${
+                nameError ? "input-error border-[#7a0e0e]" : "border-white/20"
               }`}
             />
             <span className={`field-error ${nameError ? "visible" : ""}`}>
@@ -133,7 +133,7 @@ function ContactFormContent() {
             <div className="flex justify-end mt-12">
               <button
                 onClick={() => handleNext(1)}
-                className="group flex items-center gap-4 text-xs uppercase tracking-widest hover:text-[#e40521] transition hover-trigger cursor-pointer font-bold"
+                className="group flex items-center gap-4 text-xs uppercase tracking-widest hover:text-[#7a0e0e] transition hover-trigger cursor-pointer font-bold"
               >
                 Next Step{" "}
                 <span className="text-2xl group-hover:translate-x-2 transition-transform">
@@ -164,8 +164,8 @@ function ContactFormContent() {
                 setEmail(e.target.value);
                 setEmailError(false);
               }}
-              className={`w-full bg-transparent border-b text-2xl md:text-6xl py-4 md:py-8 text-white placeholder-neutral-800 focus:outline-none focus:border-[#e40521] transition-colors duration-300 hover-trigger ${
-                emailError ? "input-error border-[#e40521]" : "border-white/20"
+              className={`w-full bg-transparent border-b text-2xl md:text-6xl py-4 md:py-8 text-white placeholder-neutral-800 focus:outline-none focus:border-[#7a0e0e] transition-colors duration-300 hover-trigger ${
+                emailError ? "input-error border-[#7a0e0e]" : "border-white/20"
               }`}
             />
             <span className={`field-error ${emailError ? "visible" : ""}`}>
@@ -174,7 +174,7 @@ function ContactFormContent() {
             <div className="flex justify-between items-center mt-12">
               <button
                 onClick={() => handleBack(2)}
-                className="group flex items-center gap-4 text-xs uppercase tracking-widest hover:text-[#e40521] transition hover-trigger cursor-pointer font-bold"
+                className="group flex items-center gap-4 text-xs uppercase tracking-widest hover:text-[#7a0e0e] transition hover-trigger cursor-pointer font-bold"
               >
                 <span className="text-2xl group-hover:-translate-x-2 transition-transform">
                   ←
@@ -183,7 +183,7 @@ function ContactFormContent() {
               </button>
               <button
                 onClick={() => handleNext(2)}
-                className="group flex items-center gap-4 text-xs uppercase tracking-widest hover:text-[#e40521] transition hover-trigger cursor-pointer font-bold"
+                className="group flex items-center gap-4 text-xs uppercase tracking-widest hover:text-[#7a0e0e] transition hover-trigger cursor-pointer font-bold"
               >
                 Next Step{" "}
                 <span className="text-2xl group-hover:translate-x-2 transition-transform">
@@ -214,22 +214,22 @@ function ContactFormContent() {
                 setRequirements(e.target.value);
                 setRequirementsError(false);
               }}
-              className={`w-full bg-transparent border-b text-2xl md:text-4xl py-4 md:py-8 text-white placeholder-neutral-800 focus:outline-none focus:border-[#e40521] transition-colors duration-300 hover-trigger ${
-                requirementsError ? "input-error border-[#e40521]" : "border-white/20"
+              className={`w-full bg-transparent border-b text-2xl md:text-4xl py-4 md:py-8 text-white placeholder-neutral-800 focus:outline-none focus:border-[#7a0e0e] transition-colors duration-300 hover-trigger ${
+                requirementsError ? "input-error border-[#7a0e0e]" : "border-white/20"
               }`}
             />
             <span className={`field-error ${requirementsError ? "visible" : ""}`}>
               Please tell us about your project.
             </span>
             {submitError && (
-              <span className="text-xs uppercase tracking-widest text-[#e40521] mt-4 block">
+              <span className="text-xs uppercase tracking-widest text-[#7a0e0e] mt-4 block">
                 Something went wrong. Please try again.
               </span>
             )}
             <div className="flex justify-between items-center mt-12">
               <button
                 onClick={() => handleBack(3)}
-                className="group flex items-center gap-4 text-xs uppercase tracking-widest hover:text-[#e40521] transition hover-trigger cursor-pointer font-bold"
+                className="group flex items-center gap-4 text-xs uppercase tracking-widest hover:text-[#7a0e0e] transition hover-trigger cursor-pointer font-bold"
               >
                 <span className="text-2xl group-hover:-translate-x-2 transition-transform">
                   ←
@@ -238,7 +238,7 @@ function ContactFormContent() {
               </button>
               <button
                 onClick={handleSubmit}
-                className="px-12 py-4 bg-[#e40521] text-white text-xs font-bold uppercase tracking-widest hover:bg-white hover:text-black transition duration-300 hover-trigger cursor-pointer"
+                className="px-12 py-4 bg-[#7a0e0e] text-white text-xs font-bold uppercase tracking-widest hover:bg-white hover:text-black transition duration-300 hover-trigger cursor-pointer"
               >
                 Submit Inquiry
               </button>
@@ -249,9 +249,9 @@ function ContactFormContent() {
         {/* LOADING STEP */}
         {step === 4 && (
           <div className="form-step text-center flex flex-col items-center justify-center min-h-[300px] animate-[fadeIn_0.5s_ease]">
-            <div className="loader-pulse-dot w-[6px] h-[6px] rounded-full bg-[#e40521] animate-[loaderPulse_1.4s_ease-in-out_infinite] mb-8" />
+            <div className="loader-pulse-dot w-[6px] h-[6px] rounded-full bg-[#7a0e0e] animate-[loaderPulse_1.4s_ease-in-out_infinite] mb-8" />
             <div className="loader-line w-[120px] h-[2px] bg-white/8 relative overflow-hidden rounded-[2px] mb-10">
-              <div className="absolute top-0 left-[-40%] w-[40%] h-full bg-[#e40521] rounded-[2px] animate-[loaderSlide_1.2s_cubic-bezier(0.4,0,0.2,1)_infinite]" />
+              <div className="absolute top-0 left-[-40%] w-[40%] h-full bg-[#7a0e0e] rounded-[2px] animate-[loaderSlide_1.2s_cubic-bezier(0.4,0,0.2,1)_infinite]" />
             </div>
             <p className="text-xs uppercase tracking-[0.3em] text-gray-500 mb-2">Transmitting</p>
             <p className="serif text-2xl md:text-4xl text-white/85">Hold tight.</p>
@@ -290,7 +290,7 @@ export default function ContactPage() {
           <Suspense
             fallback={
               <div className="text-center flex flex-col items-center justify-center min-h-[300px]">
-                <div className="loader-pulse-dot w-[6px] h-[6px] rounded-full bg-[#e40521] animate-[loaderPulse_1.4s_ease-in-out_infinite] mb-8" />
+                <div className="loader-pulse-dot w-[6px] h-[6px] rounded-full bg-[#7a0e0e] animate-[loaderPulse_1.4s_ease-in-out_infinite] mb-8" />
                 <p className="text-xs uppercase tracking-[0.3em] text-gray-500 mb-2">Loading Form</p>
               </div>
             }

@@ -192,7 +192,7 @@ export default function BlogPostContent({ post }: { post: PostDetail }) {
           font-family: Panchang, serif;
           font-size: 3.2rem;
           font-weight: 700;
-          color: #e40521;
+          color: #7a0e0e;
           line-height: 0.82;
           margin-right: 0.6rem;
           margin-top: 0.15rem;

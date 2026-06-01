@@ -129,8 +129,8 @@ export default function AudioToggle() {
         width="16"
         height="16"
         viewBox="0 0 24 24"
-        fill={isMuted ? "none" : "#e40521"}
-        stroke={isMuted ? "#fff" : "#e40521"}
+        fill={isMuted ? "none" : "#7a0e0e"}
+        stroke={isMuted ? "#fff" : "#7a0e0e"}
         strokeWidth="2"
         id="mute-icon"
         style={{
@@ -141,7 +141,7 @@ export default function AudioToggle() {
         {isMuted ? (
           <path id="mute-cross" d="M23 9l-6 6M17 9l6 6" strokeLinecap="round" strokeLinejoin="round" stroke="#fff" />
         ) : (
-          <path id="mute-waves" d="M15.54 8.46a5 5 0 0 1 0 7.07M19.07 4.93a10 10 0 0 1 0 14.14" strokeLinecap="round" strokeLinejoin="round" stroke="#e40521" />
+          <path id="mute-waves" d="M15.54 8.46a5 5 0 0 1 0 7.07M19.07 4.93a10 10 0 0 1 0 14.14" strokeLinecap="round" strokeLinejoin="round" stroke="#7a0e0e" />
         )}
       </svg>
     </div>

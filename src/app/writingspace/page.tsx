@@ -421,7 +421,7 @@ export default function WritingSpace() {
               width: "6px",
               height: "6px",
               borderRadius: "50%",
-              backgroundColor: "#e40521",
+              backgroundColor: "#7a0e0e",
               display: "inline-block"
             }} />
             <span>{toaster.message.toUpperCase()}</span>
@@ -559,7 +559,7 @@ export default function WritingSpace() {
               disabled={isSaving}
               style={{
                 padding: "10px 20px",
-                backgroundColor: "#e40521",
+                backgroundColor: "#7a0e0e",
                 color: "#fff",
                 border: "none",
                 fontWeight: "bold",
@@ -722,7 +722,7 @@ export default function WritingSpace() {
         }}>
           <div style={{
             backgroundColor: "#0d0d0d",
-            border: "2px solid #e40521",
+            border: "2px solid #7a0e0e",
             maxWidth: "680px",
             width: "100%",
             padding: "30px",
@@ -739,7 +739,7 @@ export default function WritingSpace() {
               paddingBottom: "15px",
               marginBottom: "20px"
             }}>
-              <h3 style={{ margin: 0, color: "#e40521", fontSize: "16px", letterSpacing: "1px" }}>
+              <h3 style={{ margin: 0, color: "#7a0e0e", fontSize: "16px", letterSpacing: "1px" }}>
                 ▲ VERCEL SERVERLESS PIPELINE
               </h3>
               <button
@@ -761,7 +761,7 @@ export default function WritingSpace() {
 
             {vercelData.action === "delete" ? (
               <div>
-                <p style={{ margin: "0 0 15px 0", color: "#e40521", fontWeight: "bold" }}>
+                <p style={{ margin: "0 0 15px 0", color: "#7a0e0e", fontWeight: "bold" }}>
                   ALERT: DIRECT DISK DELETIONS BLOCKED IN PRODUCTION
                 </p>
                 <p style={{ margin: "0 0 15px 0", color: "#ccc", fontSize: "13px", lineHeight: "1.6" }}>
@@ -779,7 +779,7 @@ export default function WritingSpace() {
                   <strong style={{ color: "#fff" }}>To delete this dispatch permanently:</strong>
                   <ol style={{ margin: "10px 0 0 20px", padding: 0 }}>
                     <li>Open your codebase or GitHub repository.</li>
-                    <li>Navigate to: <code style={{ color: "#e40521" }}>src/content/posts/{vercelData.filename}</code></li>
+                    <li>Navigate to: <code style={{ color: "#7a0e0e" }}>src/content/posts/{vercelData.filename}</code></li>
                     <li>Delete the file.</li>
                     <li>Commit and push the change to trigger a redeploy on Vercel.</li>
                   </ol>
@@ -875,7 +875,7 @@ export default function WritingSpace() {
                     onClick={downloadMarkdownFile}
                     style={{
                       padding: "10px 20px",
-                      backgroundColor: "#e40521",
+                      backgroundColor: "#7a0e0e",
                       color: "#fff",
                       border: "none",
                       fontFamily: "monospace",
@@ -1014,7 +1014,7 @@ export default function WritingSpace() {
             width: "6px",
             height: "6px",
             borderRadius: "50%",
-            backgroundColor: "#e40521",
+            backgroundColor: "#7a0e0e",
             display: "inline-block"
           }} />
           <span>{toaster.message.toUpperCase()}</span>

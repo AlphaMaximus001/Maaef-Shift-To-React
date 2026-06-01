@@ -63,11 +63,11 @@ export default function AboutPage() {
 
           {/* Capabilities List — Strictly aligned grid columns to ensure vertical start parity */}
           <div className="flex flex-col gap-10 border-t border-white/[0.08] pt-20">
-            <h2 className="serif text-xl md:text-2xl uppercase tracking-wider text-[#e40521]">
+            <h2 className="serif text-xl md:text-2xl uppercase tracking-wider text-[#7a0e0e]">
               What we do:
             </h2>
             <div className="flex flex-col list-none p-0">
-              <div className="flex flex-col md:flex-row md:items-start gap-4 md:gap-8 py-6 border-b border-white/[0.04] transition-colors hover:border-[#e40521]/40">
+              <div className="flex flex-col md:flex-row md:items-start gap-4 md:gap-8 py-6 border-b border-white/[0.04] transition-colors hover:border-[#7a0e0e]/40">
                 <div className="serif text-lg md:text-xl text-white tracking-wide w-full md:w-[40%] flex-shrink-0 mb-1 md:mb-0">
                   - Video Production:
                 </div>
@@ -75,7 +75,7 @@ export default function AboutPage() {
                   Brand films, reels, product videos, documentaries, event coverage
                 </div>
               </div>
-              <div className="flex flex-col md:flex-row md:items-start gap-4 md:gap-8 py-6 border-b border-white/[0.04] transition-colors hover:border-[#e40521]/40">
+              <div className="flex flex-col md:flex-row md:items-start gap-4 md:gap-8 py-6 border-b border-white/[0.04] transition-colors hover:border-[#7a0e0e]/40">
                 <div className="serif text-lg md:text-xl text-white tracking-wide w-full md:w-[40%] flex-shrink-0 mb-1 md:mb-0">
                   - Brand Strategy:
                 </div>
@@ -83,7 +83,7 @@ export default function AboutPage() {
                   Positioning, messaging, visual identity, brand guidelines
                 </div>
               </div>
-              <div className="flex flex-col md:flex-row md:items-start gap-4 md:gap-8 py-6 border-b border-white/[0.04] transition-colors hover:border-[#e40521]/40">
+              <div className="flex flex-col md:flex-row md:items-start gap-4 md:gap-8 py-6 border-b border-white/[0.04] transition-colors hover:border-[#7a0e0e]/40">
                 <div className="serif text-lg md:text-xl text-white tracking-wide w-full md:w-[40%] flex-shrink-0 mb-1 md:mb-0">
                   - Graphic Design:
                 </div>
@@ -91,7 +91,7 @@ export default function AboutPage() {
                   Logos, marketing collateral, packaging, presentations
                 </div>
               </div>
-              <div className="flex flex-col md:flex-row md:items-start gap-4 md:gap-8 py-6 border-b border-white/[0.04] transition-colors hover:border-[#e40521]/40">
+              <div className="flex flex-col md:flex-row md:items-start gap-4 md:gap-8 py-6 border-b border-white/[0.04] transition-colors hover:border-[#7a0e0e]/40">
                 <div className="serif text-lg md:text-xl text-white tracking-wide w-full md:w-[40%] flex-shrink-0 mb-1 md:mb-0">
                   - Photography:
                 </div>
@@ -99,7 +99,7 @@ export default function AboutPage() {
                   Product, lifestyle, corporate, and editorial photography
                 </div>
               </div>
-              <div className="flex flex-col md:flex-row md:items-start gap-4 md:gap-8 py-6 border-b border-white/[0.04] transition-colors hover:border-[#e40521]/40">
+              <div className="flex flex-col md:flex-row md:items-start gap-4 md:gap-8 py-6 border-b border-white/[0.04] transition-colors hover:border-[#7a0e0e]/40">
                 <div className="serif text-lg md:text-xl text-white tracking-wide w-full md:w-[40%] flex-shrink-0 mb-1 md:mb-0">
                   - Web Design:
                 </div>
@@ -107,7 +107,7 @@ export default function AboutPage() {
                   Clean, functional websites built to represent your brand properly
                 </div>
               </div>
-              <div className="flex flex-col md:flex-row md:items-start gap-4 md:gap-8 py-6 border-b border-white/[0.04] transition-colors hover:border-[#e40521]/40">
+              <div className="flex flex-col md:flex-row md:items-start gap-4 md:gap-8 py-6 border-b border-white/[0.04] transition-colors hover:border-[#7a0e0e]/40">
                 <div className="serif text-lg md:text-xl text-white tracking-wide w-full md:w-[40%] flex-shrink-0 mb-1 md:mb-0">
                   - Social Media Content:
                 </div>
@@ -128,8 +128,8 @@ export default function AboutPage() {
           {/* Paragraph 4 — Geography Highlight */}
           <div className="pt-4">
             <p 
-              className="text-[#e40521] text-xs md:text-sm font-bold uppercase tracking-[0.25em] font-mono leading-relaxed max-w-[750px]"
-              style={{ color: "#e40521" }}
+              className="text-[#7a0e0e] text-xs md:text-sm font-bold uppercase tracking-[0.25em] font-mono leading-relaxed max-w-[750px]"
+              style={{ color: "#7a0e0e" }}
             >
               Based in Lucknow, Uttar Pradesh, India. Working with clients across India and internationally.
             </p>
