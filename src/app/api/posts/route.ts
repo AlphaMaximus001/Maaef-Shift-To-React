@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getAllPosts, savePost } from "@/lib/posts";
+import { getAllPosts, savePost, stringifyMarkdownFile } from "@/lib/posts";
 
 export const dynamic = "force-dynamic";
 
@@ -28,6 +28,27 @@ export async function POST(request: Request) {
 
     if (!slug || !slug.current) {
       return NextResponse.json({ error: "Slug is required" }, { status: 400 });
+    }
+
+    // Detect Vercel serverless environment
+    if (process.env.VERCEL === "1") {
+      const metadata = {
+        _id: postData._id || slug.current,
+        title: postData.title || "Untitled Dispatch",
+        slug: slug,
+        publishedAt: postData.publishedAt || new Date().toISOString(),
+        mainImage: postData.mainImage || null,
+        author: postData.author || null,
+        categories: postData.categories || [],
+        isArchived: !!postData.isArchived,
+      };
+      const fileContent = stringifyMarkdownFile(metadata, postData.markdownBody || "");
+      return NextResponse.json({
+        isVercel: true,
+        filename: `${slug.current}.md`,
+        fileContent: fileContent,
+        slug: slug.current
+      });
     }
 
     const success = await savePost(slug.current, {

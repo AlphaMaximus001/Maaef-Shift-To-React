@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getPostBySlug, savePost, deletePost } from "@/lib/posts";
+import { getPostBySlug, savePost, deletePost, stringifyMarkdownFile } from "@/lib/posts";
 
 export const dynamic = "force-dynamic";
 
@@ -38,6 +38,27 @@ export async function PUT(request: Request, { params }: RouteParams) {
     const { slug } = await params;
     const body = await request.json();
 
+    // Detect Vercel serverless environment
+    if (process.env.VERCEL === "1") {
+      const metadata = {
+        _id: body._id || slug,
+        title: body.title || "Untitled Dispatch",
+        slug: body.slug || { current: slug },
+        publishedAt: body.publishedAt || new Date().toISOString(),
+        mainImage: body.mainImage || null,
+        author: body.author || null,
+        categories: body.categories || [],
+        isArchived: !!body.isArchived,
+      };
+      const fileContent = stringifyMarkdownFile(metadata, body.markdownBody || "");
+      return NextResponse.json({
+        isVercel: true,
+        filename: `${slug}.md`,
+        fileContent: fileContent,
+        slug: slug
+      });
+    }
+
     const success = await savePost(slug, body);
 
     if (success) {
@@ -58,6 +79,16 @@ export async function PUT(request: Request, { params }: RouteParams) {
 export async function DELETE(request: Request, { params }: RouteParams) {
   try {
     const { slug } = await params;
+
+    // Detect Vercel serverless environment
+    if (process.env.VERCEL === "1") {
+      return NextResponse.json({
+        isVercel: true,
+        error: "DELETE_BLOCKED",
+        slug: slug
+      });
+    }
+
     const success = await deletePost(slug);
 
     if (success) {

@@ -36,10 +36,37 @@ export default function WritingSpace() {
   const [isSaving, setIsSaving] = useState(false);
   const [statusMessage, setStatusMessage] = useState("System Ready");
 
+  const [vercelData, setVercelData] = useState<{
+    filename: string;
+    fileContent: string;
+    slug: string;
+    action: "create" | "edit" | "archive" | "publish" | "delete";
+  } | null>(null);
+  const [showVercelModal, setShowVercelModal] = useState(false);
+
   const [toaster, setToaster] = useState<{ message: string; visible: boolean }>({ message: "", visible: false });
 
   const showToast = (message: string) => {
     setToaster({ message, visible: true });
+  };
+
+  const downloadMarkdownFile = () => {
+    if (!vercelData || !vercelData.fileContent) return;
+    const blob = new Blob([vercelData.fileContent], { type: "text/markdown;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", vercelData.filename);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    showToast("Downloaded Markdown File");
+  };
+
+  const copyFileContent = () => {
+    if (!vercelData || !vercelData.fileContent) return;
+    navigator.clipboard.writeText(vercelData.fileContent);
+    showToast("Copied to Clipboard");
   };
 
   useEffect(() => {
@@ -172,10 +199,23 @@ export default function WritingSpace() {
       });
 
       if (res.ok) {
-        setStatusMessage("Post saved successfully.");
-        showToast("Post Saved Successfully");
-        handleInitializeNew();
-        await fetchPosts();
+        const data = await res.json();
+        if (data.isVercel) {
+          setVercelData({
+            filename: data.filename,
+            fileContent: data.fileContent,
+            slug: data.slug,
+            action: selectedPost ? "edit" : "create"
+          });
+          setShowVercelModal(true);
+          setStatusMessage("Vercel Serverless Mode: Post content compiled.");
+          showToast("Post Compiled Successfully");
+        } else {
+          setStatusMessage("Post saved successfully.");
+          showToast("Post Saved Successfully");
+          handleInitializeNew();
+          await fetchPosts();
+        }
       } else {
         const errorData = await res.json();
         setStatusMessage(`Save failed: ${errorData.error}`);
@@ -202,12 +242,25 @@ export default function WritingSpace() {
       });
 
       if (res.ok) {
-        setStatusMessage("Post deleted successfully.");
-        showToast("Post Deleted Successfully");
-        if (selectedPost?.slug.current === post.slug.current) {
-          handleInitializeNew();
+        const data = await res.json();
+        if (data.isVercel && data.error === "DELETE_BLOCKED") {
+          setVercelData({
+            filename: `${post.slug.current}.md`,
+            fileContent: "",
+            slug: post.slug.current,
+            action: "delete"
+          });
+          setShowVercelModal(true);
+          setStatusMessage("Vercel Serverless Mode: Deletion instructions displayed.");
+          showToast("Deletion Blocked");
+        } else {
+          setStatusMessage("Post deleted successfully.");
+          showToast("Post Deleted Successfully");
+          if (selectedPost?.slug.current === post.slug.current) {
+            handleInitializeNew();
+          }
+          await fetchPosts();
         }
-        await fetchPosts();
       } else {
         setStatusMessage("Failed to delete post.");
         showToast("Delete Failed");
@@ -234,9 +287,22 @@ export default function WritingSpace() {
       });
 
       if (res.ok) {
-        setStatusMessage(`Post successfully ${updatedPost.isArchived ? "archived" : "published"}.`);
-        showToast(updatedPost.isArchived ? "Post Archived (Draft)" : "Post Published (Live)");
-        await fetchPosts();
+        const data = await res.json();
+        if (data.isVercel) {
+          setVercelData({
+            filename: data.filename,
+            fileContent: data.fileContent,
+            slug: data.slug,
+            action: updatedPost.isArchived ? "archive" : "publish"
+          });
+          setShowVercelModal(true);
+          setStatusMessage("Vercel Serverless Mode: Post content compiled.");
+          showToast("Status Update Compiled");
+        } else {
+          setStatusMessage(`Post successfully ${updatedPost.isArchived ? "archived" : "published"}.`);
+          showToast(updatedPost.isArchived ? "Post Archived (Draft)" : "Post Published (Live)");
+          await fetchPosts();
+        }
       } else {
         setStatusMessage("Failed to update status.");
         showToast("Status Update Failed");
@@ -610,6 +676,209 @@ export default function WritingSpace() {
           to { transform: translate(-50%, 0); opacity: 1; }
         }
       `}</style>
+
+      {/* Vercel Serverless Assistant Modal */}
+      {showVercelModal && vercelData && (
+        <div style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: "rgba(0, 0, 0, 0.85)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          zIndex: 10000,
+          padding: "20px"
+        }}>
+          <div style={{
+            backgroundColor: "#0d0d0d",
+            border: "2px solid #e40521",
+            maxWidth: "680px",
+            width: "100%",
+            padding: "30px",
+            boxSizing: "border-box",
+            boxShadow: "0 20px 50px rgba(0, 0, 0, 0.9)",
+            fontFamily: "monospace",
+            color: "#f4f1ee"
+          }}>
+            <div style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              borderBottom: "1px solid #333",
+              paddingBottom: "15px",
+              marginBottom: "20px"
+            }}>
+              <h3 style={{ margin: 0, color: "#e40521", fontSize: "16px", letterSpacing: "1px" }}>
+                ▲ VERCEL SERVERLESS PIPELINE
+              </h3>
+              <button
+                onClick={() => {
+                  setShowVercelModal(false);
+                  setVercelData(null);
+                }}
+                style={{
+                  background: "transparent",
+                  border: "none",
+                  color: "#888",
+                  fontSize: "18px",
+                  cursor: "pointer"
+                }}
+              >
+                ✕
+              </button>
+            </div>
+
+            {vercelData.action === "delete" ? (
+              <div>
+                <p style={{ margin: "0 0 15px 0", color: "#e40521", fontWeight: "bold" }}>
+                  ALERT: DIRECT DISK DELETIONS BLOCKED IN PRODUCTION
+                </p>
+                <p style={{ margin: "0 0 15px 0", color: "#ccc", fontSize: "13px", lineHeight: "1.6" }}>
+                  Vercel operates in a read-only serverless hosting environment. Because the files are checked into your GitHub repository, deleting them here won't persist.
+                </p>
+                <div style={{
+                  backgroundColor: "#111",
+                  border: "1px solid #333",
+                  padding: "15px",
+                  fontSize: "12px",
+                  lineHeight: "1.6",
+                  color: "#aaa",
+                  marginBottom: "20px"
+                }}>
+                  <strong style={{ color: "#fff" }}>To delete this dispatch permanently:</strong>
+                  <ol style={{ margin: "10px 0 0 20px", padding: 0 }}>
+                    <li>Open your codebase or GitHub repository.</li>
+                    <li>Navigate to: <code style={{ color: "#e40521" }}>src/content/posts/{vercelData.filename}</code></li>
+                    <li>Delete the file.</li>
+                    <li>Commit and push the change to trigger a redeploy on Vercel.</li>
+                  </ol>
+                </div>
+              </div>
+            ) : (
+              <div>
+                <p style={{ margin: "0 0 15px 0", color: "#00ff66", fontWeight: "bold" }}>
+                  DISPATCH COMPILED SUCCESSFULLY
+                </p>
+                <p style={{ margin: "0 0 15px 0", color: "#ccc", fontSize: "13px", lineHeight: "1.6" }}>
+                  Your post has been successfully generated and formatted. Since Vercel uses a read-only serverless filesystem, you can apply this change to your blog by saving this file directly into your Git repository:
+                </p>
+
+                <div style={{ marginBottom: "15px" }}>
+                  <span style={{ fontSize: "11px", color: "#888", display: "block", marginBottom: "5px" }}>
+                    RECOMMENDED TARGET LOCATION:
+                  </span>
+                  <div style={{
+                    backgroundColor: "#111",
+                    padding: "8px 12px",
+                    border: "1px solid #333",
+                    fontSize: "12px",
+                    color: "#fff"
+                  }}>
+                    src/content/posts/{vercelData.filename}
+                  </div>
+                </div>
+
+                <div style={{ marginBottom: "25px" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "5px" }}>
+                    <span style={{ fontSize: "11px", color: "#888" }}>COMPILED MARKDOWN CONTENT:</span>
+                    <button
+                      onClick={copyFileContent}
+                      style={{
+                        background: "transparent",
+                        border: "none",
+                        color: "#00ff66",
+                        cursor: "pointer",
+                        fontSize: "11px",
+                        padding: 0,
+                        fontFamily: "monospace",
+                        textDecoration: "underline"
+                      }}
+                    >
+                      COPY TO CLIPBOARD
+                    </button>
+                  </div>
+                  <textarea
+                    readOnly
+                    value={vercelData.fileContent}
+                    rows={8}
+                    style={{
+                      width: "100%",
+                      backgroundColor: "#111",
+                      border: "1px solid #333",
+                      color: "#aaa",
+                      fontFamily: "monospace",
+                      padding: "10px",
+                      fontSize: "11px",
+                      boxSizing: "border-box",
+                      resize: "none"
+                    }}
+                  />
+                </div>
+              </div>
+            )}
+
+            <div style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              gap: "12px",
+              borderTop: "1px solid #333",
+              paddingTop: "20px"
+            }}>
+              {vercelData.action !== "delete" && (
+                <>
+                  <button
+                    onClick={copyFileContent}
+                    style={{
+                      padding: "10px 20px",
+                      backgroundColor: "#222",
+                      color: "#fff",
+                      border: "1px solid #333",
+                      fontFamily: "monospace",
+                      fontWeight: "bold",
+                      cursor: "pointer"
+                    }}
+                  >
+                    COPY CONTENT
+                  </button>
+                  <button
+                    onClick={downloadMarkdownFile}
+                    style={{
+                      padding: "10px 20px",
+                      backgroundColor: "#e40521",
+                      color: "#fff",
+                      border: "none",
+                      fontFamily: "monospace",
+                      fontWeight: "bold",
+                      cursor: "pointer"
+                    }}
+                  >
+                    DOWNLOAD .MD
+                  </button>
+                </>
+              )}
+              <button
+                onClick={() => {
+                  setShowVercelModal(false);
+                  setVercelData(null);
+                }}
+                style={{
+                  padding: "10px 20px",
+                  backgroundColor: "transparent",
+                  color: "#888",
+                  border: "1px solid #333",
+                  fontFamily: "monospace",
+                  cursor: "pointer"
+                }}
+              >
+                CLOSE
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Minimal Toaster */}
       {toaster.visible && (
