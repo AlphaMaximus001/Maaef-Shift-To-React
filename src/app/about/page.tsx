@@ -8,18 +8,6 @@ export default function AboutPage() {
     <>
       <div className="noise-overlay" />
 
-      {/* Centered Watermark Backdrop — Fixed for premium parallax effect */}
-      <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-0 overflow-hidden bg-[#050505]">
-        <Image
-          src="/images/logo.png"
-          alt="Maaef Logo Watermark"
-          width={1000}
-          height={330}
-          className="w-[90%] max-w-[1100px] h-auto object-contain opacity-[0.015] select-none filter brightness-0 invert"
-          priority
-        />
-      </div>
-
       {/* Main container with direct inline style top clearance to override all caching */}
       <main 
         className="relative z-10 text-white min-h-screen select-none overflow-x-hidden"
@@ -28,8 +16,8 @@ export default function AboutPage() {
         
         {/* SEO Text Content Container */}
         <section 
-          className="relative max-w-[900px] mx-auto px-6 md:px-12 flex flex-col gap-20 md:gap-28"
-          style={{ width: "100%", maxWidth: "900px", marginLeft: "auto", marginRight: "auto" }}
+          className="relative max-w-[900px] mx-auto flex flex-col gap-20 md:gap-28 z-10"
+          style={{ width: "88%", maxWidth: "900px", marginLeft: "auto", marginRight: "auto" }}
         >
           
           {/* Centered Intro Section — Symmetrical, clear of the header, and spacious */}
@@ -47,16 +35,27 @@ export default function AboutPage() {
           >
             {/* Paragraph 1 — Centered Editorial Statement */}
             <p 
-              className="serif text-[clamp(1.3rem,2.8vw,2.2rem)] font-light leading-[1.4] tracking-tight text-white"
-              style={{ textAlign: "center", margin: "0 auto", color: "#ffffff" }}
+              className="text-[clamp(1.15rem,2.8vw,1.9rem)] font-light leading-[1.65] tracking-wide text-white"
+              style={{ 
+                fontFamily: "var(--font-playfair), serif",
+                textAlign: "center", 
+                margin: "0 auto", 
+                color: "#ffffff",
+                lineHeight: "1.65"
+              }}
             >
               Maaef Media House is a creative agency based in Lucknow, India. We build brands, produce content, and design experiences that make people stop scrolling and actually pay attention. We call it engineering attention — and it is the only thing we care about getting right.
             </p>
             
             {/* Paragraph 2 — Centered Secondary Narrative */}
             <p 
-              className="text-neutral-400 text-base md:text-lg font-light leading-relaxed"
-              style={{ textAlign: "center", margin: "0 auto", maxWidth: "700px" }}
+              className="text-neutral-400 text-sm sm:text-base md:text-lg font-light leading-[1.6]"
+              style={{ 
+                textAlign: "center", 
+                margin: "0 auto", 
+                maxWidth: "700px",
+                lineHeight: "1.6"
+              }}
             >
               Founded in Lucknow, we work with startups, SMEs, and growing brands who want their communications to actually work. Not just look good — work. That means a brand film that drives enquiries. A social media presence that builds trust. A website that converts. A visual identity that people remember the next day.
             </p>

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
+import Image from "next/image";
 import "./globals.css";
 import Navigation from "@/components/Navigation";
 import AudioToggle from "@/components/AudioToggle";
@@ -45,6 +46,18 @@ export default function RootLayout({
       >
         {/* Universal grain noise overlay */}
         <div className="noise-overlay" />
+
+        {/* Global Centered Watermark Backdrop — Fixed on all pages without scroll jitter */}
+        <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-0 overflow-hidden">
+          <Image
+            src="/images/logo.png"
+            alt="Maaef Logo Watermark"
+            width={600}
+            height={200}
+            className="w-[55%] sm:w-[45%] md:w-[32%] max-w-[360px] h-auto object-contain opacity-[0.015] select-none filter brightness-0 invert"
+            priority
+          />
+        </div>
 
         {/* Global Navigation Hamburger and Kinetic draw menu */}
         <Navigation />

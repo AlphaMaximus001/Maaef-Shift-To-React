@@ -294,13 +294,12 @@ export default function Navigation() {
 
   return (
     <>
-      <nav
-        className={`fixed top-0 w-full z-[60] px-6 md:px-12 py-8 flex justify-between items-center text-white transition-opacity duration-500 ${
-          isWork ? "mix-blend-difference" : ""
-        }`}
-        id="main-nav"
+      {/* Absolute Navigation Bar — Scrolls away naturally with the page */}
+      <div
+        className="absolute top-0 w-full z-[60] px-6 md:px-12 py-8 flex justify-between items-center text-white pointer-events-none"
+        id="absolute-nav"
       >
-        <Link href="/" className="hover-trigger relative z-[60] nav-logo-link transition-opacity duration-300">
+        <Link href="/" className="hover-trigger relative z-[60] nav-logo-link transition-opacity duration-300 pointer-events-auto">
           {!isHome && (
             <Image
               src="/images/logo.png"
@@ -314,16 +313,16 @@ export default function Navigation() {
         </Link>
 
         {(isAbout || isWork) && (
-          <div className={`hidden md:flex items-center gap-8 z-[60] transition-opacity duration-300 ${isOpen ? "opacity-0 pointer-events-none" : ""}`}>
+          <div className={`hidden md:flex items-center gap-8 z-[60] transition-opacity duration-300 pointer-events-auto ${isOpen ? "opacity-0 pointer-events-none" : ""}`}>
             <Link
               href="/"
-              className="text-[11px] uppercase tracking-[0.2em] text-white/60 hover:text-white transition-colors duration-300 hover-trigger"
+              className="text-[11px] uppercase tracking-[0.2em] text-white/60 hover:text-white transition-colors duration-300 hover-trigger inline-block no-underline"
             >
               Home
             </Link>
             <Link
               href="/about"
-              className={`text-[11px] uppercase tracking-[0.2em] transition-colors duration-300 hover-trigger ${
+              className={`text-[11px] uppercase tracking-[0.2em] transition-colors duration-300 hover-trigger inline-block no-underline ${
                 isAbout ? "text-white font-bold hover:text-[#e40521]" : "text-white/60 hover:text-white"
               }`}
             >
@@ -331,7 +330,7 @@ export default function Navigation() {
             </Link>
             <Link
               href="/work"
-              className={`text-[11px] uppercase tracking-[0.2em] transition-colors duration-300 hover-trigger ${
+              className={`text-[11px] uppercase tracking-[0.2em] transition-colors duration-300 hover-trigger inline-block no-underline ${
                 isWork ? "text-white font-bold hover:text-[#e40521]" : "text-white/60 hover:text-white"
               }`}
             >
@@ -339,20 +338,31 @@ export default function Navigation() {
             </Link>
             <Link
               href="/services"
-              className="text-[11px] uppercase tracking-[0.2em] text-white/60 hover:text-white transition-colors duration-300 hover-trigger"
+              className="text-[11px] uppercase tracking-[0.2em] text-white/60 hover:text-white transition-colors duration-300 hover-trigger inline-block no-underline"
             >
               Services
             </Link>
             <Link
               href="/contact"
-              className="text-[11px] uppercase tracking-[0.2em] text-white/60 hover:text-white transition-colors duration-300 hover-trigger"
+              className="text-[11px] uppercase tracking-[0.2em] text-white/60 hover:text-white transition-colors duration-300 hover-trigger inline-block no-underline"
             >
               Contact
             </Link>
           </div>
         )}
 
-        <div className="flex items-center gap-6 z-[60]">
+        {/* Empty placeholder to maintain flex spacing */}
+        <div className="w-12 h-12" />
+      </div>
+
+      {/* Fixed Navigation Utilities — Hamburger remains static on all pages for constant menu access */}
+      <nav
+        className={`fixed top-0 w-full z-[60] px-6 md:px-12 py-8 flex justify-end items-center text-white pointer-events-none transition-opacity duration-500 ${
+          isWork ? "mix-blend-difference" : ""
+        }`}
+        id="main-nav"
+      >
+        <div className="flex items-center gap-6 z-[60] pointer-events-auto">
           {!isHome && (
             <Link
               href="/contact"
