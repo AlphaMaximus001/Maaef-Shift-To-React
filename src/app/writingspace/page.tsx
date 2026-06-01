@@ -43,6 +43,8 @@ export default function WritingSpace() {
     action: "create" | "edit" | "archive" | "publish" | "delete";
   } | null>(null);
   const [showVercelModal, setShowVercelModal] = useState(false);
+  const [showVercelSuccessModal, setShowVercelSuccessModal] = useState(false);
+  const [successModalMessage, setSuccessModalMessage] = useState("");
 
   const [toaster, setToaster] = useState<{ message: string; visible: boolean }>({ message: "", visible: false });
 
@@ -202,6 +204,8 @@ export default function WritingSpace() {
         const data = await res.json();
         if (data.isVercel) {
           if (data.committed) {
+            setSuccessModalMessage(`Your dispatch "${title.trim()}" has been successfully committed to your GitHub repository. Vercel is now rebuilding the site. The changes will appear live in approximately 1 to 2 minutes.`);
+            setShowVercelSuccessModal(true);
             setStatusMessage("Saved directly to GitHub repo. Redeployment triggered in background (changes will appear in 1-2 mins).");
             showToast("Committed to Git");
             handleInitializeNew();
@@ -251,6 +255,8 @@ export default function WritingSpace() {
         const data = await res.json();
         if (data.isVercel) {
           if (data.committed) {
+            setSuccessModalMessage(`The dispatch "${post.title}" has been successfully deleted from your GitHub repository. Vercel is now rebuilding the site. The post will be removed from your live website list in approximately 1 to 2 minutes.`);
+            setShowVercelSuccessModal(true);
             setStatusMessage("Deleted from GitHub repo. Redeployment triggered in background (changes will appear in 1-2 mins).");
             showToast("Deleted from Git");
             if (selectedPost?.slug.current === post.slug.current) {
@@ -305,6 +311,8 @@ export default function WritingSpace() {
         if (data.isVercel) {
           if (data.committed) {
             const actionStr = updatedPost.isArchived ? "Archived (Draft)" : "Published (Live)";
+            setSuccessModalMessage(`The status of "${post.title}" has been successfully updated to ${actionStr} in GitHub. Vercel is now rebuilding the site. The changes will appear live in approximately 1 to 2 minutes.`);
+            setShowVercelSuccessModal(true);
             setStatusMessage(`Status updated in GitHub repo. Redeployment triggered in background (changes will appear in 1-2 mins).`);
             showToast(`Status Committed: ${actionStr}`);
           } else {
@@ -894,6 +902,87 @@ export default function WritingSpace() {
                 }}
               >
                 CLOSE
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Vercel Success Pipeline Modal */}
+      {showVercelSuccessModal && (
+        <div style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: "rgba(0, 0, 0, 0.85)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          zIndex: 10000,
+          padding: "20px"
+        }}>
+          <div style={{
+            backgroundColor: "#0d0d0d",
+            border: "2px solid #00ff66", // Green border for success
+            maxWidth: "500px",
+            width: "100%",
+            padding: "25px",
+            boxSizing: "border-box",
+            boxShadow: "0 20px 50px rgba(0, 0, 0, 0.9)",
+            fontFamily: "monospace",
+            color: "#f4f1ee"
+          }}>
+            <div style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              borderBottom: "1px solid #333",
+              paddingBottom: "12px",
+              marginBottom: "15px"
+            }}>
+              <h3 style={{ margin: 0, color: "#00ff66", fontSize: "15px", letterSpacing: "1px" }}>
+                ▲ PIPELINE COMMIT COMPLETE
+              </h3>
+              <button
+                onClick={() => setShowVercelSuccessModal(false)}
+                style={{
+                  background: "transparent",
+                  border: "none",
+                  color: "#888",
+                  fontSize: "18px",
+                  cursor: "pointer"
+                }}
+              >
+                ✕
+              </button>
+            </div>
+            
+            <p style={{ margin: "0 0 20px 0", color: "#ccc", fontSize: "13px", lineHeight: "1.6" }}>
+              {successModalMessage}
+            </p>
+
+            <div style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              borderTop: "1px solid #333",
+              paddingTop: "15px"
+            }}>
+              <button
+                onClick={() => setShowVercelSuccessModal(false)}
+                style={{
+                  padding: "8px 20px",
+                  backgroundColor: "#00ff66",
+                  color: "#000",
+                  border: "none",
+                  fontFamily: "monospace",
+                  fontWeight: "bold",
+                  cursor: "pointer",
+                  fontSize: "13px"
+                }}
+              >
+                ACKNOWLEDGE
               </button>
             </div>
           </div>
