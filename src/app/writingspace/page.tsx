@@ -36,6 +36,21 @@ export default function WritingSpace() {
   const [isSaving, setIsSaving] = useState(false);
   const [statusMessage, setStatusMessage] = useState("System Ready");
 
+  const [toaster, setToaster] = useState<{ message: string; visible: boolean }>({ message: "", visible: false });
+
+  const showToast = (message: string) => {
+    setToaster({ message, visible: true });
+  };
+
+  useEffect(() => {
+    if (toaster.visible) {
+      const timer = setTimeout(() => {
+        setToaster((prev) => ({ ...prev, visible: false }));
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [toaster.visible]);
+
   // Check authorization on mount
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -52,9 +67,11 @@ export default function WritingSpace() {
       setIsAuthorized(true);
       sessionStorage.setItem("maaef_authorized", "true");
       setPasswordError("");
+      showToast("Access Granted");
     } else {
       setPasswordError("ACCESS DENIED: KEYCODE NOT RECOGNIZED");
       setPasswordInput("");
+      showToast("Access Denied");
     }
   };
 
@@ -88,6 +105,7 @@ export default function WritingSpace() {
     setCategoryString("");
     setIsArchived(false);
     setStatusMessage("Composing new post.");
+    showToast("Form Cleared");
   };
 
   const loadPostIntoForm = (post: Post) => {
@@ -97,6 +115,7 @@ export default function WritingSpace() {
     setCategoryString(post.categories?.map((c) => c.title).join(", ") || "");
     setIsArchived(post.isArchived || false);
     setStatusMessage(`Loaded post: ${post.title}`);
+    showToast("Post Loaded");
   };
 
   const handleSave = async (e: React.FormEvent) => {
@@ -154,15 +173,18 @@ export default function WritingSpace() {
 
       if (res.ok) {
         setStatusMessage("Post saved successfully.");
+        showToast("Post Saved Successfully");
         handleInitializeNew();
         await fetchPosts();
       } else {
         const errorData = await res.json();
         setStatusMessage(`Save failed: ${errorData.error}`);
+        showToast("Save Failed");
         alert(`Save failed: ${errorData.error}`);
       }
     } catch (err) {
       setStatusMessage("Network error saving post.");
+      showToast("Network Error Saving Post");
     } finally {
       setIsSaving(false);
     }
@@ -181,15 +203,18 @@ export default function WritingSpace() {
 
       if (res.ok) {
         setStatusMessage("Post deleted successfully.");
+        showToast("Post Deleted Successfully");
         if (selectedPost?.slug.current === post.slug.current) {
           handleInitializeNew();
         }
         await fetchPosts();
       } else {
         setStatusMessage("Failed to delete post.");
+        showToast("Delete Failed");
       }
     } catch (err) {
       setStatusMessage("Network error deleting post.");
+      showToast("Network Error Deleting Post");
     }
   };
 
@@ -210,12 +235,15 @@ export default function WritingSpace() {
 
       if (res.ok) {
         setStatusMessage(`Post successfully ${updatedPost.isArchived ? "archived" : "published"}.`);
+        showToast(updatedPost.isArchived ? "Post Archived (Draft)" : "Post Published (Live)");
         await fetchPosts();
       } else {
         setStatusMessage("Failed to update status.");
+        showToast("Status Update Failed");
       }
     } catch (err) {
       setStatusMessage("Network error toggling status.");
+      showToast("Network Error Toggling Status");
     }
   };
 
@@ -275,6 +303,36 @@ export default function WritingSpace() {
             fontFamily: "monospace"
           }}>ACCESS TERMINAL</button>
         </form>
+
+        {toaster.visible && (
+          <div style={{
+            position: "fixed",
+            bottom: "30px",
+            left: "50%",
+            transform: "translateX(-50%)",
+            backgroundColor: "#fff",
+            color: "#000",
+            padding: "12px 24px",
+            fontFamily: "monospace",
+            fontSize: "11px",
+            fontWeight: "bold",
+            border: "1px solid #333",
+            boxShadow: "0 8px 30px rgba(0,0,0,0.7)",
+            zIndex: 9999,
+            display: "flex",
+            alignItems: "center",
+            gap: "10px"
+          }}>
+            <span style={{
+              width: "6px",
+              height: "6px",
+              borderRadius: "50%",
+              backgroundColor: "#e40521",
+              display: "inline-block"
+            }} />
+            <span>{toaster.message.toUpperCase()}</span>
+          </div>
+        )}
       </div>
     );
   }
@@ -544,6 +602,46 @@ export default function WritingSpace() {
         <span>SYSTEM LOG: {statusMessage}</span>
         <span>MAAEF WRITING SPACE V2.0.0</span>
       </div>
+
+      {/* CSS keyframe animations style tag */}
+      <style>{`
+        @keyframes slideInUp {
+          from { transform: translate(-50%, 100px); opacity: 0; }
+          to { transform: translate(-50%, 0); opacity: 1; }
+        }
+      `}</style>
+
+      {/* Minimal Toaster */}
+      {toaster.visible && (
+        <div style={{
+          position: "fixed",
+          bottom: "30px",
+          left: "50%",
+          transform: "translateX(-50%)",
+          backgroundColor: "#fff",
+          color: "#000",
+          padding: "12px 24px",
+          fontFamily: "monospace",
+          fontSize: "11px",
+          fontWeight: "bold",
+          border: "1px solid #333",
+          boxShadow: "0 8px 30px rgba(0,0,0,0.7)",
+          zIndex: 9999,
+          display: "flex",
+          alignItems: "center",
+          gap: "10px",
+          animation: "slideInUp 0.3s cubic-bezier(0.16, 1, 0.3, 1)"
+        }}>
+          <span style={{
+            width: "6px",
+            height: "6px",
+            borderRadius: "50%",
+            backgroundColor: "#e40521",
+            display: "inline-block"
+          }} />
+          <span>{toaster.message.toUpperCase()}</span>
+        </div>
+      )}
     </div>
   );
 }
