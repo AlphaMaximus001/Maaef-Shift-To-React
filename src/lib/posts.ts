@@ -69,8 +69,14 @@ export function parseMarkdownFile(fileContent: string): { data: any; bodyContent
         value = value.slice(1, -1);
       }
 
-      // Check if value is a JSON object or array
-      if (value.startsWith("{") || value.startsWith("[")) {
+      // Convert booleans and nulls, or parse JSON, or keep as string
+      if (value === "true") {
+        data[key] = true;
+      } else if (value === "false") {
+        data[key] = false;
+      } else if (value === "null") {
+        data[key] = null;
+      } else if (value.startsWith("{") || value.startsWith("[")) {
         try {
           data[key] = JSON.parse(value);
         } catch {
@@ -91,8 +97,12 @@ export function parseMarkdownFile(fileContent: string): { data: any; bodyContent
 export function stringifyMarkdownFile(metadata: any, bodyContent: string): string {
   let yamlLines = "---\n";
   Object.entries(metadata).forEach(([key, value]) => {
-    if (typeof value === "object") {
+    if (typeof value === "object" && value !== null) {
       yamlLines += `${key}: ${JSON.stringify(value)}\n`;
+    } else if (typeof value === "boolean") {
+      yamlLines += `${key}: ${value}\n`;
+    } else if (value === null || value === undefined) {
+      yamlLines += `${key}: null\n`;
     } else {
       yamlLines += `${key}: "${value}"\n`;
     }

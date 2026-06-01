@@ -295,7 +295,9 @@ export default function Navigation() {
   return (
     <>
       <nav
-        className="fixed top-0 w-full z-[60] px-6 md:px-12 py-8 flex justify-between items-center text-white transition-opacity duration-500"
+        className={`fixed top-0 w-full z-[60] px-6 md:px-12 py-8 flex justify-between items-center text-white transition-opacity duration-500 ${
+          isWork ? "mix-blend-difference" : ""
+        }`}
         id="main-nav"
       >
         <Link href="/" className="hover-trigger relative z-[60] nav-logo-link transition-opacity duration-300">
