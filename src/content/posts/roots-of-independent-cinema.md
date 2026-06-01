@@ -6,7 +6,7 @@ publishedAt: "2026-05-27T10:30:00.000Z"
 mainImage: {"url":"https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?q=80&w=800&auto=format&fit=crop","alt":"Classic movie director clapperboard"}
 author: {"name":"Maaef Editorial Team","image":"https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=150&auto=format&fit=crop"}
 categories: [{"title":"Film","slug":{"current":"film"}},{"title":"Culture","slug":{"current":"culture"}}]
-isArchived: false
+isArchived: true
 ---
 Independent cinema represents the raw, unfiltered voice of filmmakers who refuse to conform to the rigid constraints of commercial studio models. It is a space defined by experimentation, low budgets, high stakes, and a relentless focus on character and theme over spectacles.
 
