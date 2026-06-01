@@ -201,15 +201,21 @@ export default function WritingSpace() {
       if (res.ok) {
         const data = await res.json();
         if (data.isVercel) {
-          setVercelData({
-            filename: data.filename,
-            fileContent: data.fileContent,
-            slug: data.slug,
-            action: selectedPost ? "edit" : "create"
-          });
-          setShowVercelModal(true);
-          setStatusMessage("Vercel Serverless Mode: Post content compiled.");
-          showToast("Post Compiled Successfully");
+          if (data.committed) {
+            setStatusMessage("Saved directly to GitHub repo. Redeployment triggered in background (changes will appear in 1-2 mins).");
+            showToast("Committed to Git");
+            handleInitializeNew();
+          } else {
+            setVercelData({
+              filename: data.filename,
+              fileContent: data.fileContent,
+              slug: data.slug,
+              action: selectedPost ? "edit" : "create"
+            });
+            setShowVercelModal(true);
+            setStatusMessage("Vercel Serverless Mode: Post content compiled.");
+            showToast("Post Compiled Successfully");
+          }
         } else {
           setStatusMessage("Post saved successfully.");
           showToast("Post Saved Successfully");
@@ -243,16 +249,24 @@ export default function WritingSpace() {
 
       if (res.ok) {
         const data = await res.json();
-        if (data.isVercel && data.error === "DELETE_BLOCKED") {
-          setVercelData({
-            filename: `${post.slug.current}.md`,
-            fileContent: "",
-            slug: post.slug.current,
-            action: "delete"
-          });
-          setShowVercelModal(true);
-          setStatusMessage("Vercel Serverless Mode: Deletion instructions displayed.");
-          showToast("Deletion Blocked");
+        if (data.isVercel) {
+          if (data.committed) {
+            setStatusMessage("Deleted from GitHub repo. Redeployment triggered in background (changes will appear in 1-2 mins).");
+            showToast("Deleted from Git");
+            if (selectedPost?.slug.current === post.slug.current) {
+              handleInitializeNew();
+            }
+          } else {
+            setVercelData({
+              filename: `${post.slug.current}.md`,
+              fileContent: "",
+              slug: post.slug.current,
+              action: "delete"
+            });
+            setShowVercelModal(true);
+            setStatusMessage("Vercel Serverless Mode: Deletion instructions displayed.");
+            showToast("Deletion Blocked");
+          }
         } else {
           setStatusMessage("Post deleted successfully.");
           showToast("Post Deleted Successfully");
@@ -289,15 +303,21 @@ export default function WritingSpace() {
       if (res.ok) {
         const data = await res.json();
         if (data.isVercel) {
-          setVercelData({
-            filename: data.filename,
-            fileContent: data.fileContent,
-            slug: data.slug,
-            action: updatedPost.isArchived ? "archive" : "publish"
-          });
-          setShowVercelModal(true);
-          setStatusMessage("Vercel Serverless Mode: Post content compiled.");
-          showToast("Status Update Compiled");
+          if (data.committed) {
+            const actionStr = updatedPost.isArchived ? "Archived (Draft)" : "Published (Live)";
+            setStatusMessage(`Status updated in GitHub repo. Redeployment triggered in background (changes will appear in 1-2 mins).`);
+            showToast(`Status Committed: ${actionStr}`);
+          } else {
+            setVercelData({
+              filename: data.filename,
+              fileContent: data.fileContent,
+              slug: data.slug,
+              action: updatedPost.isArchived ? "archive" : "publish"
+            });
+            setShowVercelModal(true);
+            setStatusMessage("Vercel Serverless Mode: Post content compiled.");
+            showToast("Status Update Compiled");
+          }
         } else {
           setStatusMessage(`Post successfully ${updatedPost.isArchived ? "archived" : "published"}.`);
           showToast(updatedPost.isArchived ? "Post Archived (Draft)" : "Post Published (Live)");

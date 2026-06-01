@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getPostBySlug, savePost, deletePost, stringifyMarkdownFile } from "@/lib/posts";
+import { isGithubConfigured, commitFileToGithub, deleteFileFromGithub } from "@/lib/github";
 
 export const dynamic = "force-dynamic";
 
@@ -51,8 +52,28 @@ export async function PUT(request: Request, { params }: RouteParams) {
         isArchived: !!body.isArchived,
       };
       const fileContent = stringifyMarkdownFile(metadata, body.markdownBody || "");
+      const filePath = `src/content/posts/${slug}.md`;
+
+      if (isGithubConfigured()) {
+        const actionStr = body.isArchived ? "Archive (Draft)" : "Publish (Live)";
+        const commitMsg = `Toggle dispatch status: ${actionStr} - ${metadata.title}`;
+        const committed = await commitFileToGithub(filePath, fileContent, commitMsg);
+        if (committed) {
+          return NextResponse.json({
+            success: true,
+            isVercel: true,
+            committed: true,
+            slug: slug
+          });
+        } else {
+          return NextResponse.json({ error: "Failed to commit status update to GitHub" }, { status: 500 });
+        }
+      }
+
+      // Fallback: If GitHub integration is not configured, return raw details
       return NextResponse.json({
         isVercel: true,
+        committed: false,
         filename: `${slug}.md`,
         fileContent: fileContent,
         slug: slug
@@ -82,8 +103,27 @@ export async function DELETE(request: Request, { params }: RouteParams) {
 
     // Detect Vercel serverless environment
     if (process.env.VERCEL === "1") {
+      const filePath = `src/content/posts/${slug}.md`;
+
+      if (isGithubConfigured()) {
+        const commitMsg = `Delete dispatch: ${slug}`;
+        const deleted = await deleteFileFromGithub(filePath, commitMsg);
+        if (deleted) {
+          return NextResponse.json({
+            success: true,
+            isVercel: true,
+            committed: true,
+            slug: slug
+          });
+        } else {
+          return NextResponse.json({ error: "Failed to delete file on GitHub" }, { status: 500 });
+        }
+      }
+
+      // Fallback if not configured
       return NextResponse.json({
         isVercel: true,
+        committed: false,
         error: "DELETE_BLOCKED",
         slug: slug
       });
