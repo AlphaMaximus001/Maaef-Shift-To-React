@@ -25,6 +25,53 @@ export default function Navigation() {
   const animationFrameId = useRef<number | null>(null);
   
   const [liveTime, setLiveTime] = useState<string>("0000000000000");
+  const [scrollOffset, setScrollOffset] = useState(0);
+
+  useEffect(() => {
+    if (pathname !== "/") {
+      setScrollOffset(0);
+      return;
+    }
+
+    let checkCount = 0;
+    let homepageEl: HTMLElement | null = null;
+    let handleScroll: (() => void) | null = null;
+
+    const setupListener = () => {
+      homepageEl = document.getElementById("homepage");
+      if (homepageEl) {
+        handleScroll = () => {
+          setScrollOffset(homepageEl ? homepageEl.scrollTop : 0);
+        };
+        homepageEl.addEventListener("scroll", handleScroll, { passive: true });
+        handleScroll();
+        return true;
+      }
+      return false;
+    };
+
+    if (!setupListener()) {
+      const interval = setInterval(() => {
+        checkCount++;
+        if (setupListener() || checkCount > 10) {
+          clearInterval(interval);
+        }
+      }, 100);
+      
+      return () => {
+        clearInterval(interval);
+        if (homepageEl && handleScroll) {
+          homepageEl.removeEventListener("scroll", handleScroll);
+        }
+      };
+    }
+
+    return () => {
+      if (homepageEl && handleScroll) {
+        homepageEl.removeEventListener("scroll", handleScroll);
+      }
+    };
+  }, [pathname]);
 
   const toggleMenu = () => {
     setIsOpen(prev => {
@@ -153,7 +200,7 @@ export default function Navigation() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.lineCap = "round";
       ctx.lineJoin = "round";
-      ctx.shadowColor = "#C41E3A";
+      ctx.shadowColor = "#7a0e0e";
 
       const paths = pathsRef.current;
 
@@ -261,6 +308,8 @@ export default function Navigation() {
   const isHome = pathname === "/";
   const isAbout = pathname === "/about";
   const isWork = pathname === "/work";
+  const isServices = pathname === "/services";
+  const isContact = pathname === "/contact";
   const isExpertise = pathname === "/expertise";
 
   if (isExpertise && !isOpen) {
@@ -298,25 +347,33 @@ export default function Navigation() {
       <div
         className="absolute top-0 w-full z-[60] px-6 md:px-12 py-8 flex justify-between items-center text-white pointer-events-none"
         id="absolute-nav"
+        style={{
+          transform: isHome ? `translateY(-${scrollOffset}px)` : undefined,
+          transition: "transform 0.15s cubic-bezier(0.16, 1, 0.3, 1)"
+        }}
       >
-        <Link href="/" className="hover-trigger relative z-[60] nav-logo-link transition-opacity duration-300 pointer-events-auto">
+        <Link href="/" className="hover-trigger relative z-[60] nav-logo-link transition-opacity duration-300 pointer-events-auto left-4">
           {!isHome && (
             <Image
               src="/images/logo.png"
               alt="Maaef Logo"
-              width={80}
-              height={24}
+              width={40}
+              height={12}
               style={{ height: 'auto' }}
-              className="h-8 w-auto object-contain brightness-0 invert"
+              className="h-4 w-auto object-contain brightness-0 invert"
             />
           )}
         </Link>
 
-        {(isAbout || isWork) && (
-          <div className={`hidden md:flex items-center gap-8 z-[60] transition-opacity duration-300 pointer-events-auto ${isOpen ? "opacity-0 pointer-events-none" : ""}`}>
+        {!isExpertise && (
+          <div 
+            className={`hidden md:flex items-center gap-8 z-[60] transition-opacity duration-300 pointer-events-auto absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 ${isOpen ? "opacity-0 pointer-events-none" : ""}`}
+          >
             <Link
               href="/"
-              className="text-[11px] uppercase tracking-[0.2em] text-white/60 hover:text-white transition-colors duration-300 hover-trigger inline-block no-underline"
+              className={`text-[11px] uppercase tracking-[0.2em] transition-colors duration-300 hover-trigger inline-block no-underline ${
+                isHome ? "text-white font-bold hover:text-[#7a0e0e]" : "text-white/60 hover:text-white"
+              }`}
             >
               Home
             </Link>
@@ -338,13 +395,17 @@ export default function Navigation() {
             </Link>
             <Link
               href="/services"
-              className="text-[11px] uppercase tracking-[0.2em] text-white/60 hover:text-white transition-colors duration-300 hover-trigger inline-block no-underline"
+              className={`text-[11px] uppercase tracking-[0.2em] transition-colors duration-300 hover-trigger inline-block no-underline ${
+                isServices ? "text-white font-bold hover:text-[#7a0e0e]" : "text-white/60 hover:text-white"
+              }`}
             >
               Services
             </Link>
             <Link
               href="/contact"
-              className="text-[11px] uppercase tracking-[0.2em] text-white/60 hover:text-white transition-colors duration-300 hover-trigger inline-block no-underline"
+              className={`text-[11px] uppercase tracking-[0.2em] transition-colors duration-300 hover-trigger inline-block no-underline ${
+                isContact ? "text-white font-bold hover:text-[#7a0e0e]" : "text-white/60 hover:text-white"
+              }`}
             >
               Contact
             </Link>
@@ -376,15 +437,26 @@ export default function Navigation() {
             aria-label="Toggle Menu"
             className="group relative flex flex-col items-center justify-center w-12 h-12 hover-trigger border-none bg-transparent cursor-pointer focus:outline-none z-[70]"
           >
-            <div className="relative w-6 h-6 flex flex-col items-center justify-center">
+            <div className="relative w-12 h-8 flex items-center justify-center">
+              {/* Hamburger lines (fade out when menu is open) */}
               <span
                 className={`block absolute h-[2px] bg-white transition-all duration-300 ${
-                  isOpen ? "w-6 rotate-45" : "w-6 -translate-y-[5px] group-hover:w-4"
+                  isOpen ? "w-10 opacity-0 scale-50" : "w-10 -translate-y-[5px] group-hover:w-6"
                 }`}
               />
               <span
                 className={`block absolute h-[2px] bg-white transition-all duration-300 ${
-                  isOpen ? "w-6 -rotate-45" : "w-4 translate-y-[5px] group-hover:w-6"
+                  isOpen ? "w-6 opacity-0 scale-50" : "w-6 translate-y-[5px] group-hover:w-10"
+                }`}
+              />
+              
+              <img
+                src="/images/logo.png"
+                alt="Maaef Logo"
+                className={`absolute h-8 w-auto transition-all duration-500 ease-out select-none ${
+                  isOpen 
+                    ? "opacity-100 scale-100 filter drop-shadow-[0_0_8px_#7a0e0e] brightness-125" 
+                    : "opacity-0 scale-50 pointer-events-none"
                 }`}
               />
             </div>
@@ -423,7 +495,7 @@ export default function Navigation() {
             <span className="serif text-[10vw] md:text-8xl lg:text-9xl text-white pb-2 md:pb-6 block">
               Home
             </span>
-            <span className="absolute top-0 left-0 serif text-[10vw] md:text-8xl lg:text-9xl text-red-600 w-full pb-2 md:pb-6 block">
+            <span className="absolute top-0 left-0 serif text-[10vw] md:text-8xl lg:text-9xl text-[#7a0e0e] w-full pb-2 md:pb-6 block">
               Home
             </span>
           </Link>
@@ -436,7 +508,7 @@ export default function Navigation() {
             <span className="serif text-[10vw] md:text-8xl lg:text-9xl text-white pb-2 md:pb-6 block">
               Work
             </span>
-            <span className="absolute top-0 left-0 serif text-[10vw] md:text-8xl lg:text-9xl text-red-600 w-full pb-2 md:pb-6 block">
+            <span className="absolute top-0 left-0 serif text-[10vw] md:text-8xl lg:text-9xl text-[#7a0e0e] w-full pb-2 md:pb-6 block">
               Work
             </span>
           </Link>
@@ -448,7 +520,7 @@ export default function Navigation() {
             <span className="serif text-[10vw] md:text-8xl lg:text-9xl text-white pb-2 md:pb-6 block">
               Services
             </span>
-            <span className="absolute top-0 left-0 serif text-[10vw] md:text-8xl lg:text-9xl text-red-600 w-full pb-2 md:pb-6 block">
+            <span className="absolute top-0 left-0 serif text-[10vw] md:text-8xl lg:text-9xl text-[#7a0e0e] w-full pb-2 md:pb-6 block">
               Services
             </span>
           </Link>
@@ -460,7 +532,7 @@ export default function Navigation() {
             <span className="serif text-[10vw] md:text-8xl lg:text-9xl text-white pb-2 md:pb-6 block">
               Contact
             </span>
-            <span className="absolute top-0 left-0 serif text-[10vw] md:text-8xl lg:text-9xl text-red-600 w-full pb-2 md:pb-6 block">
+            <span className="absolute top-0 left-0 serif text-[10vw] md:text-8xl lg:text-9xl text-[#7a0e0e] w-full pb-2 md:pb-6 block">
               Contact
             </span>
           </Link>

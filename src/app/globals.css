@@ -115,7 +115,8 @@ body.intro-done {
 }
 
 /* Hide global navigation during intro on home page */
-.home-intro-active #main-nav {
+.home-intro-active #main-nav,
+.home-intro-active #absolute-nav {
   opacity: 0 !important;
   pointer-events: none !important;
   visibility: hidden !important;
@@ -1560,7 +1561,8 @@ button:hover .menu-toggle-img {
 }
 
 /* 4. Home page explicit navigation and marquee menu link layouts */
-#main-nav {
+#main-nav,
+#absolute-nav {
   padding: 32px 48px !important;
   height: 112px !important;
 }

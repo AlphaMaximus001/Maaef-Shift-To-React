@@ -151,8 +151,8 @@ function HudCorner({
   const pos = {
     tl: { top: "var(--hud-offset-y)", left: "var(--hud-offset-x)" },
     tr: { top: "var(--hud-offset-y)", right: "var(--hud-offset-x)" },
-    bl: { bottom: "var(--hud-offset-y)", left: "var(--hud-offset-x)" },
-    br: { bottom: "var(--hud-offset-y)", right: "var(--hud-offset-x)" },
+    bl: { bottom: "calc(var(--hud-offset-y) + 28px)", left: "var(--hud-offset-x)" },
+    br: { bottom: "calc(var(--hud-offset-y) + 28px)", right: "var(--hud-offset-x)" },
   }[side];
 
   return (
@@ -196,6 +196,25 @@ function HeroSlide({
   useEffect(() => {
     if (videoRef.current) {
       videoRef.current.muted = isMuted;
+
+      const syncTime = () => {
+        if (!videoRef.current) return;
+        if (typeof window !== "undefined" && (window as any).introCurrentTime !== undefined) {
+          try {
+            videoRef.current.currentTime = (window as any).introCurrentTime;
+            delete (window as any).introCurrentTime;
+          } catch (e) {
+            console.error("Failed to sync video time:", e);
+          }
+        }
+      };
+
+      if (videoRef.current.readyState >= 1) {
+        syncTime();
+      } else {
+        videoRef.current.addEventListener("loadedmetadata", syncTime, { once: true });
+      }
+
       const playPromise = videoRef.current.play();
       if (playPromise !== undefined) {
         playPromise.catch(() => {});
@@ -352,7 +371,7 @@ function ContentSlide({ s }: { s: typeof MAAEF_SECTIONS[0] }) {
 
       <div className="absolute left-[var(--content-px)] right-[var(--content-px)] top-[calc(var(--hud-offset-y)+30px)] bottom-[calc(var(--hud-offset-y)+30px)] flex flex-col justify-center gap-6 lg:gap-10 z-[4] box-border">
         <div className="w-full select-none">
-          <div className="maaef-mono text-[9px] text-[#f4f1ee]/40 tracking-[0.24em] mb-3 uppercase">
+          <div className="maaef-mono text-[10px] md:text-[11px] text-[#f4f1ee]/70 font-semibold tracking-[0.24em] mb-3 uppercase">
             TARGETING — {s.kicker}
           </div>
           <h2
@@ -376,42 +395,54 @@ function ContentSlide({ s }: { s: typeof MAAEF_SECTIONS[0] }) {
         </div>
 
         <div className="flex flex-col gap-4 max-w-full md:max-w-[400px]">
-          <div className="text-[12px] md:text-[14px] text-[#f4f1ee] opacity-90 border-l-2 border-red pl-3 leading-relaxed">
+          <div className="text-[14px] md:text-[16px] text-[#f4f1ee] font-medium opacity-95 border-l-2 border-red pl-3 leading-relaxed">
             {s.body}
           </div>
-          <div className="flex flex-wrap gap-1.5 select-none">
+          <div className="flex flex-wrap gap-2 select-none">
             {s.tags.map((t, i) => (
               <span
                 key={i}
-                className="maaef-mono text-[8px] tracking-[0.16em] text-[#f4f1ee]/40 border border-[#f4f1ee]/10 px-1.5 py-0.5"
+                className="maaef-mono text-[10px] md:text-[11.5px] tracking-[0.18em] text-[#f4f1ee]/75 font-semibold border border-[#f4f1ee]/25 px-3 py-1 rounded-[3px]"
               >
                 {t}
               </span>
             ))}
           </div>
+        </div>
 
-          <div className="maaef-mono text-[9px] tracking-[0.14em] text-[#f4f1ee]/40 grid grid-cols-[auto_1fr_auto] gap-x-3.5 gap-y-1.5 border-t border-[#f4f1ee]/10 pt-3.5 max-w-[340px] select-none">
+        {/* Metadata Grid & SectorBar Row */}
+        <div className="w-full flex justify-between items-end gap-6 select-none">
+          <div className="maaef-mono text-[10px] md:text-[11px] tracking-[0.14em] text-[#f4f1ee]/70 font-medium grid grid-cols-[auto_1fr_auto] gap-x-3.5 gap-y-1.5 w-full max-w-[340px] border-t border-[#f4f1ee]/20 pt-3.5">
             <span>CH</span>
-            <span className="text-[#f4f1ee]">
+            <span className="text-[#f4f1ee] font-bold">
               {s.ch}.{s.label}
             </span>
             <span>OK</span>
             <span>SIG</span>
             <span className="text-[#f4f1ee]">━━━━━━━━━━ </span>
-            <span>1.00</span>
+            <span className="font-bold">1.00</span>
             <span>LAT</span>
             <span className="text-[#f4f1ee]">008ms · stable</span>
-            <span className="text-red font-bold">LIVE</span>
+            <span className="text-red font-extrabold">LIVE</span>
+          </div>
+
+          {/* On Desktop: show SectorBar and coords aligned on same line */}
+          <div className="hidden md:flex items-center gap-4.5 select-none text-[9px] tracking-[0.16em] uppercase font-mono text-[#f4f1ee]/40 pb-0.5 mb-1.5">
+            <SectorBar />
+            <span>{s.coords}</span>
           </div>
         </div>
       </div>
 
-      <HudCorner side="br">
-        <div className="flex items-center gap-4.5 mr-[calc(var(--content-px)-var(--hud-offset-x))] mb-5 select-none">
-          <SectorBar />
-          <span className="text-[#f4f1ee]/40">{s.coords}</span>
-        </div>
-      </HudCorner>
+      {/* Fallback to standard HudCorner only on mobile */}
+      <div className="md:hidden">
+        <HudCorner side="br">
+          <div className="flex items-center gap-4.5 mr-[calc(var(--content-px)-var(--hud-offset-x))] mb-5 select-none">
+            <SectorBar />
+            <span className="text-[#f4f1ee]/40">{s.coords}</span>
+          </div>
+        </HudCorner>
+      </div>
     </div>
   );
 }
@@ -549,6 +580,10 @@ export default function HomePage() {
 
     const revealHomepage = () => {
       sessionStorage.setItem("maaef-seen", "1");
+      const introVideo = document.getElementById("intro-bg-video") as HTMLVideoElement;
+      if (introVideo && typeof window !== "undefined") {
+        (window as any).introCurrentTime = introVideo.currentTime;
+      }
       gsap.to(redEl, {
         opacity: 0,
         duration: 0.7,
@@ -564,14 +599,6 @@ export default function HomePage() {
           document.body.classList.add("intro-done");
         },
         onComplete: () => {
-          // Tear down background video to free memory
-          const introVideo = document.getElementById("intro-bg-video") as HTMLVideoElement;
-          if (introVideo) {
-            introVideo.pause();
-            introVideo.src = "";
-            introVideo.load();
-            introVideo.remove();
-          }
           introEl.style.display = "none";
           setIntroVisible(false);
           gsap.to(homeEl, { opacity: 1, duration: 0.5, ease: "power2.out" });
@@ -615,10 +642,9 @@ export default function HomePage() {
       onComplete: () => {
         const introVideo = document.getElementById("intro-bg-video") as HTMLVideoElement;
         if (introVideo) {
-          introVideo.pause();
-          introVideo.src = "";
-          introVideo.load();
-          introVideo.remove();
+          if (typeof window !== "undefined") {
+            (window as any).introCurrentTime = introVideo.currentTime;
+          }
         }
         introEl.style.display = "none";
         setDone(true);

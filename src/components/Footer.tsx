@@ -133,6 +133,16 @@ export default function Footer() {
                 </a>
               </li>
               <li>
+                <a
+                  href="https://www.linkedin.com/showcase/maaef-media/about/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-500 hover:text-red-500 transition duration-300 hover-trigger inline-block no-underline"
+                >
+                  LinkedIn
+                </a>
+              </li>
+              <li>
                 <Link
                   href="/blog"
                   className="text-gray-500 hover:text-white transition duration-300 hover-trigger inline-block no-underline"
