@@ -455,7 +455,7 @@ export default function Navigation() {
                 alt="Maaef Logo"
                 className={`absolute h-8 w-auto transition-all duration-500 ease-out select-none ${
                   isOpen 
-                    ? "opacity-100 scale-100 filter drop-shadow-[0_0_8px_#7a0e0e] brightness-125" 
+                    ? "opacity-100 scale-100 brightness-125 animate-[maaef-pulse_3s_ease-in-out_infinite]" 
                     : "opacity-0 scale-50 pointer-events-none"
                 }`}
               />
