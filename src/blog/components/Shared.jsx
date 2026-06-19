@@ -100,7 +100,7 @@ export function Ticker({ items }) {
     'ATTENTION ENGINE V2.4',
     'SECTOR 2 GREEN',
     'NO INVESTORS',
-    'EST. 2024',
+    'EST. 2018',
     'BROADCAST STABLE',
   ];
   return (

@@ -34,12 +34,45 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "@id": "https://www.maaef.com/#organization",
+    "name": "Maaef",
+    "legalName": "Maaef Media House",
+    "url": "https://www.maaef.com",
+    "logo": {
+      "@type": "ImageObject",
+      "@id": "https://www.maaef.com/#logo",
+      "url": "https://www.maaef.com/images/logo.png",
+      "caption": "Maaef Media House Logo"
+    },
+    "foundingDate": "2018",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Lucknow",
+      "addressRegion": "Uttar Pradesh",
+      "addressCountry": "IN"
+    },
+    "description": "Maaef Media House — a new-era creative collective engineering attention through video, design, photography, web, and brand strategy. Based in Lucknow, India.",
+    "sameAs": [
+      "https://www.instagram.com/maaef.media",
+      "https://www.linkedin.com/showcase/maaef-media/about/"
+    ]
+  };
+
   return (
     <html
       lang="en"
       className={`${inter.variable} ${playfair.variable} h-full antialiased`}
       suppressHydrationWarning={true}
     >
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      </head>
       <body
         className="min-h-full flex flex-col relative antialiased select-none bg-[#050505] text-white"
         suppressHydrationWarning={true}

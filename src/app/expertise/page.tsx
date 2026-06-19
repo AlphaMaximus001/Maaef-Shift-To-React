@@ -139,11 +139,18 @@ export default function ExpertisePage() {
     if (panelOpen) return;
     setSelectedIdx(idx);
     
-    // Hide standard navbar and audio toggles
+    // Hide standard navbar, navigation links, and audio toggles
     const mainNav = document.getElementById("main-nav");
     if (mainNav) {
       mainNav.style.opacity = "0";
       mainNav.style.pointerEvents = "none";
+      mainNav.style.visibility = "hidden";
+    }
+    const absoluteNav = document.getElementById("absolute-nav");
+    if (absoluteNav) {
+      absoluteNav.style.opacity = "0";
+      absoluteNav.style.pointerEvents = "none";
+      absoluteNav.style.visibility = "hidden";
     }
 
     setTimeout(() => {
@@ -158,7 +165,14 @@ export default function ExpertisePage() {
     const mainNav = document.getElementById("main-nav");
     if (mainNav) {
       mainNav.style.opacity = "1";
-      mainNav.style.pointerEvents = "all";
+      mainNav.style.pointerEvents = "";
+      mainNav.style.visibility = "";
+    }
+    const absoluteNav = document.getElementById("absolute-nav");
+    if (absoluteNav) {
+      absoluteNav.style.opacity = "1";
+      absoluteNav.style.pointerEvents = "";
+      absoluteNav.style.visibility = "";
     }
 
     setTimeout(() => {

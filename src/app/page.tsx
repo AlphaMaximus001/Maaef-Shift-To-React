@@ -17,7 +17,7 @@ const MAAEF_SECTIONS = [
     subtitleLines: ["Media House."],
     body: "We engineer attention. A new-era media house.",
     coords: "26.8467° N · 81.0307° E",
-    tags: ["LUCKNOW · IN", "EST. 2024", "TZ +05:30"],
+    tags: ["LUCKNOW · IN", "EST. 2018", "TZ +05:30"],
   },
   {
     id: "origin",
@@ -28,7 +28,7 @@ const MAAEF_SECTIONS = [
     titleLines: ["It started because", "we were bored."],
     redLine: 1,
     body: "Digital noise is loud. We wanted to make something that actually felt like something. So we did.",
-    tags: ["EST. 2024", "INDEPENDENT", "NO INVESTORS"],
+    tags: ["EST. 2018", "INDEPENDENT", "NO INVESTORS"],
     coords: "26.8467° N · 81.0307° E",
   },
   {

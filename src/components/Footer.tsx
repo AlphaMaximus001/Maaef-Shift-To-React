@@ -82,9 +82,8 @@ export default function Footer() {
                 className="h-10 w-auto opacity-90 hover:opacity-100 transition-opacity"
               />
             </Link>
-            <p className="text-gray-400 text-sm md:text-base max-w-sm font-light leading-relaxed border-l-2 border-red pl-4">
-              We engineer attention.
-              <br />A new-era media house.
+            <p className="text-gray-400 text-sm md:text-base max-w-lg font-light leading-relaxed border-l-2 border-red pl-4 select-text">
+              Maaef Media House is an independent creative agency and media house based in Lucknow, Uttar Pradesh, established in 2018. We serve startups, growing businesses, and corporate brands globally by engineering high-impact cinematic video production, brand strategy, design, and web experiences.
             </p>
           </div>
 
