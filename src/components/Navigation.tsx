@@ -345,7 +345,9 @@ export default function Navigation() {
     <>
       {/* Absolute Navigation Bar — Scrolls away naturally with the page */}
       <div
-        className="absolute top-0 w-full z-[60] px-6 md:px-12 py-8 flex justify-between items-center text-white pointer-events-none"
+        className={`absolute top-0 w-full z-[60] px-6 md:px-12 py-8 flex justify-between items-center text-white pointer-events-none transition-opacity duration-500 ${
+          isWork ? "mix-blend-difference" : ""
+        }`}
         id="absolute-nav"
         style={{
           transform: isHome ? `translateY(-${scrollOffset}px)` : undefined,
