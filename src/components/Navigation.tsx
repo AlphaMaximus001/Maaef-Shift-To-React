@@ -367,52 +367,7 @@ export default function Navigation() {
           )}
         </Link>
 
-        {!isExpertise && (
-          <div 
-            className={`hidden md:flex items-center gap-8 z-[60] transition-opacity duration-300 pointer-events-auto absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 ${isOpen ? "opacity-0 pointer-events-none" : ""}`}
-          >
-            <Link
-              href="/"
-              className={`text-[11px] uppercase tracking-[0.2em] transition-colors duration-300 hover-trigger inline-block no-underline ${
-                isHome ? "text-white font-bold hover:text-[#7a0e0e]" : "text-white/60 hover:text-white"
-              }`}
-            >
-              Home
-            </Link>
-            <Link
-              href="/about"
-              className={`text-[11px] uppercase tracking-[0.2em] transition-colors duration-300 hover-trigger inline-block no-underline ${
-                isAbout ? "text-white font-bold hover:text-[#7a0e0e]" : "text-white/60 hover:text-white"
-              }`}
-            >
-              About
-            </Link>
-            <Link
-              href="/work"
-              className={`text-[11px] uppercase tracking-[0.2em] transition-colors duration-300 hover-trigger inline-block no-underline ${
-                isWork ? "text-white font-bold hover:text-[#7a0e0e]" : "text-white/60 hover:text-white"
-              }`}
-            >
-              Work
-            </Link>
-            <Link
-              href="/services"
-              className={`text-[11px] uppercase tracking-[0.2em] transition-colors duration-300 hover-trigger inline-block no-underline ${
-                isServices ? "text-white font-bold hover:text-[#7a0e0e]" : "text-white/60 hover:text-white"
-              }`}
-            >
-              Services
-            </Link>
-            <Link
-              href="/contact"
-              className={`text-[11px] uppercase tracking-[0.2em] transition-colors duration-300 hover-trigger inline-block no-underline ${
-                isContact ? "text-white font-bold hover:text-[#7a0e0e]" : "text-white/60 hover:text-white"
-              }`}
-            >
-              Contact
-            </Link>
-          </div>
-        )}
+
 
         {/* Empty placeholder to maintain flex spacing */}
         <div className="w-12 h-12" />
@@ -526,18 +481,7 @@ export default function Navigation() {
               Services
             </span>
           </Link>
-          <Link
-            href="/contact"
-            onClick={toggleMenu}
-            className="menu-link group relative overflow-hidden inline-block hover-trigger cursor-pointer pointer-events-auto py-2"
-          >
-            <span className="serif text-[10vw] md:text-8xl lg:text-9xl text-white pb-2 md:pb-6 block">
-              Contact
-            </span>
-            <span className="absolute top-0 left-0 serif text-[10vw] md:text-8xl lg:text-9xl text-[#7a0e0e] w-full pb-2 md:pb-6 block">
-              Contact
-            </span>
-          </Link>
+
         </div>
 
         {/* Trace HUD details */}

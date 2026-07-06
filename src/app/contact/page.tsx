@@ -203,7 +203,7 @@ function ContactFormContent() {
             <h3 className="serif text-4xl md:text-7xl mb-12 leading-tight">
               Tell us about
               <br />
-              your project.
+              your story.
             </h3>
             <input
               type="text"
@@ -219,7 +219,7 @@ function ContactFormContent() {
               }`}
             />
             <span className={`field-error ${requirementsError ? "visible" : ""}`}>
-              Please tell us about your project.
+              Please tell us about your story.
             </span>
             {submitError && (
               <span className="text-xs uppercase tracking-widest text-[#7a0e0e] mt-4 block">

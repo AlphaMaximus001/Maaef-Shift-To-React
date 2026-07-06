@@ -17,7 +17,7 @@ const MAAEF_SECTIONS = [
     subtitleLines: ["Media House."],
     body: "We engineer attention. A new-era media house.",
     coords: "26.8467° N · 81.0307° E",
-    tags: ["LUCKNOW · IN", "EST. 2018", "TZ +05:30"],
+    tags: ["LUCKNOW · IN", "EST. 2024", "TZ +05:30"],
   },
   {
     id: "origin",
@@ -25,10 +25,10 @@ const MAAEF_SECTIONS = [
     kicker: "ORIGIN",
     label: "ORIGIN",
     pre: "WHY WE EXIST",
-    titleLines: ["It started because", "we were bored."],
+    titleLines: ["We started because", "our folks were stuck in digital fog"],
     redLine: 1,
-    body: "Digital noise is loud. We wanted to make something that actually felt like something. So we did.",
-    tags: ["EST. 2018", "INDEPENDENT", "NO INVESTORS"],
+    body: "Digital fog is dense. We were the illuminator that they wanted.",
+    tags: ["EST. 2024", "INDEPENDENT", "NO INVESTORS"],
     coords: "26.8467° N · 81.0307° E",
   },
   {
@@ -37,10 +37,10 @@ const MAAEF_SECTIONS = [
     kicker: "TEAM",
     label: "TEAM",
     pre: "WHO MADE IT",
-    titleLines: ["Restless in", "Lucknow."],
+    titleLines: ["We know how to", "communicate"],
     italicLine: 1,
-    body: "A group of people who couldn't stop critiquing everything they saw. Now we just do the work ourselves.",
-    tags: ["12 HUMANS", "4 DOGS", "0 EGOS"],
+    body: "Remember that one person who has 10 versions of the same story. We are the person, and the story is yours.",
+    tags: ["CLARITY", "TONE", "PERSONA"],
     coords: "26.8467° N · 81.0307° E",
   },
   {
@@ -49,21 +49,21 @@ const MAAEF_SECTIONS = [
     kicker: "VISION",
     label: "VISION",
     pre: "HOW WE THINK",
-    titleLines: ["Art is cool.", "Results are better."],
-    redLine: 1,
-    body: "We bridge the gap between \"that looks nice\" and \"that actually worked.\" It’s a delicate balance.",
-    tags: ["CRAFT", "OUTCOMES", "BOTH"],
+    titleLines: ["Ideas are cool,", "Executions are better", "Results are best"],
+    redLine: 2,
+    body: "You're churning every second to win the lap, and we are the pit crew you'd wish for.",
+    tags: ["CRAFT", "DISCIPLINE", "OUTCOMES"],
     coords: "26.8467° N · 81.0307° E",
   },
   {
-    id: "reach",
+    id: "network",
     ch: "04",
-    kicker: "REACH",
-    label: "REACH",
+    kicker: "NETWORK",
+    label: "NETWORK",
     pre: "WHERE WE WORK",
-    titleLines: ["Here, there,", "and", "everywhere."],
-    body: "Telling stories across borders. Same core values: don't be boring, don't lie, and hit the deadline.",
-    tags: ["7 CITIES", "3 CONTINENTS", "∞ TIMEZONES"],
+    titleLines: ["Viability, Deliverability,", "feasibility, visibility,", "few more ibility"],
+    body: "Others might not give a damn on all of these but we do.",
+    tags: ["ETHICS", "PRACTICAL", "REACH"],
     coords: "26.8467° N · 81.0307° E",
   },
   {
@@ -72,9 +72,9 @@ const MAAEF_SECTIONS = [
     kicker: "CONTACT",
     label: "BECAME",
     pre: "WHAT IT BECAME",
-    titleLines: ["That something became", "Maaef."],
+    titleLines: ["That's what we are", "Maaef."],
     body: "Start a project. Or just say hi.",
-    tags: ["HELLO@MAAEF.COM", "IG @MAAEF", "LUCKNOW · IN"],
+    tags: ["HEY@MAAEF.IN", "IG @MAAEF", "LUCKNOW · IN"],
     coords: "26.8467° N · 81.0307° E",
   },
 ];
@@ -126,9 +126,8 @@ function SectorBar() {
           <div className="maaef-mono text-[8px] tracking-[0.14em] text-white/40">S{i + 1}</div>
           <div className="w-[38px] h-[3px] bg-white/10 relative">
             <div
-              className={`absolute left-0 top-0 bottom-0 ${
-                i === 1 ? "bg-red" : "bg-[#f4f1ee]"
-              } origin-left animate-[maaef-bar_3s_ease-in-out_infinite]`}
+              className={`absolute left-0 top-0 bottom-0 ${i === 1 ? "bg-red" : "bg-[#f4f1ee]"
+                } origin-left animate-[maaef-bar_3s_ease-in-out_infinite]`}
               style={{
                 width: `${v * 100}%`,
                 animationDelay: `${i * 0.4}s`,
@@ -217,7 +216,7 @@ function HeroSlide({
 
       const playPromise = videoRef.current.play();
       if (playPromise !== undefined) {
-        playPromise.catch(() => {});
+        playPromise.catch(() => { });
       }
     }
   }, [isMuted]);
@@ -320,8 +319,11 @@ function HeroSlide({
         </div>
 
         <div className="flex items-end gap-8 justify-start flex-wrap">
-          <div className="text-[13px] text-[#f4f1ee] max-w-[320px] opacity-90 border-l-2 border-red pl-3.5 leading-relaxed">
-            We engineer attention. A new-era media house.
+          <div
+            className="text-[13px] text-[#f4f1ee] max-w-[320px] opacity-90 border-l-2 border-red leading-relaxed"
+            style={{ paddingLeft: "20px" }}
+          >
+            Artists disguised as a Media House. A new-era media house
           </div>
         </div>
       </div>
@@ -342,8 +344,8 @@ function ContentSlide({ s }: { s: typeof MAAEF_SECTIONS[0] }) {
     s.titleLines.length === 1
       ? "calc(var(--title-base) * 1.6)"
       : s.titleLines[0].length > 12
-      ? "calc(var(--title-base) * 0.84)"
-      : "var(--title-base)";
+        ? "calc(var(--title-base) * 0.84)"
+        : "var(--title-base)";
 
   return (
     <div className="absolute inset-0 overflow-hidden bg-[#050505]">
@@ -395,7 +397,10 @@ function ContentSlide({ s }: { s: typeof MAAEF_SECTIONS[0] }) {
         </div>
 
         <div className="flex flex-col gap-4 max-w-full md:max-w-[400px]">
-          <div className="text-[14px] md:text-[16px] text-[#f4f1ee] font-medium opacity-95 border-l-2 border-red pl-3 leading-relaxed">
+          <div
+            className="text-[14px] md:text-[16px] text-[#f4f1ee] font-medium opacity-95 border-l-2 border-red leading-relaxed"
+            style={{ paddingLeft: "20px" }}
+          >
             {s.body}
           </div>
           <div className="flex flex-wrap gap-2 select-none">
@@ -463,7 +468,7 @@ function OutroSlide({ s }: { s: typeof MAAEF_SECTIONS[0] }) {
 
       <div className="absolute inset-0 flex flex-col items-center justify-center gap-7 z-[4] px-[var(--content-px)] text-center select-none">
         <div className="maaef-h1-italic text-[clamp(1.5rem,6vw,4rem)] text-[#f4f1ee]/40 leading-[0.95]">
-          That something became
+          That's what we are
         </div>
         <Image
           src="/images/logo.png"
@@ -472,8 +477,11 @@ function OutroSlide({ s }: { s: typeof MAAEF_SECTIONS[0] }) {
           height={90}
           className="h-[clamp(80px,20vw,180px)] w-auto object-contain animate-[maaef-pulse_3s_ease-in-out_infinite]"
         />
-        <div className="maaef-mono text-[10px] text-[#f4f1ee]/40 tracking-[0.3em] uppercase">
-          HELLO@MAAEF.COM
+        <div className="maaef-mono text-[15px] text-[#f4f1ee]/40 tracking-[0.3em] uppercase">
+          Hey@maaef.in
+        </div>
+        <div className="maaef-mono text-[15px] text-[#f4f1ee]/40 tracking-[0.3em] uppercase">
+          #M2H
         </div>
       </div>
 
@@ -492,12 +500,12 @@ export default function HomePage() {
   const [introVisible, setIntroVisible] = useState(true);
   const [step, setStep] = useState(0);
   const [busy, setBusy] = useState(false);
-  
+
   const logoRef = useRef<HTMLImageElement | null>(null);
   const redFloodRef = useRef<HTMLDivElement | null>(null);
   const introStageRef = useRef<HTMLDivElement | null>(null);
   const homepageRef = useRef<HTMLDivElement | null>(null);
-  
+
   const [isAudioMuted, setIsAudioMuted] = useState(true);
 
   // Check if session has already seen the intro
@@ -630,7 +638,7 @@ export default function HomePage() {
   const skipIntro = () => {
     if (done) return;
     setBusy(true);
-    
+
     const introEl = introStageRef.current;
     const homeEl = homepageRef.current;
     if (!introEl || !homeEl) return;
@@ -745,7 +753,10 @@ export default function HomePage() {
               We make things <br />
               <span className="text-red">worth looking at.</span>
             </h2>
-            <p className="beat-body text-[clamp(0.9rem,1.4vw,1.1rem)] font-light text-white/35 border-l-2 border-red pl-[1.2rem] leading-relaxed max-w-[380px]">
+            <p
+              className="beat-body text-[clamp(0.9rem,1.4vw,1.1rem)] font-light text-white/35 border-l-2 border-red leading-relaxed max-w-[380px]"
+              style={{ paddingLeft: "20px" }}
+            >
               A media house for people with short attention spans
             </p>
           </div>
@@ -795,9 +806,8 @@ export default function HomePage() {
       <div
         ref={homepageRef}
         id="homepage"
-        className={`bg-[#050505] transition-opacity duration-500 overflow-x-hidden ${
-          done ? "alive opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
-        }`}
+        className={`bg-[#050505] transition-opacity duration-500 overflow-x-hidden ${done ? "alive opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+          }`}
       >
         <div id="react-root" className="w-full">
           {MAAEF_SECTIONS.map((s, i) => (

@@ -83,7 +83,7 @@ export default function Footer() {
               />
             </Link>
             <p className="text-gray-400 text-sm md:text-base max-w-lg font-light leading-relaxed border-l-2 border-red pl-4 select-text">
-              Maaef Media House is an independent creative agency and media house based in Lucknow, Uttar Pradesh, established in 2018. We serve startups, growing businesses, and corporate brands globally by engineering high-impact cinematic video production, brand strategy, design, and web experiences.
+              We engineer attention. A new era media house.
             </p>
           </div>
 
@@ -108,11 +108,6 @@ export default function Footer() {
               <li>
                 <Link href="/services" className="text-gray-500 hover:text-white transition duration-300 hover-trigger inline-block no-underline">
                   Services
-                </Link>
-              </li>
-              <li>
-                <Link href="/contact" className="text-gray-500 hover:text-white transition duration-300 hover-trigger inline-block no-underline">
-                  Contact
                 </Link>
               </li>
             </ul>
@@ -154,7 +149,7 @@ export default function Footer() {
                   href="/contact"
                   className="text-red hover:text-red-500 transition duration-300 hover-trigger inline-block font-bold no-underline"
                 >
-                  Start Project
+                  Contact
                 </Link>
               </li>
             </ul>
@@ -177,7 +172,7 @@ export default function Footer() {
         <div className="absolute inset-0 pointer-events-none z-40 bg-[radial-gradient(circle_at_center,transparent_25%,rgba(3,3,3,0.95)_100%)]" />
 
         <h2 className="maaef-footer-title serif text-[15vw] md:text-[11vw] leading-none text-transparent tracking-tighter transition-all duration-500 relative z-50 [-webkit-text-stroke:2px_#C41E3A] group-hover:text-black group-hover:[-webkit-text-stroke:2px_#C41E3A]">
-          Maaef.
+          Maaef
         </h2>
 
         {/* Skewed Ribbon Tapes */}

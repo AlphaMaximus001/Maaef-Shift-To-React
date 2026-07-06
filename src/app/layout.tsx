@@ -47,7 +47,7 @@ export default function RootLayout({
       "url": "https://www.maaef.com/images/logo.png",
       "caption": "Maaef Media House Logo"
     },
-    "foundingDate": "2018",
+    "foundingDate": "2024",
     "address": {
       "@type": "PostalAddress",
       "addressLocality": "Lucknow",
