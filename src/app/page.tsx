@@ -32,10 +32,10 @@ const MAAEF_SECTIONS = [
     coords: "26.8467° N · 81.0307° E",
   },
   {
-    id: "team",
+    id: "edge",
     ch: "02",
-    kicker: "TEAM",
-    label: "TEAM",
+    kicker: "EDGE",
+    label: "EDGE",
     pre: "WHO MADE IT",
     titleLines: ["We know how to", "communicate"],
     italicLine: 1,
