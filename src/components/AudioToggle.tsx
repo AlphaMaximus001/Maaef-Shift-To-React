@@ -7,6 +7,44 @@ export default function AudioToggle() {
   const [isMuted, setIsMuted] = useState(true);
   const [showLabel, setShowLabel] = useState(true);
   const pathname = usePathname();
+  const [activeSectionIndex, setActiveSectionIndex] = useState(0);
+
+  // Monitor scrolling of snap container to track active section index
+  useEffect(() => {
+    if (pathname !== "/") return;
+
+    let el = document.getElementById("homepage");
+    const handleScroll = () => {
+      const currentEl = document.getElementById("homepage") || el;
+      if (!currentEl) return;
+      const scrollTop = currentEl.scrollTop;
+      const height = currentEl.clientHeight || window.innerHeight;
+      const index = Math.round(scrollTop / height);
+      setActiveSectionIndex(index);
+    };
+
+    if (el) {
+      el.addEventListener("scroll", handleScroll, { passive: true });
+      handleScroll();
+    }
+
+    const observer = new MutationObserver(() => {
+      const currentEl = document.getElementById("homepage");
+      if (currentEl && currentEl !== el) {
+        if (el) el.removeEventListener("scroll", handleScroll);
+        el = currentEl;
+        el.addEventListener("scroll", handleScroll, { passive: true });
+        handleScroll();
+      }
+    });
+
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    return () => {
+      if (el) el.removeEventListener("scroll", handleScroll);
+      observer.disconnect();
+    };
+  }, [pathname]);
 
   // Load user preference on mount
   useEffect(() => {
@@ -28,7 +66,7 @@ export default function AudioToggle() {
       setShowLabel(false);
     }, 1500);
     return () => clearTimeout(timer);
-  }, [isMuted, pathname]);
+  }, [isMuted, pathname, activeSectionIndex]);
 
   // Sync mute state to all video tags on the page
   const syncDOMVideos = (mutedState: boolean) => {
@@ -51,11 +89,12 @@ export default function AudioToggle() {
         (v as HTMLVideoElement).muted = true;
       });
     } else {
-      // Intro is done: sync all videos normally
+      // Intro is done: sync all videos normally, respecting local data-keep-muted settings
       const videos = document.querySelectorAll("video");
       videos.forEach(v => {
-        v.muted = mutedState;
-        if (!mutedState) {
+        const keepMuted = v.getAttribute("data-keep-muted") === "true";
+        v.muted = keepMuted ? true : mutedState;
+        if (!v.muted) {
           if (v.readyState === 0) {
             v.load();
           }
@@ -104,6 +143,8 @@ export default function AudioToggle() {
     window.dispatchEvent(new CustomEvent("audioChange"));
   };
 
+  const isButtonMuted = isMuted || activeSectionIndex !== 0;
+
   if (pathname !== "/") return null;
 
   return (
@@ -118,19 +159,19 @@ export default function AudioToggle() {
     >
       <span
         id="mute-label"
-        className="maaef-mono text-[9px] text-white tracking-[0.1em] transition-opacity duration-500 pointer-events-none"
+        className="maaef-mono text-[12px] text-white tracking-[0.1em] transition-opacity duration-500 pointer-events-none"
         style={{
           opacity: showLabel ? 1 : 0,
         }}
       >
-        {isMuted ? "AUDIO OFF" : "AUDIO ON"}
+        {isButtonMuted ? "AUDIO OFF" : "AUDIO ON"}
       </span>
       <svg
-        width="16"
-        height="16"
+        width="21"
+        height="21"
         viewBox="0 0 24 24"
-        fill={isMuted ? "none" : "#7a0e0e"}
-        stroke={isMuted ? "#fff" : "#7a0e0e"}
+        fill={isButtonMuted ? "none" : "#7a0e0e"}
+        stroke={isButtonMuted ? "#fff" : "#7a0e0e"}
         strokeWidth="2"
         id="mute-icon"
         style={{
@@ -138,7 +179,7 @@ export default function AudioToggle() {
         }}
       >
         <path d="M11 5L6 9H2v6h4l5 4V5z" strokeLinecap="round" strokeLinejoin="round" />
-        {isMuted ? (
+        {isButtonMuted ? (
           <path id="mute-cross" d="M23 9l-6 6M17 9l6 6" strokeLinecap="round" strokeLinejoin="round" stroke="#fff" />
         ) : (
           <path id="mute-waves" d="M15.54 8.46a5 5 0 0 1 0 7.07M19.07 4.93a10 10 0 0 1 0 14.14" strokeLinecap="round" strokeLinejoin="round" stroke="#7a0e0e" />

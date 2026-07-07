@@ -72,7 +72,7 @@ export default function Footer() {
 
       <div className="max-w-[1400px] mx-auto px-6 md:px-12 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 md:gap-8 mb-16">
-          <div className="col-span-1 lg:col-span-2">
+          <div className="col-span-1 lg:col-span-1">
             <Link href="/" className="inline-block hover-trigger mb-6">
               <Image
                 src="/images/logo.png"
@@ -85,6 +85,27 @@ export default function Footer() {
             <p className="text-gray-400 text-sm md:text-base max-w-lg font-light leading-relaxed border-l-2 border-red pl-4 select-text">
               We engineer attention. A new era media house.
             </p>
+          </div>
+
+          <div>
+            <h3 className="serif text-white text-lg mb-6 tracking-wide opacity-90">Company</h3>
+            <ul className="space-y-4 text-xs tracking-[0.2em] uppercase list-none p-0">
+              <li>
+                <Link href="#" className="text-gray-500 hover:text-white transition duration-300 hover-trigger inline-block no-underline">
+                  Studio
+                </Link>
+              </li>
+              <li>
+                <Link href="#" className="text-gray-500 hover:text-white transition duration-300 hover-trigger inline-block no-underline">
+                  Enterprise
+                </Link>
+              </li>
+              <li>
+                <Link href="#" className="text-gray-500 hover:text-white transition duration-300 hover-trigger inline-block no-underline">
+                  Afterhour
+                </Link>
+              </li>
+            </ul>
           </div>
 
           <div>
@@ -134,6 +155,36 @@ export default function Footer() {
                   className="text-gray-500 hover:text-red-500 transition duration-300 hover-trigger inline-block no-underline"
                 >
                   LinkedIn
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://x.com/maaef"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-500 hover:text-red-500 transition duration-300 hover-trigger inline-block no-underline"
+                >
+                  X
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://youtube.com/@maaef"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-500 hover:text-red-500 transition duration-300 hover-trigger inline-block no-underline"
+                >
+                  YT
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://facebook.com/maaef"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-500 hover:text-red-500 transition duration-300 hover-trigger inline-block no-underline"
+                >
+                  FB
                 </a>
               </li>
               <li>

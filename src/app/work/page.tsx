@@ -24,6 +24,7 @@ export default function AboutPage() {
 
   const dialAngleRef = useRef(0);
   const isDraggingRef = useRef(false);
+  const hasDraggedRef = useRef(false);
   const dragStartAngleRef = useRef(0);
   const dragDialStartRef = useRef(0);
   const loopCountRef = useRef(0);
@@ -38,18 +39,44 @@ export default function AboutPage() {
       gsap.set(bgContainerRef.current, { opacity: 1 });
     }
     if (videoRef.current) {
-      videoRef.current.muted = true;
+      videoRef.current.muted = (window as any).isAudioMuted ?? true;
       const playPromise = videoRef.current.play();
       if (playPromise !== undefined) playPromise.catch(() => {});
     }
   }, []);
 
-  // Sync mute state on active video tag
+  // Sync mute state on active video tag and listen to global audioChange
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setIsMuted((window as any).isAudioMuted ?? true);
+    }
+
+    const handleAudioChange = () => {
+      const globalMuted = (window as any).isAudioMuted ?? true;
+      setIsMuted(globalMuted);
+      if (videoRef.current) {
+        videoRef.current.muted = globalMuted;
+      }
+    };
+
+    window.addEventListener("audioChange", handleAudioChange);
+    return () => window.removeEventListener("audioChange", handleAudioChange);
+  }, []);
+
+  // Set the video muted attribute when isMuted changes
   useEffect(() => {
     if (videoRef.current) {
       videoRef.current.muted = isMuted;
     }
   }, [isMuted]);
+
+  const toggleMute = () => {
+    const nextState = !isMuted;
+    setIsMuted(nextState);
+    (window as any).isAudioMuted = nextState;
+    localStorage.setItem("maaef-muted", String(nextState));
+    window.dispatchEvent(new CustomEvent("audioChange"));
+  };
 
   // Wrap angle to full cycle bounds
   const wrapAngle = (a: number) => {
@@ -94,12 +121,12 @@ export default function AboutPage() {
     return Math.atan2(clientY - cy, clientX - cx) * (180 / Math.PI);
   };
 
-  // Rotate to specific logo index with GSAP transitions
+  // Rotate to specific logo index with GSAP transitions (always rotating forward/clockwise: logos moving left to right)
   const rotateTo = (logoIndex: number) => {
     const targetMod = -logoIndex * LOGO_SPACING;
     let delta = targetMod - dialAngleRef.current;
-    const halfCycle = FULL_CYCLE / 2;
-    delta = (((delta + halfCycle) % FULL_CYCLE + FULL_CYCLE) % FULL_CYCLE) - halfCycle;
+    // Force delta to be positive so that the transition only rotates in the forward (left-to-right) direction
+    delta = ((delta % FULL_CYCLE) + FULL_CYCLE) % FULL_CYCLE;
     const target = dialAngleRef.current + delta;
 
     const tempObj = { v: dialAngleRef.current };
@@ -168,18 +195,32 @@ export default function AboutPage() {
     });
   };
 
-  // Drag handlers
+  // Drag handlers (based purely on horizontal clientX distance for predictable left-to-right movement)
   const handleDragStart = (clientX: number, clientY: number) => {
     isDraggingRef.current = true;
-    dragStartAngleRef.current = getPointerAngle(clientX, clientY);
+    hasDraggedRef.current = false;
+    dragStartAngleRef.current = clientX;
     dragDialStartRef.current = dialAngleRef.current;
   };
 
   const handleDragMove = (clientX: number, clientY: number) => {
     if (!isDraggingRef.current) return;
-    const angle = getPointerAngle(clientX, clientY);
-    dialAngleRef.current = dragDialStartRef.current + (angle - dragStartAngleRef.current);
-    positionLogos(dialAngleRef.current);
+    const deltaX = clientX - dragStartAngleRef.current;
+    
+    // Ignore any dragging movement to the left of the drag start point
+    if (deltaX <= 0) return;
+    
+    if (Math.abs(deltaX) > 5) {
+      hasDraggedRef.current = true;
+    }
+    
+    const targetAngle = dragDialStartRef.current + deltaX * 0.35;
+    
+    // Only allow the dial to rotate forward (increasing angle, logos moving left to right)
+    if (targetAngle > dialAngleRef.current) {
+      dialAngleRef.current = targetAngle;
+      positionLogos(dialAngleRef.current);
+    }
   };
 
   const handleDragEnd = () => {
@@ -344,13 +385,19 @@ export default function AboutPage() {
             ref={brandDialRef}
             id="brand-dial"
             onWheel={handleWheel}
+            onMouseDown={(e) => handleDragStart(e.clientX, e.clientY)}
+            onTouchStart={(e) => {
+              if (e.touches.length > 0) {
+                handleDragStart(e.touches[0].clientX, e.touches[0].clientY);
+              }
+            }}
             className="brand-dial"
           >
             <div className="dial-ring" />
 
             {/* Mute Center button */}
             <button
-              onClick={() => setIsMuted(prev => !prev)}
+              onClick={toggleMute}
               id="pinhole-mute-btn"
               className="dial-mute hover-trigger"
               title="Toggle Sound"
@@ -359,7 +406,7 @@ export default function AboutPage() {
                 width="18"
                 height="18"
                 viewBox="0 0 24 24"
-                fill={isMuted ? "none" : "#fff"}
+                fill={isMuted ? "none" : "#1a1a1a"}
                 stroke="currentColor"
                 strokeWidth="2"
                 strokeLinecap="round"
@@ -381,7 +428,11 @@ export default function AboutPage() {
             {DIAL_LOGOS.map((logo, i) => (
               <div
                 key={logo.index}
-                onClick={() => rotateTo(logo.index)}
+                onClick={() => {
+                  if (!hasDraggedRef.current) {
+                    rotateTo(logo.index);
+                  }
+                }}
                 className={`dial-logo hover-trigger ${
                   activeIndex === logo.index ? "active" : ""
                 }`}

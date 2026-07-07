@@ -252,6 +252,7 @@ function HeroSlide({
         loop
         playsInline
         preload="auto"
+        data-keep-muted={isMuted ? "true" : "false"}
         className="absolute inset-0 w-full h-full object-cover transition-transform duration-[800ms] ease-[cubic-bezier(0.16,1,0.3,1)] select-none"
         style={{ transform: isLaptop ? "scale(1.1)" : "none" }}
       />
@@ -507,6 +508,25 @@ export default function HomePage() {
   const homepageRef = useRef<HTMLDivElement | null>(null);
 
   const [isAudioMuted, setIsAudioMuted] = useState(true);
+  const [activeSectionIndex, setActiveSectionIndex] = useState(0);
+
+  // Monitor scrolling of the snap container to mute audio when leaving the first slide
+  useEffect(() => {
+    const el = homepageRef.current;
+    if (!el || !done) return;
+
+    const handleScroll = () => {
+      const scrollTop = el.scrollTop;
+      const height = el.clientHeight || window.innerHeight;
+      const index = Math.round(scrollTop / height);
+      setActiveSectionIndex(index);
+    };
+
+    el.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
+
+    return () => el.removeEventListener("scroll", handleScroll);
+  }, [done]);
 
   // Check if session has already seen the intro
   useEffect(() => {
@@ -721,86 +741,88 @@ export default function HomePage() {
 
   return (
     <>
-      <div
-        ref={introStageRef}
-        id="intro-stage"
-        className="fixed inset-0 z-[500] bg-[#050505] overflow-hidden"
-        style={{ display: introVisible ? "block" : "none" }}
-      >
-        <div id="intro-bg" className="absolute inset-0">
-          <video
-            id="intro-bg-video"
-            src="/videos/trailer.mp4"
-            autoPlay
-            loop
-            muted
-            playsInline
-            className="absolute inset-0 w-full h-full object-cover transition-all duration-[1000ms] ease-out select-none"
-          />
-          <div id="intro-bg-overlay" className="absolute inset-0 bg-black/55 transition-all duration-[1000ms] ease-out" />
-        </div>
-        <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_center,transparent_35%,rgba(0,0,0,0.75)_100%)]" />
-
-        {/* Scrolling hint indicators */}
-        <div id="beats-wrap" className="absolute inset-0 flex items-center pl-[8vw] pr-[5vw] md:pl-[8vw] pointer-events-none select-none">
-          <div
-            id="beat-1"
-            className={`beat ${step === 1 ? "in" : step > 1 ? "out" : ""}`}
-          >
-            <div className="beat-index font-mono text-[9px] tracking-[0.28em] uppercase text-white/18 mb-[1.4rem]"></div>
-            <div className="beat-label text-[10px] tracking-[0.3em] uppercase text-white/25 mb-[1rem]">Intro</div>
-            <h2 className="beat-head font-serif text-[clamp(1.8rem,7.5vw,7.2rem)] leading-[0.88] tracking-[-0.01em] text-white mb-[2rem]">
-              We make things <br />
-              <span className="text-red">worth looking at.</span>
-            </h2>
-            <p
-              className="beat-body text-[clamp(0.9rem,1.4vw,1.1rem)] font-light text-white/35 border-l-2 border-red leading-relaxed max-w-[380px]"
-              style={{ paddingLeft: "20px" }}
-            >
-              A media house for people with short attention spans
-            </p>
-          </div>
-        </div>
-
-        <div id="logo-stage" className="absolute inset-0 flex items-center justify-center perspective-[1000px] pointer-events-none select-none">
-          <img
-            id="logo-blast"
-            ref={logoRef}
-            src="/images/logo.png"
-            alt="Maaef Logo"
-            className="w-[40vw] max-w-[500px] h-auto opacity-0 transform translate-y-14"
-          />
-        </div>
-
-        {/* Flash & Red backgrounds */}
-        <div ref={redFloodRef} id="red-flood" className="absolute inset-0 bg-red opacity-0 pointer-events-none" />
-        <div id="white-flash" className="absolute inset-0 bg-white opacity-0 pointer-events-none" />
-
-        {step === 0 && (
-          <div id="scroll-hint" className="absolute bottom-[3.5rem] left-1/2 -translate-x-1/2 flex flex-col items-center gap-[0.8rem] transition-opacity duration-300">
-            <span className="text-[9px] tracking-[0.3em] uppercase text-white/30">Scroll to begin</span>
-            <div className="hint-line w-[1px] h-[48px] bg-gradient-to-b from-transparent to-white/35 animate-[hintDrop_2s_ease_infinite]" />
-          </div>
-        )}
-
-        <button
-          id="skip-btn"
-          onClick={skipIntro}
-          className="absolute bottom-[3.5rem] right-[3rem] text-[9px] tracking-[0.25em] uppercase text-white/20 hover:text-white/50 border-none bg-transparent cursor-pointer transition-all duration-500"
-          style={{
-            opacity: step === 0 ? 1 : 0,
-            pointerEvents: step === 0 ? "auto" : "none",
-          }}
-        >
-          Skip ↓
-        </button>
-
+      {introVisible && (
         <div
-          id="step-bar"
-          className="absolute bottom-0 left-0 h-[1px] bg-red transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]"
-          style={{ width: step === 0 ? "0%" : step === 1 ? "50%" : "100%" }}
-        />
-      </div>
+          ref={introStageRef}
+          id="intro-stage"
+          className="fixed inset-0 z-[500] bg-[#050505] overflow-hidden"
+          style={{ display: introVisible ? "block" : "none" }}
+        >
+          <div id="intro-bg" className="absolute inset-0">
+            <video
+              id="intro-bg-video"
+              src="/videos/trailer.mp4"
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="absolute inset-0 w-full h-full object-cover transition-all duration-[1000ms] ease-out select-none"
+            />
+            <div id="intro-bg-overlay" className="absolute inset-0 bg-black/55 transition-all duration-[1000ms] ease-out" />
+          </div>
+          <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_center,transparent_35%,rgba(0,0,0,0.75)_100%)]" />
+
+          {/* Scrolling hint indicators */}
+          <div id="beats-wrap" className="absolute inset-0 flex items-center pl-[8vw] pr-[5vw] md:pl-[8vw] pointer-events-none select-none">
+            <div
+              id="beat-1"
+              className={`beat ${step === 1 ? "in" : step > 1 ? "out" : ""}`}
+            >
+              <div className="beat-index font-mono text-[9px] tracking-[0.28em] uppercase text-white/18 mb-[1.4rem]"></div>
+              <div className="beat-label text-[10px] tracking-[0.3em] uppercase text-white/25 mb-[1rem]">Intro</div>
+              <h2 className="beat-head font-serif text-[clamp(1.8rem,7.5vw,7.2rem)] leading-[0.88] tracking-[-0.01em] text-white mb-[2rem]">
+                We make things <br />
+                <span className="text-red">worth looking at.</span>
+              </h2>
+              <p
+                className="beat-body text-[clamp(0.9rem,1.4vw,1.1rem)] font-light text-white/35 border-l-2 border-red leading-relaxed max-w-[380px]"
+                style={{ paddingLeft: "20px" }}
+              >
+                A media house for people with short attention spans
+              </p>
+            </div>
+          </div>
+
+          <div id="logo-stage" className="absolute inset-0 flex items-center justify-center perspective-[1000px] pointer-events-none select-none">
+            <img
+              id="logo-blast"
+              ref={logoRef}
+              src="/images/logo.png"
+              alt="Maaef Logo"
+              className="w-[40vw] max-w-[500px] h-auto opacity-0 transform translate-y-14"
+            />
+          </div>
+
+          {/* Flash & Red backgrounds */}
+          <div ref={redFloodRef} id="red-flood" className="absolute inset-0 bg-red opacity-0 pointer-events-none" />
+          <div id="white-flash" className="absolute inset-0 bg-white opacity-0 pointer-events-none" />
+
+          {step === 0 && (
+            <div id="scroll-hint" className="absolute bottom-[3.5rem] left-1/2 -translate-x-1/2 flex flex-col items-center gap-[0.8rem] transition-opacity duration-300">
+              <span className="text-[9px] tracking-[0.3em] uppercase text-white/30">Scroll to begin</span>
+              <div className="hint-line w-[1px] h-[48px] bg-gradient-to-b from-transparent to-white/35 animate-[hintDrop_2s_ease_infinite]" />
+            </div>
+          )}
+
+          <button
+            id="skip-btn"
+            onClick={skipIntro}
+            className="absolute bottom-[3.5rem] right-[3rem] text-[9px] tracking-[0.25em] uppercase text-white/20 hover:text-white/50 border-none bg-transparent cursor-pointer transition-all duration-500"
+            style={{
+              opacity: step === 0 ? 1 : 0,
+              pointerEvents: step === 0 ? "auto" : "none",
+            }}
+          >
+            Skip ↓
+          </button>
+
+          <div
+            id="step-bar"
+            className="absolute bottom-0 left-0 h-[1px] bg-red transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]"
+            style={{ width: step === 0 ? "0%" : step === 1 ? "50%" : "100%" }}
+          />
+        </div>
+      )}
 
       {/* ─── MAIN SLIDES AND HOMEPAGE ─── */}
       <div
@@ -816,7 +838,7 @@ export default function HomePage() {
               className="relative w-full h-screen h-dvh bg-[#050505] overflow-hidden snap-start snap-always"
             >
               {i === 0 ? (
-                <HeroSlide s={s} isMuted={!done || isAudioMuted} />
+                <HeroSlide s={s} isMuted={!done || isAudioMuted || activeSectionIndex !== 0} />
               ) : i === MAAEF_SECTIONS.length - 1 ? (
                 <OutroSlide s={s} />
               ) : (
