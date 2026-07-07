@@ -1,6 +1,6 @@
 ---
 _id: "gradual-rolling-of-one-of-the-biggest-privacy-updates-of-whatsapp-whatsapp-usernames"
-title: "GRADUAL ROLLING OF ONE OF THE BIGGEST PRIVACY UPDATES OF WHATSAPP: WHATSAPP USERNAMES"
+title: "Gradual Rolling of One of The Biggest Privacy Updates of Whatsapp: Whatsapp Usernames"
 slug: {"current":"gradual-rolling-of-one-of-the-biggest-privacy-updates-of-whatsapp-whatsapp-usernames"}
 publishedAt: "2026-07-07T08:55:34.875Z"
 mainImage: null
