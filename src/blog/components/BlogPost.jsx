@@ -108,7 +108,32 @@ export default function BlogPost({
           </div>
         </div>
 
-        <div />
+        {/* Right rail - blog image frame */}
+        <aside className="m-article-body__image-rail">
+          <div className="m-article-image-frame">
+            <div className="m-article-image-header">
+              <MonoLabel size={9}>● MEDIA FRAME</MonoLabel>
+            </div>
+            <div className="m-article-image-container">
+              {post.mainImage && post.mainImage.url ? (
+                <img
+                  src={post.mainImage.url}
+                  alt={post.mainImage.alt || post.title}
+                  className="m-article-image"
+                />
+              ) : (
+                <div className="m-article-image-placeholder">
+                  <span>NO IMAGE LINKED</span>
+                </div>
+              )}
+            </div>
+            <div className="m-article-image-footer">
+              <MonoLabel size={9} tone="dim">
+                {post.mainImage && post.mainImage.alt ? post.mainImage.alt : "REF: 2026-DISPATCH"}
+              </MonoLabel>
+            </div>
+          </div>
+        </aside>
       </div>
 
       {/* Next dispatch */}

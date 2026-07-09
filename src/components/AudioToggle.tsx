@@ -75,9 +75,6 @@ export default function AudioToggle() {
       // Intro is active: ONLY sync the intro video and keep all other videos strictly muted
       introVideo.muted = mutedState;
       if (!mutedState) {
-        if (introVideo.readyState === 0) {
-          introVideo.load();
-        }
         const playPromise = introVideo.play();
         if (playPromise !== undefined) {
           playPromise.catch(() => {});
@@ -95,9 +92,6 @@ export default function AudioToggle() {
         const keepMuted = v.getAttribute("data-keep-muted") === "true";
         v.muted = keepMuted ? true : mutedState;
         if (!v.muted) {
-          if (v.readyState === 0) {
-            v.load();
-          }
           const playPromise = v.play();
           if (playPromise !== undefined) {
             playPromise.catch(() => {});

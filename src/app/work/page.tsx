@@ -373,7 +373,7 @@ export default function AboutPage() {
               ref={videoRef}
               src={videoSrc}
               autoPlay
-              muted
+              muted={isMuted}
               playsInline
               onEnded={handleVideoEnded}
               className="w-full h-full object-cover bg-black select-none"
@@ -403,8 +403,8 @@ export default function AboutPage() {
               title="Toggle Sound"
             >
               <svg
-                width="18"
-                height="18"
+                width="22"
+                height="22"
                 viewBox="0 0 24 24"
                 fill={isMuted ? "none" : "#1a1a1a"}
                 stroke="currentColor"

@@ -386,12 +386,14 @@
 .m-article-body {
   padding: 40px var(--m-gutter);
   display: grid;
-  grid-template-columns: 180px minmax(0, 680px) 180px;
+  grid-template-columns: 180px minmax(0, 680px) 380px;
   gap: 48px;
 }
 @media (max-width: 1000px) {
   .m-article-body { grid-template-columns: 1fr; gap: 24px; }
-  .m-article-body__rail { order: 2; }
+  .m-article-body__image-rail { order: 1; margin-bottom: 16px; }
+  .m-article-body__prose { order: 2; }
+  .m-article-body__rail { order: 3; }
 }
 
 .m-article-body__rail .label { display: block; }
@@ -482,4 +484,87 @@
   letter-spacing: -0.01em;
   margin: 0;
   color: var(--m-text);
+}
+
+/* ---------- Article page image rail ---------- */
+.m-article-body__image-rail {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.m-article-image-frame {
+  border: 1px solid var(--m-border);
+  background: var(--m-bg-elev);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  position: sticky;
+  top: 100px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.m-article-image-frame:hover {
+  border-color: var(--m-text-dim);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+.m-article-image-header {
+  border-bottom: 1px solid var(--m-border);
+  padding-bottom: 6px;
+  display: flex;
+  align-items: center;
+}
+
+.m-article-image-container {
+  width: 100%;
+  aspect-ratio: 3/4;
+  border: 1px dashed var(--m-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: #000;
+  position: relative;
+}
+
+.m-article-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.85;
+  transition: opacity 0.3s ease, transform 0.5s ease;
+}
+
+.m-article-image-frame:hover .m-article-image {
+  opacity: 1;
+  transform: scale(1.03);
+}
+
+.m-article-image-placeholder {
+  font-family: var(--m-font-mono);
+  font-size: 8px;
+  color: var(--m-text-mut);
+  text-align: center;
+  padding: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  line-height: 1.4;
+}
+
+.m-article-image-footer {
+  border-top: 1px solid var(--m-border);
+  padding-top: 6px;
+  font-family: var(--m-font-mono);
+  line-height: 1.4;
+}
+
+@media (max-width: 1000px) {
+  .m-article-image-frame {
+    position: relative;
+    top: 0;
+    max-width: 480px;
+    margin: 0 auto;
+  }
 }

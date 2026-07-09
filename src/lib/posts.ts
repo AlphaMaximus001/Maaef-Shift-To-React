@@ -9,6 +9,7 @@ export interface Post {
     current: string;
   };
   publishedAt: string;
+  subheading?: string;
   mainImage?: {
     url: string;
     alt?: string;
@@ -137,6 +138,7 @@ export async function getAllPosts(): Promise<Post[]> {
           current: slug,
         },
         publishedAt: data.publishedAt || new Date().toISOString(),
+        subheading: data.subheading || undefined,
         mainImage: data.mainImage || undefined,
         author: data.author || undefined,
         categories: data.categories || [],
@@ -176,6 +178,7 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
         current: slug,
       },
       publishedAt: data.publishedAt || new Date().toISOString(),
+      subheading: data.subheading || undefined,
       mainImage: data.mainImage || undefined,
       author: data.author || undefined,
       categories: data.categories || [],
@@ -205,6 +208,7 @@ export async function savePost(slug: string, postData: Partial<Post>): Promise<b
       title: postData.title || "Untitled Dispatch",
       slug: postData.slug || { current: slug },
       publishedAt: postData.publishedAt || new Date().toISOString(),
+      subheading: postData.subheading || null,
       mainImage: postData.mainImage || null,
       author: postData.author || null,
       categories: postData.categories || [],

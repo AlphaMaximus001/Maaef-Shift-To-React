@@ -18,6 +18,11 @@ interface Post {
       current: string;
     };
   }[];
+  subheading?: string;
+  mainImage?: {
+    url: string;
+    alt?: string;
+  };
 }
 
 export default function WritingSpace() {
@@ -30,6 +35,9 @@ export default function WritingSpace() {
   const [markdownBody, setMarkdownBody] = useState("");
   const [categoryString, setCategoryString] = useState("");
   const [isArchived, setIsArchived] = useState(false);
+  const [subheading, setSubheading] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
+  const [imageAlt, setImageAlt] = useState("");
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   
   const [isLoading, setIsLoading] = useState(false);
@@ -133,6 +141,9 @@ export default function WritingSpace() {
     setMarkdownBody("");
     setCategoryString("");
     setIsArchived(false);
+    setSubheading("");
+    setImageUrl("");
+    setImageAlt("");
     setStatusMessage("Composing new post.");
     showToast("Form Cleared");
   };
@@ -143,6 +154,9 @@ export default function WritingSpace() {
     setMarkdownBody(post.markdownBody || "");
     setCategoryString(post.categories?.map((c) => c.title).join(", ") || "");
     setIsArchived(post.isArchived || false);
+    setSubheading(post.subheading || "");
+    setImageUrl(post.mainImage?.url || "");
+    setImageAlt(post.mainImage?.alt || "");
     setStatusMessage(`Loaded post: ${post.title}`);
     showToast("Post Loaded");
   };
@@ -188,6 +202,8 @@ export default function WritingSpace() {
       title: title.trim(),
       slug: { current: generatedSlug },
       publishedAt: selectedPost?.publishedAt || new Date().toISOString(),
+      subheading: subheading.trim(),
+      mainImage: imageUrl.trim() ? { url: imageUrl.trim(), alt: imageAlt.trim() } : null,
       markdownBody: markdownBody,
       isArchived: isArchived,
       categories: categoriesArray,
@@ -499,6 +515,28 @@ export default function WritingSpace() {
           </div>
 
           <div style={{ marginBottom: "20px" }}>
+            <label style={{ display: "block", marginBottom: "5px", color: "#888", fontSize: "12px" }}>SUBHEADING</label>
+            <textarea
+              placeholder="Enter dedicated subheading..."
+              value={subheading}
+              onChange={(e) => setSubheading(e.target.value)}
+              rows={2}
+              style={{
+                width: "100%",
+                padding: "10px",
+                boxSizing: "border-box",
+                backgroundColor: "#111",
+                border: "1px solid #333",
+                color: "#fff",
+                fontSize: "14px",
+                lineHeight: "1.4",
+                fontFamily: "monospace",
+                resize: "vertical"
+              }}
+            />
+          </div>
+
+          <div style={{ marginBottom: "20px" }}>
             <label style={{ display: "block", marginBottom: "5px", color: "#888", fontSize: "12px" }}>CATEGORIES (COMMA-SEPARATED)</label>
             <input
               type="text"
@@ -516,6 +554,114 @@ export default function WritingSpace() {
                 fontFamily: "monospace"
               }}
             />
+          </div>
+
+          <div style={{ marginBottom: "20px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
+            <div>
+              <label style={{ display: "block", marginBottom: "5px", color: "#888", fontSize: "12px" }}>IMAGE URL</label>
+              <input
+                type="text"
+                placeholder="https://example.com/image.jpg or select file below..."
+                value={imageUrl}
+                onChange={(e) => setImageUrl(e.target.value)}
+                style={{
+                  width: "100%",
+                  padding: "10px",
+                  boxSizing: "border-box",
+                  backgroundColor: "#111",
+                  border: "1px solid #333",
+                  color: "#fff",
+                  fontSize: "14px",
+                  fontFamily: "monospace"
+                }}
+              />
+              <div style={{ marginTop: "8px" }}>
+                <input
+                  type="file"
+                  accept="image/*"
+                  id="image-upload"
+                  style={{ display: "none" }}
+                  onChange={async (e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    
+                    setStatusMessage("Uploading image...");
+                    const formData = new FormData();
+                    formData.append("file", file);
+                    try {
+                      const res = await fetch("/api/upload", {
+                        method: "POST",
+                        body: formData
+                      });
+                      if (res.ok) {
+                        const data = await res.json();
+                        setImageUrl(data.url);
+                        setStatusMessage("Image uploaded successfully.");
+                        showToast("Image Uploaded");
+                      } else {
+                        const errorData = await res.json();
+                        setStatusMessage(`Upload failed: ${errorData.error}`);
+                        showToast("Upload Failed");
+                      }
+                    } catch (err) {
+                      setStatusMessage("Image upload error.");
+                      showToast("Upload Error");
+                    }
+                  }}
+                />
+                <label
+                  htmlFor="image-upload"
+                  style={{
+                    display: "inline-block",
+                    padding: "6px 12px",
+                    backgroundColor: "#222",
+                    color: "#ccc",
+                    border: "1px solid #333",
+                    cursor: "pointer",
+                    fontFamily: "monospace",
+                    fontSize: "11px",
+                    fontWeight: "bold"
+                  }}
+                >
+                  UPLOAD IMAGE FILE
+                </label>
+              </div>
+            </div>
+
+            <div>
+              <label style={{ display: "block", marginBottom: "5px", color: "#888", fontSize: "12px" }}>IMAGE ALT / CAPTION</label>
+              <input
+                type="text"
+                placeholder="Description of the image..."
+                value={imageAlt}
+                onChange={(e) => setImageAlt(e.target.value)}
+                style={{
+                  width: "100%",
+                  padding: "10px",
+                  boxSizing: "border-box",
+                  backgroundColor: "#111",
+                  border: "1px solid #333",
+                  color: "#fff",
+                  fontSize: "14px",
+                  fontFamily: "monospace"
+                }}
+              />
+              {imageUrl && (
+                <div style={{ marginTop: "10px", display: "flex", alignItems: "center", gap: "10px" }}>
+                  <img
+                    src={imageUrl}
+                    alt={imageAlt || "Preview"}
+                    style={{
+                      height: "40px",
+                      width: "60px",
+                      objectFit: "cover",
+                      border: "1px solid #333"
+                    }}
+                  />
+                  <span style={{ fontSize: "11px", color: "#666" }}>Preview</span>
+                </div>
+              )}
+            </div>
           </div>
 
           <div style={{ marginBottom: "20px" }}>

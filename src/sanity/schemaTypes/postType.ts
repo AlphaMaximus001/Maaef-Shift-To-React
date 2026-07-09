@@ -12,6 +12,11 @@ export const postType = defineType({
       type: 'string',
     }),
     defineField({
+      name: 'subheading',
+      title: 'Subheading',
+      type: 'string',
+    }),
+    defineField({
       name: 'slug',
       type: 'slug',
       options: {

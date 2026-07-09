@@ -10,6 +10,10 @@ export interface TranslatedMaaefPost {
   read: string;
   author: string;
   body: { type: "p" | "h" | "q"; text: string }[];
+  mainImage?: {
+    url: string;
+    alt?: string;
+  };
 }
 
 /**
@@ -54,9 +58,12 @@ export function translateLocalPost(post: Post, index: number): TranslatedMaaefPo
   });
 
   // 4. Generate subtitle / excerpt (dek)
-  let dek = firstParagraphText;
-  if (dek.length > 140) {
-    dek = dek.substring(0, 137).trim() + "...";
+  let dek = post.subheading || "";
+  if (!dek) {
+    dek = firstParagraphText;
+    if (dek.length > 140) {
+      dek = dek.substring(0, 137).trim() + "...";
+    }
   }
   if (!dek) {
     dek = "Dispatch from the studio floor.";
@@ -77,5 +84,6 @@ export function translateLocalPost(post: Post, index: number): TranslatedMaaefPo
     read,
     author,
     body: bodyBlocks,
+    mainImage: post.mainImage,
   };
 }

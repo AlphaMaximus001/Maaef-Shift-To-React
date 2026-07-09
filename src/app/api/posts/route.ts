@@ -38,6 +38,7 @@ export async function POST(request: Request) {
         title: postData.title || "Untitled Dispatch",
         slug: slug,
         publishedAt: postData.publishedAt || new Date().toISOString(),
+        subheading: postData.subheading || null,
         mainImage: postData.mainImage || null,
         author: postData.author || null,
         categories: postData.categories || [],
