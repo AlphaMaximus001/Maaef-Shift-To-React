@@ -4,7 +4,7 @@ title: "Why Every Indian SMEs Needs a Strong Brand Strategy?"
 slug: {"current":"why-every-indian-smes-needs-a-strong-brand-strategy-"}
 publishedAt: "2026-07-10T13:00:32.784Z"
 subheading: "Here are some of the reasons why branding strategy for SMEs matters more than ever"
-mainImage: {"url":"/images/uploads/1783684558064_Brand_Strategy_Image_.jpg","alt":"Modern corporate illustration representing brand strategy."}
+mainImage: null
 author: null
 categories: [{"title":"Brand Strategy","slug":{"current":"brand-strategy"}}]
 isArchived: false
