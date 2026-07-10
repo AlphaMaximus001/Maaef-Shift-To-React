@@ -166,3 +166,62 @@ export async function deleteFileFromGithub(
     return false;
   }
 }
+
+/**
+ * Commits or updates a binary file directly in the GitHub repository.
+ * Returns true if successful, false otherwise.
+ */
+export async function commitBinaryFileToGithub(
+  filePath: string,
+  buffer: Buffer,
+  commitMessage: string
+): Promise<boolean> {
+  if (!isGithubConfigured()) {
+    console.error("GitHub integration failed: GITHUB_TOKEN is not defined in environment variables.");
+    return false;
+  }
+
+  // 1. Fetch the existing file SHA if it exists (necessary for updates)
+  const existingSha = await getGithubFileSha(filePath);
+
+  const url = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${filePath}`;
+  
+  // 2. Base64 encode the binary buffer
+  const base64Content = buffer.toString("base64");
+
+  const payload: any = {
+    message: commitMessage,
+    content: base64Content,
+    branch: GITHUB_BRANCH
+  };
+
+  if (existingSha) {
+    payload.sha = existingSha;
+  }
+
+  try {
+    const res = await fetch(url, {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${GITHUB_TOKEN}`,
+        Accept: "application/vnd.github+json",
+        "X-GitHub-Api-Version": "2022-11-28",
+        "Content-Type": "application/json",
+        "User-Agent": "Maaef-Serverless-Assistant"
+      },
+      body: JSON.stringify(payload)
+    });
+
+    if (!res.ok) {
+      const errorText = await res.text();
+      console.error(`GitHub API PUT binary failed: ${res.status} - ${errorText}`);
+      return false;
+    }
+
+    return true;
+  } catch (error) {
+    console.error("Error committing binary file to GitHub:", error);
+    return false;
+  }
+}
+

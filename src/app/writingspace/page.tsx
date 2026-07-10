@@ -37,6 +37,7 @@ export default function WritingSpace() {
   const [isArchived, setIsArchived] = useState(false);
   const [subheading, setSubheading] = useState("");
   const [imageUrl, setImageUrl] = useState("");
+  const [previewUrl, setPreviewUrl] = useState("");
   const [imageAlt, setImageAlt] = useState("");
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   
@@ -143,6 +144,7 @@ export default function WritingSpace() {
     setIsArchived(false);
     setSubheading("");
     setImageUrl("");
+    setPreviewUrl("");
     setImageAlt("");
     setStatusMessage("Composing new post.");
     showToast("Form Cleared");
@@ -156,6 +158,7 @@ export default function WritingSpace() {
     setIsArchived(post.isArchived || false);
     setSubheading(post.subheading || "");
     setImageUrl(post.mainImage?.url || "");
+    setPreviewUrl(post.mainImage?.url || "");
     setImageAlt(post.mainImage?.alt || "");
     setStatusMessage(`Loaded post: ${post.title}`);
     showToast("Post Loaded");
@@ -563,7 +566,10 @@ export default function WritingSpace() {
                 type="text"
                 placeholder="https://example.com/image.jpg or select file below..."
                 value={imageUrl}
-                onChange={(e) => setImageUrl(e.target.value)}
+                onChange={(e) => {
+                  setImageUrl(e.target.value);
+                  setPreviewUrl(e.target.value);
+                }}
                 style={{
                   width: "100%",
                   padding: "10px",
@@ -585,6 +591,8 @@ export default function WritingSpace() {
                     const file = e.target.files?.[0];
                     if (!file) return;
                     
+                    const localUrl = URL.createObjectURL(file);
+                    setPreviewUrl(localUrl);
                     setStatusMessage("Uploading image...");
                     const formData = new FormData();
                     formData.append("file", file);
@@ -602,10 +610,12 @@ export default function WritingSpace() {
                         const errorData = await res.json();
                         setStatusMessage(`Upload failed: ${errorData.error}`);
                         showToast("Upload Failed");
+                        setPreviewUrl(imageUrl); // revert to original url on failure
                       }
                     } catch (err) {
                       setStatusMessage("Image upload error.");
                       showToast("Upload Error");
+                      setPreviewUrl(imageUrl); // revert to original url on failure
                     }
                   }}
                 />
@@ -646,10 +656,10 @@ export default function WritingSpace() {
                   fontFamily: "monospace"
                 }}
               />
-              {imageUrl && (
+              {previewUrl && (
                 <div style={{ marginTop: "10px", display: "flex", alignItems: "center", gap: "10px" }}>
                   <img
-                    src={imageUrl}
+                    src={previewUrl}
                     alt={imageAlt || "Preview"}
                     style={{
                       height: "40px",
