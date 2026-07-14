@@ -296,7 +296,7 @@ function HeroSlide({
             }}
           >
             <a
-              href="https://www.instagram.com/maaef.media"
+              href="https://www.instagram.com/maaef.media?igsh=MXJ2cnRwY3ZmdjlsZA=="
               target="_blank"
               rel="noopener noreferrer"
               className="no-underline text-inherit"

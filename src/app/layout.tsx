@@ -60,8 +60,10 @@ export default function RootLayout({
     },
     "description": "Maaef Media House — a new-era creative collective engineering attention through video, design, photography, web, and brand strategy. Based in Lucknow, India.",
     "sameAs": [
-      "https://www.instagram.com/maaef.media",
-      "https://www.linkedin.com/showcase/maaef-media/about/"
+      "https://www.instagram.com/maaef.media?igsh=MXJ2cnRwY3ZmdjlsZA==",
+      "https://www.linkedin.com/showcase/maaef-media/",
+      "https://x.com/maaefltd?s=11",
+      "https://youtube.com/@maaef.mediahouse?si=1bWkSQZ68FeaCGCc"
     ]
   };
 

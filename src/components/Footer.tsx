@@ -139,7 +139,7 @@ export default function Footer() {
             <ul className="space-y-4 text-xs tracking-[0.2em] uppercase list-none p-0">
               <li>
                 <a
-                  href="https://www.instagram.com/maaef.media"
+                  href="https://www.instagram.com/maaef.media?igsh=MXJ2cnRwY3ZmdjlsZA=="
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-gray-500 hover:text-red-500 transition duration-300 hover-trigger inline-block no-underline"
@@ -149,7 +149,7 @@ export default function Footer() {
               </li>
               <li>
                 <a
-                  href="https://www.linkedin.com/showcase/maaef-media/about/"
+                  href="https://www.linkedin.com/showcase/maaef-media/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-gray-500 hover:text-red-500 transition duration-300 hover-trigger inline-block no-underline"
@@ -159,7 +159,7 @@ export default function Footer() {
               </li>
               <li>
                 <a
-                  href="https://x.com/maaef"
+                  href="https://x.com/maaefltd?s=11"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-gray-500 hover:text-red-500 transition duration-300 hover-trigger inline-block no-underline"
@@ -169,7 +169,7 @@ export default function Footer() {
               </li>
               <li>
                 <a
-                  href="https://youtube.com/@maaef"
+                  href="https://youtube.com/@maaef.mediahouse?si=1bWkSQZ68FeaCGCc"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-gray-500 hover:text-red-500 transition duration-300 hover-trigger inline-block no-underline"
