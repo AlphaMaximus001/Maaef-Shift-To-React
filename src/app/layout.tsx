@@ -4,6 +4,7 @@ import Image from "next/image";
 import "./globals.css";
 import Navigation from "@/components/Navigation";
 import AudioToggle from "@/components/AudioToggle";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -103,6 +104,9 @@ export default function RootLayout({
 
         {/* Global persistent sound toggle */}
         <AudioToggle />
+
+        {/* Vercel Speed Insights */}
+        <SpeedInsights />
       </body>
     </html>
   );
