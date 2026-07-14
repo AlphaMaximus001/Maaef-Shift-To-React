@@ -178,16 +178,6 @@ export default function Footer() {
                 </a>
               </li>
               <li>
-                <a
-                  href="https://facebook.com/maaef"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-gray-500 hover:text-red-500 transition duration-300 hover-trigger inline-block no-underline"
-                >
-                  FB
-                </a>
-              </li>
-              <li>
                 <Link
                   href="/blog"
                   className="text-gray-500 hover:text-white transition duration-300 hover-trigger inline-block no-underline"
