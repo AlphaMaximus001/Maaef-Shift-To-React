@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
 import Image from "next/image";
+import Script from "next/script";
 import "./globals.css";
 import Navigation from "@/components/Navigation";
 import AudioToggle from "@/components/AudioToggle";
@@ -26,7 +27,7 @@ export const metadata: Metadata = {
   description:
     "Maaef Media House — a new-era creative collective engineering attention through video, design, photography, web, and brand strategy. Based in Lucknow, India.",
   icons: {
-    icon: "/images/logo.png",
+    icon: "/favicon.png",
   },
   verification: {
     google: [
@@ -77,6 +78,19 @@ export default function RootLayout({
       suppressHydrationWarning={true}
     >
       <head>
+        {/* Google Analytics 4 */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-T787MQ3X0V"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-T787MQ3X0V');
+          `}
+        </Script>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
