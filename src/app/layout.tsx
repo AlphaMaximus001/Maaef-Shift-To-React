@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { buildMetadata } from "@/lib/seo";
+import { buildMetadata, buildOrganizationJsonLd, buildLocalBusinessJsonLd } from "@/lib/seo";
 import { Inter, Playfair_Display } from "next/font/google";
 import Image from "next/image";
 import Script from "next/script";
@@ -41,35 +41,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    "@id": "https://www.maaef.com/#organization",
-    "name": "Maaef",
-    "legalName": "Maaef Media House",
-    "url": "https://www.maaef.com",
-    "logo": {
-      "@type": "ImageObject",
-      "@id": "https://www.maaef.com/#logo",
-      "url": "https://www.maaef.com/images/logo.png",
-      "caption": "Maaef Media House Logo"
-    },
-    "foundingDate": "2024",
-    "address": {
-      "@type": "PostalAddress",
-      "addressLocality": "Lucknow",
-      "addressRegion": "Uttar Pradesh",
-      "addressCountry": "IN"
-    },
-    "description": "Maaef Media House — a new-era creative collective engineering attention through video, design, photography, web, and brand strategy. Based in Lucknow, India.",
-    "sameAs": [
-      "https://www.instagram.com/maaef.media?igsh=MXJ2cnRwY3ZmdjlsZA==",
-      "https://www.linkedin.com/showcase/maaef-media/",
-      "https://x.com/maaefltd?s=11",
-      "https://youtube.com/@maaef.mediahouse?si=1bWkSQZ68FeaCGCc"
-    ]
-  };
-
   return (
     <html
       lang="en"
@@ -90,9 +61,14 @@ export default function RootLayout({
             gtag('config', 'G-T787MQ3X0V');
           `}
         </Script>
+        {/* Structured Data / JSON-LD for Search Engines & LLM Crawlers */}
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(buildOrganizationJsonLd()) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(buildLocalBusinessJsonLd()) }}
         />
       </head>
       <body

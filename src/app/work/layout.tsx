@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { buildMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = buildMetadata({
-  title: "Our Work",
+  title: "Selected Work & Case Studies",
   description:
-    "See how Maaef Media House engineers attention for brands — a curated showcase of video, design, photography, and digital campaigns crafted in Lucknow, India.",
+    "Explore how Maaef Group delivers strategy, production, and performance across restaurant, real estate, hospitality, and government sectors from Lucknow, India.",
   path: "/work",
 });
 

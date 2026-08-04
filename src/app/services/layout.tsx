@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { buildMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = buildMetadata({
-  title: "Our Services",
+  title: "Services & Capabilities",
   description:
-    "Explore Maaef Media House's full suite of creative services — video production, brand strategy, web design, photography, and content engineering for forward-thinking brands.",
+    "End-to-end capabilities across Maaef Group: Performance Marketing, Short-form Video, LLMO, Print & Visual Production (Maaef Studios), Community Networking (Afterhours), and GeM Government Procurement (Maaef Enterprises).",
   path: "/services",
 });
 

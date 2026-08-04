@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { buildMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = buildMetadata({
-  title: "About Us",
+  title: "About Maaef Group",
   description:
-    "Maaef Media House is a new-era creative collective based in Lucknow, India — engineering attention through video, design, photography, web, and brand strategy.",
+    "Maaef Group is a Lucknow-based sovereign collective operating across four arms — Maaef Media House, Maaef Studios, Maaef Afterhours, and Maaef Enterprises Pvt Ltd. Grounded in Attention, Precision, Trust, and Time.",
   path: "/about",
 });
 

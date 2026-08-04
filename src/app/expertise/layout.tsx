@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { buildMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = buildMetadata({
-  title: "Expertise",
+  title: "Areas of Expertise",
   description:
-    "Maaef Media House's areas of expertise span creative direction, motion design, brand identity, photography, and digital strategy — built for brands ready to lead.",
+    "Integrated expertise in Growth Marketing, LLMO, High-Finish Print Production, 3D Product Visualizers, Founders Community Events, and GeM Government Bidding.",
   path: "/expertise",
 });
 
