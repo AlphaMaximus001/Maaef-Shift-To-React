@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { buildMetadata } from "@/lib/seo";
 import { Inter, Playfair_Display } from "next/font/google";
 import Image from "next/image";
 import Script from "next/script";
@@ -23,9 +24,7 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: "Maaef Media House | Engineering Attention",
-  description:
-    "Maaef Media House — a new-era creative collective engineering attention through video, design, photography, web, and brand strategy. Based in Lucknow, India.",
+  ...buildMetadata({ path: "/" }),
   icons: {
     icon: "/favicon.png",
   },
