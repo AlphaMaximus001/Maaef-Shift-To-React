@@ -71,6 +71,19 @@ export function buildMetadata(overrides: {
       creator: TWITTER_HANDLE,
       images: [ogImage],
     },
+    verification: {
+      google: [
+        process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || "",
+        "jga1FV1840zurRbgUvSSgr5udPO0Kmciu9sak28uIe0",
+        "JyqmwrfKTATksuzReAITsAbfQeyX2VsvA3rXKjDI6Qg",
+      ].filter(Boolean),
+      ...(process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION
+        ? { other: { "msvalidate.01": process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION } }
+        : {}),
+      ...(process.env.NEXT_PUBLIC_YANDEX_SITE_VERIFICATION
+        ? { yandex: process.env.NEXT_PUBLIC_YANDEX_SITE_VERIFICATION }
+        : {}),
+    },
     ...extra,
   };
 }

@@ -88,21 +88,26 @@ export default function Footer() {
           </div>
 
           <div>
-            <h3 className="serif text-white text-lg mb-6 tracking-wide opacity-90">Company</h3>
+            <h3 className="serif text-white text-lg mb-6 tracking-wide opacity-90">Arms</h3>
             <ul className="space-y-4 text-xs tracking-[0.2em] uppercase list-none p-0">
               <li>
-                <Link href="#" className="text-gray-500 hover:text-white transition duration-300 hover-trigger inline-block no-underline">
-                  Studio
+                <Link href="/services" className="text-gray-500 hover:text-white transition duration-300 hover-trigger inline-block no-underline">
+                  Media House
                 </Link>
               </li>
               <li>
-                <Link href="#" className="text-gray-500 hover:text-white transition duration-300 hover-trigger inline-block no-underline">
-                  Enterprise
+                <Link href="/services" className="text-gray-500 hover:text-white transition duration-300 hover-trigger inline-block no-underline">
+                  Studios
                 </Link>
               </li>
               <li>
-                <Link href="#" className="text-gray-500 hover:text-white transition duration-300 hover-trigger inline-block no-underline">
-                  Afterhour
+                <Link href="/expertise" className="text-gray-500 hover:text-white transition duration-300 hover-trigger inline-block no-underline">
+                  Enterprises
+                </Link>
+              </li>
+              <li>
+                <Link href="/about" className="text-gray-500 hover:text-white transition duration-300 hover-trigger inline-block no-underline">
+                  Afterhours
                 </Link>
               </li>
             </ul>
@@ -129,6 +134,16 @@ export default function Footer() {
               <li>
                 <Link href="/services" className="text-gray-500 hover:text-white transition duration-300 hover-trigger inline-block no-underline">
                   Services
+                </Link>
+              </li>
+              <li>
+                <Link href="/expertise" className="text-gray-500 hover:text-white transition duration-300 hover-trigger inline-block no-underline">
+                  Expertise
+                </Link>
+              </li>
+              <li>
+                <Link href="/writingspace" className="text-gray-500 hover:text-white transition duration-300 hover-trigger inline-block no-underline">
+                  Dispatches
                 </Link>
               </li>
             </ul>
