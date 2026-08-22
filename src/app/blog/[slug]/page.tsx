@@ -5,7 +5,17 @@ import { translateLocalPost } from "@/lib/translatePosts";
 import { buildMetadata, buildArticleJsonLd } from "@/lib/seo";
 import BlogPostWrapper from "./BlogPostWrapper";
 
-export const dynamic = "force-dynamic";
+// See the note in ../page.tsx — these are file-backed posts, not live data.
+export const revalidate = 3600;
+
+/** Prerender every published dispatch at build time; unknown slugs still
+ *  render on demand via the default dynamicParams behaviour. */
+export async function generateStaticParams() {
+  const posts = await getAllPosts();
+  return posts
+    .filter((p) => !p.isArchived)
+    .map((p) => ({ slug: p.slug.current }));
+}
 
 interface PageProps {
   params: Promise<{
@@ -45,7 +55,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     openGraph: {
       ...buildMetadata({ title: post.title, description: post.dek, path: `/blog/${slug}`, ogImage }).openGraph,
       type: "article",
-      publishedTime: new Date(post.date).toISOString(),
+      publishedTime: post.publishedAt || undefined,
       authors: [post.author],
       section: post.cat,
     },
@@ -64,7 +74,7 @@ export default async function BlogPostPage({ params }: PageProps) {
     title: post.title,
     slug: post.slug,
     description: post.dek,
-    publishedAt: new Date(post.date).toISOString(),
+    publishedAt: post.publishedAt,
     author: post.author,
     imageUrl: post.mainImage?.url,
   });

@@ -2,7 +2,10 @@ import { getAllPosts } from "@/lib/posts";
 import { translateLocalPost } from "@/lib/translatePosts";
 import BlogIndexWrapper from "./BlogIndexWrapper";
 
-export const dynamic = "force-dynamic";
+// Posts are markdown files committed to the repo, so they only change on deploy.
+// force-dynamic re-read and re-parsed every file on every request and disabled CDN
+// caching entirely; ISR serves this from the edge instead.
+export const revalidate = 3600;
 
 export default async function BlogPage() {
   const localPosts = await getAllPosts();

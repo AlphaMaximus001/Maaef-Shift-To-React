@@ -375,6 +375,7 @@ export default function AboutPage() {
               autoPlay
               muted={isMuted}
               playsInline
+              preload="metadata"
               onEnded={handleVideoEnded}
               className="w-full h-full object-cover bg-black select-none"
             />

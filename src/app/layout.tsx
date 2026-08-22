@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { buildMetadata, buildOrganizationJsonLd, buildLocalBusinessJsonLd } from "@/lib/seo";
-import { Inter, Playfair_Display } from "next/font/google";
+import { Playfair_Display } from "next/font/google";
 import Image from "next/image";
 import Script from "next/script";
 import "./globals.css";
@@ -8,17 +8,12 @@ import Navigation from "@/components/Navigation";
 import AudioToggle from "@/components/AudioToggle";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
-  display: "swap",
-});
-
+// Playfair is used directly on /about and as the fallback face for Panchang.
+// Only 400/700 are referenced; loading 500 as well shipped a font file nothing used.
 const playfair = Playfair_Display({
   variable: "--font-playfair",
   subsets: ["latin"],
-  weight: ["400", "500", "700"],
+  weight: ["400", "700"],
   style: ["normal", "italic"],
   display: "swap",
 });
@@ -44,7 +39,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${playfair.variable} h-full antialiased`}
+      className={`${playfair.variable} h-full antialiased`}
       suppressHydrationWarning={true}
     >
       <head>

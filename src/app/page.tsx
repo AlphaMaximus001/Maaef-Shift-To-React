@@ -246,12 +246,12 @@ function HeroSlide({
       {/* Background Looped Video */}
       <video
         ref={videoRef}
-        src="/videos/trailer.mp4?bg=1"
+        src="/videos/trailer.mp4"
         autoPlay
         muted
         loop
         playsInline
-        preload="auto"
+        preload="metadata"
         data-keep-muted={isMuted ? "true" : "false"}
         className="absolute inset-0 w-full h-full object-cover transition-transform duration-[800ms] ease-[cubic-bezier(0.16,1,0.3,1)] select-none"
         style={{ transform: isLaptop ? "scale(1.1)" : "none" }}
@@ -688,6 +688,38 @@ export default function HomePage() {
       },
     });
   };
+
+  // Latest-value refs so the stall timer below can read intro progress without
+  // restarting itself every time step/busy change.
+  const stepRef = useRef(step);
+  const busyRef = useRef(busy);
+  useEffect(() => {
+    stepRef.current = step;
+  }, [step]);
+  useEffect(() => {
+    busyRef.current = busy;
+  }, [busy]);
+
+  // Safety net: the homepage sits at opacity-0 until the intro completes, and the
+  // intro only advances on a user gesture. If the intro video stalls on a slow
+  // connection the visitor is left staring at a black screen, which reads as an
+  // outage. Reveal the site instead of waiting forever.
+  useEffect(() => {
+    if (done) return;
+
+    const INTRO_STALL_TIMEOUT_MS = 8000;
+
+    const timer = window.setTimeout(() => {
+      // Don't interrupt a visitor who is already moving through the intro.
+      if (stepRef.current !== 0 || busyRef.current) return;
+      const introVideo = document.getElementById("intro-bg-video") as HTMLVideoElement | null;
+      // readyState >= 3 (HAVE_FUTURE_DATA) means playback actually got going.
+      if (introVideo && introVideo.readyState >= 3) return;
+      skipIntro();
+    }, INTRO_STALL_TIMEOUT_MS);
+
+    return () => window.clearTimeout(timer);
+  }, [done]);
 
   // Scroll listeners to advance intro stage beats
   useEffect(() => {

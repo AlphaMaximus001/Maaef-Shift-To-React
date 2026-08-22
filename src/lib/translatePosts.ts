@@ -3,7 +3,10 @@ import { Post } from "./posts";
 export interface TranslatedMaaefPost {
   n: string;
   slug: string;
+  /** Display-only, formatted YY.MM.DD. Not parseable — use publishedAt for real dates. */
   date: string;
+  /** ISO 8601 timestamp, or "" when the source frontmatter carried no valid date. */
+  publishedAt: string;
   cat: string;
   title: string;
   dek: string;
@@ -22,12 +25,14 @@ export interface TranslatedMaaefPost {
  * generates appropriate excerpts (deks), counts reading times, formats dates, and numbers dispatches.
  */
 export function translateLocalPost(post: Post, index: number): TranslatedMaaefPost {
-  // 1. Format date as YY.MM.DD
+  // 1. Format date as YY.MM.DD for display, and keep the ISO value for metadata.
   const d = new Date(post.publishedAt);
-  const yy = String(d.getFullYear()).slice(-2);
-  const mm = String(d.getMonth() + 1).padStart(2, "0");
-  const dd = String(d.getDate()).padStart(2, "0");
+  const hasValidDate = !Number.isNaN(d.getTime());
+  const yy = hasValidDate ? String(d.getFullYear()).slice(-2) : "--";
+  const mm = hasValidDate ? String(d.getMonth() + 1).padStart(2, "0") : "--";
+  const dd = hasValidDate ? String(d.getDate()).padStart(2, "0") : "--";
   const dateStr = `${yy}.${mm}.${dd}`;
+  const publishedAt = hasValidDate ? d.toISOString() : "";
 
   // 2. Category and Author parameters
   const cat = post.categories?.[0]?.title?.toUpperCase() || "DISPATCH";
@@ -78,6 +83,7 @@ export function translateLocalPost(post: Post, index: number): TranslatedMaaefPo
     n: String(index + 1).padStart(2, "0"),
     slug: post.slug.current,
     date: dateStr,
+    publishedAt,
     cat,
     title: post.title,
     dek,
