@@ -46,6 +46,7 @@ export async function PUT(request: Request, { params }: RouteParams) {
         title: body.title || "Untitled Dispatch",
         slug: body.slug || { current: slug },
         publishedAt: body.publishedAt || new Date().toISOString(),
+        subheading: body.subheading || null,
         mainImage: body.mainImage || null,
         author: body.author || null,
         categories: body.categories || [],
