@@ -1,6 +1,10 @@
 import { ImageResponse } from "next/og";
 
-export const runtime = "edge";
+// Deliberately no `runtime = "edge"`. This card renders fixed copy — nothing
+// here varies per request — so on the Node runtime Next can prerender it at
+// build time instead of shipping a function. It also sidesteps the Edge
+// Function size limit, which this route exceeded (1.06MB against a 1MB cap)
+// and which had been failing every production deploy since it was added.
 
 export const alt = "Maaef Group | Attention, Precision, Trust, Time";
 export const size = {
