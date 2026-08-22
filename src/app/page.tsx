@@ -261,7 +261,6 @@ function HeroSlide({
         muted
         loop
         playsInline
-        preload="metadata"
         data-keep-muted={isMuted ? "true" : "false"}
         className="absolute inset-0 w-full h-full object-cover transition-transform duration-[800ms] ease-[cubic-bezier(0.16,1,0.3,1)] select-none"
         style={{ transform: isLaptop ? "scale(1.1)" : "none" }}
