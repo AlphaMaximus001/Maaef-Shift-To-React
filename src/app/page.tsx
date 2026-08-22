@@ -171,9 +171,14 @@ function HudCorner({
 function HeroSlide({
   s,
   isMuted,
+  introDone,
 }: {
   s: typeof MAAEF_SECTIONS[0];
   isMuted: boolean;
+  /** The hero sits behind the intro overlay at opacity-0 but still plays, so it
+   *  must not take a src until the intro is gone — otherwise it downloads the
+   *  trailer a second time, in parallel with the intro's own copy. */
+  introDone: boolean;
 }) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [isHovered, setIsHovered] = useState(false);
@@ -219,7 +224,11 @@ function HeroSlide({
         playPromise.catch(() => { });
       }
     }
-  }, [isMuted]);
+    // introDone matters as much as isMuted here: the src only arrives once the
+    // intro is gone, and this is what applies introCurrentTime so the hero picks
+    // the trailer up where the intro left it. isMuted alone can stay unchanged
+    // across that transition, which would skip the handoff.
+  }, [isMuted, introDone]);
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -246,7 +255,7 @@ function HeroSlide({
       {/* Background Looped Video */}
       <video
         ref={videoRef}
-        src="/videos/trailer.mp4"
+        src={introDone ? "/videos/trailer.mp4" : undefined}
         poster="/videos/trailer-poster.webp"
         autoPlay
         muted
@@ -872,7 +881,11 @@ export default function HomePage() {
               className="relative w-full h-screen h-dvh bg-[#050505] overflow-hidden snap-start snap-always"
             >
               {i === 0 ? (
-                <HeroSlide s={s} isMuted={!done || isAudioMuted || activeSectionIndex !== 0} />
+                <HeroSlide
+                  s={s}
+                  isMuted={!done || isAudioMuted || activeSectionIndex !== 0}
+                  introDone={done}
+                />
               ) : i === MAAEF_SECTIONS.length - 1 ? (
                 <OutroSlide s={s} />
               ) : (
