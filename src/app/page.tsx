@@ -247,6 +247,7 @@ function HeroSlide({
       <video
         ref={videoRef}
         src="/videos/trailer.mp4"
+        poster="/videos/trailer-poster.webp"
         autoPlay
         muted
         loop
@@ -784,6 +785,7 @@ export default function HomePage() {
             <video
               id="intro-bg-video"
               src="/videos/trailer.mp4"
+              poster="/videos/trailer-poster.webp"
               autoPlay
               loop
               muted

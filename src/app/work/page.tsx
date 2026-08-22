@@ -7,9 +7,9 @@ import Footer from "@/components/Footer";
 
 // Brand dial assets
 const DIAL_LOGOS = [
-  { index: 0, imgSrc: "/images/logo1.png", videoSrc: "/videos/studio-video1.mp4", label: "Brand 1" },
-  { index: 1, imgSrc: "/images/logo2.png", videoSrc: "/videos/studio-video2.mp4", label: "Brand 2" },
-  { index: 2, imgSrc: "/images/logo3.png", videoSrc: "/videos/studio-video3.mp4", label: "Brand 3" },
+  { index: 0, imgSrc: "/images/logo1.png", videoSrc: "/videos/studio-video1.mp4", posterSrc: "/videos/studio-video1-poster.webp", label: "Brand 1" },
+  { index: 1, imgSrc: "/images/logo2.png", videoSrc: "/videos/studio-video2.mp4", posterSrc: "/videos/studio-video2-poster.webp", label: "Brand 2" },
+  { index: 2, imgSrc: "/images/logo3.png", videoSrc: "/videos/studio-video3.mp4", posterSrc: "/videos/studio-video3-poster.webp", label: "Brand 3" },
 ];
 
 export default function AboutPage() {
@@ -19,6 +19,7 @@ export default function AboutPage() {
 
   const [activeIndex, setActiveIndex] = useState(0);
   const [videoSrc, setVideoSrc] = useState("/videos/studio-video1.mp4");
+  const [posterSrc, setPosterSrc] = useState("/videos/studio-video1-poster.webp");
   const [isMuted, setIsMuted] = useState(true);
   const [inFullscreen, setInFullscreen] = useState(false);
 
@@ -154,6 +155,7 @@ export default function AboutPage() {
     if (!bgContainer || !video) return;
 
     const targetSrc = DIAL_LOGOS[idx].videoSrc;
+    const targetPoster = DIAL_LOGOS[idx].posterSrc;
     loopCountRef.current = 0;
 
     gsap.to(bgContainer, {
@@ -162,7 +164,9 @@ export default function AboutPage() {
       onComplete: () => {
         // Direct DOM update ensures the new video loads instantly without timing lag or batching delays
         video.src = targetSrc;
+        video.poster = targetPoster;
         setVideoSrc(targetSrc);
+        setPosterSrc(targetPoster);
         video.load();
         video.currentTime = 0;
         const p = video.play();
@@ -372,6 +376,7 @@ export default function AboutPage() {
             <video
               ref={videoRef}
               src={videoSrc}
+              poster={posterSrc}
               autoPlay
               muted={isMuted}
               playsInline
