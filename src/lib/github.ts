@@ -5,9 +5,13 @@
  */
 
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
-const GITHUB_OWNER = process.env.GITHUB_OWNER || "Maaef";
+// Fallbacks match the repository this deploys from. They only apply when the
+// environment variables are unset — production sets them — but the previous
+// defaults pointed at an owner and a branch that do not exist, so losing the
+// env config would have failed every commit instead of quietly working.
+const GITHUB_OWNER = process.env.GITHUB_OWNER || "AlphaMaximus001";
 const GITHUB_REPO = process.env.GITHUB_REPO || "Maaef-Shift-To-React";
-const GITHUB_BRANCH = process.env.GITHUB_BRANCH || "main";
+const GITHUB_BRANCH = process.env.GITHUB_BRANCH || "master";
 
 /**
  * Checks if GitHub REST API credentials are fully configured in the environment.
