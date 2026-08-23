@@ -175,9 +175,12 @@ function HeroSlide({
 }: {
   s: typeof MAAEF_SECTIONS[0];
   isMuted: boolean;
-  /** The hero sits behind the intro overlay at opacity-0 but still plays, so it
-   *  must not take a src until the intro is gone — otherwise it downloads the
-   *  trailer a second time, in parallel with the intro's own copy. */
+  /** Whether the intro has finished. Only used to re-run the play/seek effect at
+   *  the handoff — deliberately NOT used to gate src. Withholding src until the
+   *  intro ended saved one download but left the hero starting a cold fetch at
+   *  the exact moment it became visible, so on a slow connection the homepage
+   *  revealed to an unplayed video. Loading alongside the intro costs a second
+   *  copy and keeps the file warm for the handoff. */
   introDone: boolean;
 }) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -255,13 +258,12 @@ function HeroSlide({
       {/* Background Looped Video */}
       <video
         ref={videoRef}
-        src={introDone ? "/videos/trailer.mp4" : undefined}
+        src="/videos/trailer.mp4"
         poster="/videos/trailer-poster.webp"
         autoPlay
         muted
         loop
         playsInline
-        preload="metadata"
         data-keep-muted={isMuted ? "true" : "false"}
         className="absolute inset-0 w-full h-full object-cover transition-transform duration-[800ms] ease-[cubic-bezier(0.16,1,0.3,1)] select-none"
         style={{ transform: isLaptop ? "scale(1.1)" : "none" }}
