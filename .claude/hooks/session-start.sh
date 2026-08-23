@@ -16,8 +16,12 @@ cd "${CLAUDE_PROJECT_DIR:-$(dirname "$0")/../..}"
 # --- Node dependencies -------------------------------------------------------
 # `install` rather than `ci` so a cached container layer can be reused; it is
 # idempotent and returns quickly when node_modules is already up to date.
+# --no-save keeps npm from rewriting package-lock.json: resolving peers locally
+# rewrites "peer"/"optional" bookkeeping and adds optional platform entries,
+# which left the working tree dirty after every session start without any
+# declared dependency actually changing.
 echo "session-start: installing npm dependencies"
-npm install --no-audit --no-fund
+npm install --no-audit --no-fund --no-save
 
 # --- ffmpeg ------------------------------------------------------------------
 # Not present in the base image. The only ffmpeg on disk belongs to Playwright
