@@ -219,7 +219,18 @@ function HeroSlide({
           delete (window as any).introCurrentTime;
         } catch (_) {}
       }
+      video.muted = isMuted;
       video.play().catch(() => {});
+
+      // Kill the intro video only after hero audio is live — no gap
+      video.addEventListener("playing", () => {
+        const intro = document.getElementById("intro-stage");
+        if (intro) {
+          const iv = intro.querySelector("video") as HTMLVideoElement | null;
+          if (iv) { iv.pause(); iv.removeAttribute("src"); iv.load(); }
+          intro.style.display = "none";
+        }
+      }, { once: true });
     };
 
     if (video.readyState >= 1) {
@@ -256,7 +267,7 @@ function HeroSlide({
         ref={videoRef}
         src={introDone ? "/videos/trailer.mp4" : undefined}
         poster="/videos/trailer-poster.webp"
-        muted
+        muted={isMuted}
         loop
         playsInline
         preload={introDone ? "auto" : "none"}
@@ -626,8 +637,9 @@ export default function HomePage() {
           document.body.classList.add("intro-done");
         },
         onComplete: () => {
-          introEl.style.display = "none";
-          setIntroVisible(false);
+          // Don't display:none here — intro video keeps playing until hero
+          // video takes over (HeroSlide cleans up on its 'playing' event)
+          introEl.style.zIndex = "-1";
           gsap.to(homeEl, { opacity: 1, duration: 0.5, ease: "power2.out" });
           setBusy(false);
           // Sync sound state
@@ -673,9 +685,9 @@ export default function HomePage() {
             (window as any).introCurrentTime = introVideo.currentTime;
           }
         }
-        introEl.style.display = "none";
+        // Keep intro video alive — HeroSlide cleans up on 'playing' event
+        introEl.style.zIndex = "-1";
         setDone(true);
-        setIntroVisible(false);
         document.documentElement.classList.remove("home-intro-active");
         document.body.classList.remove("home-intro-active");
         document.documentElement.classList.add("intro-done");
