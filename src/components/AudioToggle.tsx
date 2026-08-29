@@ -70,35 +70,17 @@ export default function AudioToggle() {
 
   // Sync mute state to all video tags on the page
   const syncDOMVideos = (mutedState: boolean) => {
-    const introVideo = document.getElementById("intro-bg-video") as HTMLVideoElement;
-    if (introVideo) {
-      // Intro is active: ONLY sync the intro video and keep all other videos strictly muted
-      introVideo.muted = mutedState;
-      if (!mutedState) {
-        const playPromise = introVideo.play();
+    const videos = document.querySelectorAll("video");
+    videos.forEach(v => {
+      const keepMuted = v.getAttribute("data-keep-muted") === "true";
+      (v as HTMLVideoElement).muted = keepMuted ? true : mutedState;
+      if (!v.muted) {
+        const playPromise = v.play();
         if (playPromise !== undefined) {
           playPromise.catch(() => {});
         }
       }
-      
-      const otherVideos = document.querySelectorAll("video:not(#intro-bg-video)");
-      otherVideos.forEach(v => {
-        (v as HTMLVideoElement).muted = true;
-      });
-    } else {
-      // Intro is done: sync all videos normally, respecting local data-keep-muted settings
-      const videos = document.querySelectorAll("video");
-      videos.forEach(v => {
-        const keepMuted = v.getAttribute("data-keep-muted") === "true";
-        v.muted = keepMuted ? true : mutedState;
-        if (!v.muted) {
-          const playPromise = v.play();
-          if (playPromise !== undefined) {
-            playPromise.catch(() => {});
-          }
-        }
-      });
-    }
+    });
   };
 
   // Re-sync videos whenever DOM changes (e.g. page mounts, slides switch)

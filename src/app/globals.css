@@ -116,17 +116,18 @@ html.menu-open #global-audio-toggle {
   display: none !important;
 }
 
-/* Custom noise overlay */
-body::after, .noise-overlay {
-  content: '';
+/* Custom noise overlay - GPU optimized lightweight pattern */
+.noise-overlay {
   position: fixed;
   inset: 0;
   z-index: 9999;
   pointer-events: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
-  opacity: .4;
-  transform: translate3d(0, 0, 0);
-  will-change: transform;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 0);
+  background-size: 4px 4px;
+  opacity: 0.25;
+}
+body::after {
+  display: none !important;
 }
 
 
@@ -1763,8 +1764,9 @@ button:hover .menu-toggle-img {
   height: 100vh !important;
   height: 100dvh !important;
   overflow-y: auto !important;
-  scroll-snap-type: y mandatory !important;
+  scroll-snap-type: y proximity !important;
   scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
 }
 
 

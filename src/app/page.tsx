@@ -171,15 +171,9 @@ function HudCorner({
 function HeroSlide({
   s,
   isMuted,
-  introDone,
 }: {
   s: typeof MAAEF_SECTIONS[0];
   isMuted: boolean;
-  /** Whether the intro has finished. Gates the hero video src so only one
-   *  copy of trailer.mp4 downloads at a time. The intro's download primes the
-   *  browser HTTP cache, so when introDone flips the hero gets an instant
-   *  cache hit instead of a cold fetch. */
-  introDone: boolean;
 }) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [isHovered, setIsHovered] = useState(false);
@@ -208,39 +202,6 @@ function HeroSlide({
   }, [isMuted]);
 
   useEffect(() => {
-    if (!introDone) return;
-    const video = videoRef.current;
-    if (!video) return;
-
-    const syncAndPlay = () => {
-      if (typeof window !== "undefined" && (window as any).introCurrentTime !== undefined) {
-        try {
-          video.currentTime = (window as any).introCurrentTime;
-          delete (window as any).introCurrentTime;
-        } catch (_) {}
-      }
-      video.muted = isMuted;
-      video.play().catch(() => {});
-
-      // Kill the intro video only after hero audio is live — no gap
-      video.addEventListener("playing", () => {
-        const intro = document.getElementById("intro-stage");
-        if (intro) {
-          const iv = intro.querySelector("video") as HTMLVideoElement | null;
-          if (iv) { iv.pause(); iv.removeAttribute("src"); iv.load(); }
-          intro.style.display = "none";
-        }
-      }, { once: true });
-    };
-
-    if (video.readyState >= 1) {
-      syncAndPlay();
-    } else {
-      video.addEventListener("loadedmetadata", syncAndPlay, { once: true });
-    }
-  }, [introDone]);
-
-  useEffect(() => {
     let interval: NodeJS.Timeout;
     if (isLaptop && isHovered) {
       interval = setInterval(() => {
@@ -262,20 +223,23 @@ function HeroSlide({
 
   return (
     <div className="absolute inset-0 overflow-hidden bg-[#0a0405]">
-      {/* Background Looped Video - Hardware accelerated native CSS blur filter */}
+      {/* Single persistent background video */}
       <video
+        id="intro-bg-video"
         ref={videoRef}
-        src={introDone ? "/videos/trailer.mp4" : undefined}
+        src="/videos/trailer.mp4"
         poster="/videos/trailer-poster.webp"
+        autoPlay
         muted={isMuted}
         loop
         playsInline
-        preload={introDone ? "auto" : "none"}
+        preload="auto"
         data-keep-muted={isMuted ? "true" : "false"}
         className="absolute inset-0 w-full h-full object-cover transition-all duration-[800ms] ease-[cubic-bezier(0.16,1,0.3,1)] select-none"
         style={{
-          transform: isLaptop ? "scale(1.1)" : "none",
+          transform: isLaptop ? "scale(1.05)" : "none",
           filter: showBlur ? "blur(8px)" : "none",
+          willChange: "transform, filter",
         }}
       />
 
@@ -637,12 +601,9 @@ export default function HomePage() {
           document.body.classList.add("intro-done");
         },
         onComplete: () => {
-          // Don't display:none here — intro video keeps playing until hero
-          // video takes over (HeroSlide cleans up on its 'playing' event)
-          introEl.style.zIndex = "-1";
-          gsap.to(homeEl, { opacity: 1, duration: 0.5, ease: "power2.out" });
+          introEl.style.display = "none";
+          setIntroVisible(false);
           setBusy(false);
-          // Sync sound state
           window.dispatchEvent(new CustomEvent("audioChange"));
         },
       });
@@ -679,21 +640,14 @@ export default function HomePage() {
       duration: 0.5,
       ease: "power2.inOut",
       onComplete: () => {
-        const introVideo = document.getElementById("intro-bg-video") as HTMLVideoElement;
-        if (introVideo) {
-          if (typeof window !== "undefined") {
-            (window as any).introCurrentTime = introVideo.currentTime;
-          }
-        }
-        // Keep intro video alive — HeroSlide cleans up on 'playing' event
-        introEl.style.zIndex = "-1";
+        introEl.style.display = "none";
         setDone(true);
+        setIntroVisible(false);
         document.documentElement.classList.remove("home-intro-active");
         document.body.classList.remove("home-intro-active");
         document.documentElement.classList.add("intro-done");
         document.body.classList.add("intro-done");
         sessionStorage.setItem("maaef-seen", "1");
-        homeEl.style.opacity = "1";
         setBusy(false);
         window.dispatchEvent(new CustomEvent("audioChange"));
       },
@@ -792,17 +746,6 @@ export default function HomePage() {
           style={{ display: introVisible ? "block" : "none" }}
         >
           <div id="intro-bg" className="absolute inset-0">
-            <video
-              id="intro-bg-video"
-              src="/videos/trailer.mp4"
-              poster="/videos/trailer-poster.webp"
-              autoPlay
-              loop
-              muted
-              playsInline
-              preload="auto"
-              className="absolute inset-0 w-full h-full object-cover transition-all duration-[1000ms] ease-out select-none"
-            />
             <div id="intro-bg-overlay" className="absolute inset-0 bg-black/55 transition-all duration-[1000ms] ease-out" />
           </div>
           <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_center,transparent_35%,rgba(0,0,0,0.75)_100%)]" />
@@ -873,8 +816,7 @@ export default function HomePage() {
       <div
         ref={homepageRef}
         id="homepage"
-        className={`bg-[#050505] transition-opacity duration-500 overflow-x-hidden ${done ? "alive opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
-          }`}
+        className="bg-[#050505] transition-opacity duration-500 overflow-x-hidden opacity-100 pointer-events-auto"
       >
         <div id="react-root" className="w-full">
           {MAAEF_SECTIONS.map((s, i) => (
@@ -885,8 +827,7 @@ export default function HomePage() {
               {i === 0 ? (
                 <HeroSlide
                   s={s}
-                  isMuted={!done || isAudioMuted || activeSectionIndex !== 0}
-                  introDone={done}
+                  isMuted={isAudioMuted || activeSectionIndex !== 0}
                 />
               ) : i === MAAEF_SECTIONS.length - 1 ? (
                 <OutroSlide s={s} />
