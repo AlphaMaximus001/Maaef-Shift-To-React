@@ -7,6 +7,7 @@ import "./globals.css";
 import Navigation from "@/components/Navigation";
 import AudioToggle from "@/components/AudioToggle";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Analytics } from "@vercel/analytics/next";
 
 // Playfair is used directly on /about and as the fallback face for Panchang.
 // Only 400/700 are referenced; loading 500 as well shipped a font file nothing used.
@@ -96,6 +97,9 @@ export default function RootLayout({
 
         {/* Vercel Speed Insights */}
         <SpeedInsights />
+
+        {/* Vercel Web Analytics */}
+        <Analytics />
       </body>
     </html>
   );
