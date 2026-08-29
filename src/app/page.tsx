@@ -175,12 +175,10 @@ function HeroSlide({
 }: {
   s: typeof MAAEF_SECTIONS[0];
   isMuted: boolean;
-  /** Whether the intro has finished. Only used to re-run the play/seek effect at
-   *  the handoff — deliberately NOT used to gate src. Withholding src until the
-   *  intro ended saved one download but left the hero starting a cold fetch at
-   *  the exact moment it became visible, so on a slow connection the homepage
-   *  revealed to an unplayed video. Loading alongside the intro costs a second
-   *  copy and keeps the file warm for the handoff. */
+  /** Whether the intro has finished. Gates the hero video src so only one
+   *  copy of trailer.mp4 downloads at a time. The intro's download primes the
+   *  browser HTTP cache, so when introDone flips the hero gets an instant
+   *  cache hit instead of a cold fetch. */
   introDone: boolean;
 }) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -210,27 +208,25 @@ function HeroSlide({
   }, [isMuted]);
 
   useEffect(() => {
+    if (!introDone) return;
     const video = videoRef.current;
     if (!video) return;
 
-    const syncTime = () => {
+    const syncAndPlay = () => {
       if (typeof window !== "undefined" && (window as any).introCurrentTime !== undefined) {
         try {
           video.currentTime = (window as any).introCurrentTime;
           delete (window as any).introCurrentTime;
-        } catch (e) {
-          console.error("Failed to sync video time:", e);
-        }
+        } catch (_) {}
       }
+      video.play().catch(() => {});
     };
 
     if (video.readyState >= 1) {
-      syncTime();
+      syncAndPlay();
     } else {
-      video.addEventListener("loadedmetadata", syncTime, { once: true });
+      video.addEventListener("loadedmetadata", syncAndPlay, { once: true });
     }
-
-    video.play().catch(() => {});
   }, [introDone]);
 
   useEffect(() => {
@@ -258,13 +254,12 @@ function HeroSlide({
       {/* Background Looped Video - Hardware accelerated native CSS blur filter */}
       <video
         ref={videoRef}
-        src="/videos/trailer.mp4"
+        src={introDone ? "/videos/trailer.mp4" : undefined}
         poster="/videos/trailer-poster.webp"
-        autoPlay
         muted
         loop
         playsInline
-        preload="auto"
+        preload={introDone ? "auto" : "none"}
         data-keep-muted={isMuted ? "true" : "false"}
         className="absolute inset-0 w-full h-full object-cover transition-all duration-[800ms] ease-[cubic-bezier(0.16,1,0.3,1)] select-none"
         style={{
@@ -793,6 +788,7 @@ export default function HomePage() {
               loop
               muted
               playsInline
+              preload="auto"
               className="absolute inset-0 w-full h-full object-cover transition-all duration-[1000ms] ease-out select-none"
             />
             <div id="intro-bg-overlay" className="absolute inset-0 bg-black/55 transition-all duration-[1000ms] ease-out" />
