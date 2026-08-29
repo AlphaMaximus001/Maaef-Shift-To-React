@@ -129,17 +129,6 @@ body::after, .noise-overlay {
   will-change: transform;
 }
 
-body.sanity-studio-active::after,
-body.sanity-studio-active .noise-overlay {
-  display: none !important;
-  content: none !important;
-  background: none !important;
-  opacity: 0 !important;
-}
-
-body.sanity-studio-active {
-  cursor: auto !important;
-}
 
 .maaef-h1,
 .serif {

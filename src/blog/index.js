@@ -2,7 +2,6 @@
 // Drop this `blog/` folder into your React app and import from it.
 
 export { default as BlogIndex }    from './components/BlogIndex.jsx';
-export { default as BlogCategory } from './components/BlogCategory.jsx';
 export { default as BlogPost }     from './components/BlogPost.jsx';
 
 export {

@@ -1,6 +1,5 @@
 import fs from "fs";
 import path from "path";
-import { markdownToPortableText, type PortableTextBlock } from "./markdownToPortableText";
 
 export interface Post {
   _id: string;
@@ -24,7 +23,6 @@ export interface Post {
       current: string;
     };
   }[];
-  body?: PortableTextBlock[];
   markdownBody?: string;
   isArchived?: boolean;
 }
@@ -142,7 +140,6 @@ export async function getAllPosts(): Promise<Post[]> {
         mainImage: data.mainImage || undefined,
         author: data.author || undefined,
         categories: data.categories || [],
-        body: markdownToPortableText(bodyContent),
         markdownBody: bodyContent,
         isArchived: !!data.isArchived,
       });
@@ -182,7 +179,6 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
       mainImage: data.mainImage || undefined,
       author: data.author || undefined,
       categories: data.categories || [],
-      body: markdownToPortableText(bodyContent),
       markdownBody: bodyContent,
       isArchived: !!data.isArchived,
     };

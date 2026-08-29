@@ -203,35 +203,35 @@ function HeroSlide({
   useEffect(() => {
     if (videoRef.current) {
       videoRef.current.muted = isMuted;
-
-      const syncTime = () => {
-        if (!videoRef.current) return;
-        if (typeof window !== "undefined" && (window as any).introCurrentTime !== undefined) {
-          try {
-            videoRef.current.currentTime = (window as any).introCurrentTime;
-            delete (window as any).introCurrentTime;
-          } catch (e) {
-            console.error("Failed to sync video time:", e);
-          }
-        }
-      };
-
-      if (videoRef.current.readyState >= 1) {
-        syncTime();
-      } else {
-        videoRef.current.addEventListener("loadedmetadata", syncTime, { once: true });
-      }
-
-      const playPromise = videoRef.current.play();
-      if (playPromise !== undefined) {
-        playPromise.catch(() => { });
+      if (videoRef.current.paused) {
+        videoRef.current.play().catch(() => {});
       }
     }
-    // introDone matters as much as isMuted here: the src only arrives once the
-    // intro is gone, and this is what applies introCurrentTime so the hero picks
-    // the trailer up where the intro left it. isMuted alone can stay unchanged
-    // across that transition, which would skip the handoff.
-  }, [isMuted, introDone]);
+  }, [isMuted]);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    const syncTime = () => {
+      if (typeof window !== "undefined" && (window as any).introCurrentTime !== undefined) {
+        try {
+          video.currentTime = (window as any).introCurrentTime;
+          delete (window as any).introCurrentTime;
+        } catch (e) {
+          console.error("Failed to sync video time:", e);
+        }
+      }
+    };
+
+    if (video.readyState >= 1) {
+      syncTime();
+    } else {
+      video.addEventListener("loadedmetadata", syncTime, { once: true });
+    }
+
+    video.play().catch(() => {});
+  }, [introDone]);
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -255,7 +255,7 @@ function HeroSlide({
 
   return (
     <div className="absolute inset-0 overflow-hidden bg-[#0a0405]">
-      {/* Background Looped Video */}
+      {/* Background Looped Video - Hardware accelerated native CSS blur filter */}
       <video
         ref={videoRef}
         src="/videos/trailer.mp4"
@@ -264,22 +264,14 @@ function HeroSlide({
         muted
         loop
         playsInline
+        preload="auto"
         data-keep-muted={isMuted ? "true" : "false"}
-        className="absolute inset-0 w-full h-full object-cover transition-transform duration-[800ms] ease-[cubic-bezier(0.16,1,0.3,1)] select-none"
-        style={{ transform: isLaptop ? "scale(1.1)" : "none" }}
+        className="absolute inset-0 w-full h-full object-cover transition-all duration-[800ms] ease-[cubic-bezier(0.16,1,0.3,1)] select-none"
+        style={{
+          transform: isLaptop ? "scale(1.1)" : "none",
+          filter: showBlur ? "blur(8px)" : "none",
+        }}
       />
-      {isLaptop && (
-        <div
-          className="absolute inset-0 pointer-events-none z-[2]"
-          style={{
-            backdropFilter: "blur(8px)",
-            WebkitBackdropFilter: "blur(8px)",
-            opacity: showBlur ? 1 : 0,
-            transition: "opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1)",
-            willChange: "opacity"
-          }}
-        />
-      )}
 
       <div className="absolute inset-0 pointer-events-none z-[3] bg-[radial-gradient(120%_80%_at_70%_40%,rgba(196,37,26,0.35),rgba(196,37,26,0.05)_55%,rgba(0,0,0,0)_80%)] opacity-40" />
       <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.55)_0%,rgba(0,0,0,0.25)_35%,rgba(0,0,0,0.85)_100%)] z-[3]" />
