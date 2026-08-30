@@ -237,9 +237,8 @@ function HeroSlide({
         data-keep-muted={isMuted ? "true" : "false"}
         className="absolute inset-0 w-full h-full object-cover transition-all duration-[800ms] ease-[cubic-bezier(0.16,1,0.3,1)] select-none"
         style={{
-          transform: isLaptop ? "scale(1.05)" : "none",
-          filter: showBlur ? "blur(8px)" : "none",
-          willChange: "transform, filter",
+          transform: isLaptop ? "scale(1.03)" : "none",
+          willChange: "transform",
         }}
       />
 
@@ -613,17 +612,16 @@ export default function HomePage() {
     const isDesktop = window.innerWidth >= 768;
 
     if (isDesktop) {
-      tl.to(logoEl, { opacity: 1, y: 0, rotateX: 0, rotateZ: 0, scale: 1, duration: 1.35, ease: "power3.out", delay: 0.5 })
-        .to(logoEl, { scale: 1.06, duration: 0.28, ease: "sine.inOut", yoyo: true, repeat: 1 })
-        .to(logoEl, { scale: 1.18, duration: 0.32, ease: "power2.inOut" })
-        .to(logoEl, { scale: 38, opacity: 0, filter: "blur(18px)", duration: 0.72, ease: "power4.in" })
-        .to(redEl, { opacity: 1, duration: 0.35, ease: "none" }, "-=0.62")
-        .to({}, { duration: 0.55 });
-    } else {
-      tl.to(logoEl, { opacity: 1, y: 0, rotateX: 0, rotateZ: 0, scale: 1, duration: 0.8, ease: "power2.out", delay: 0.3 })
-        .to(logoEl, { scale: 12, opacity: 0, filter: "blur(10px)", duration: 0.5, ease: "power3.in" })
-        .to(redEl, { opacity: 1, duration: 0.25, ease: "none" }, "-=0.4")
+      tl.to(logoEl, { opacity: 1, y: 0, rotateX: 0, rotateZ: 0, scale: 1, duration: 1.0, ease: "power3.out", delay: 0.3 })
+        .to(logoEl, { scale: 1.06, duration: 0.2, ease: "sine.inOut", yoyo: true, repeat: 1 })
+        .to(logoEl, { scale: 2.5, opacity: 0, duration: 0.5, ease: "power2.in" })
+        .to(redEl, { opacity: 1, duration: 0.3, ease: "none" }, "-=0.4")
         .to({}, { duration: 0.3 });
+    } else {
+      tl.to(logoEl, { opacity: 1, y: 0, rotateX: 0, rotateZ: 0, scale: 1, duration: 0.7, ease: "power2.out", delay: 0.2 })
+        .to(logoEl, { scale: 2.2, opacity: 0, duration: 0.4, ease: "power2.in" })
+        .to(redEl, { opacity: 1, duration: 0.2, ease: "none" }, "-=0.3")
+        .to({}, { duration: 0.2 });
     }
   };
 
@@ -742,7 +740,7 @@ export default function HomePage() {
         <div
           ref={introStageRef}
           id="intro-stage"
-          className="fixed inset-0 z-[500] bg-[#050505] overflow-hidden"
+          className="fixed inset-0 z-[500] bg-transparent overflow-hidden"
           style={{ display: introVisible ? "block" : "none" }}
         >
           <div id="intro-bg" className="absolute inset-0">
@@ -754,7 +752,7 @@ export default function HomePage() {
           <div id="beats-wrap" className="absolute inset-0 flex items-center pl-[8vw] pr-[5vw] md:pl-[8vw] pointer-events-none select-none">
             <div
               id="beat-1"
-              className={`beat ${step === 1 ? "in" : step > 1 ? "out" : ""}`}
+              className={`beat ${step === 0 || step === 1 ? "in" : "out"}`}
             >
               <div className="beat-index font-mono text-[9px] tracking-[0.28em] uppercase text-white/18 mb-[1.4rem]"></div>
               <div className="beat-label text-[10px] tracking-[0.3em] uppercase text-white/25 mb-[1rem]">Intro</div>
