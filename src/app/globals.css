@@ -104,6 +104,30 @@ body.intro-done {
   height: auto;
 }
 
+/* ─── INTRO STATE ───────────────────────────────────────────────────────────
+   #intro-stage is transparent because the hero now owns the one persistent
+   background video and the intro shows through it. That means #homepage has to
+   stay visible during the intro — but nothing of it except that video should
+   be. Two consequences had to be handled here rather than by hiding #homepage:
+
+   1. The hero's own foreground (headline, HUD, sweep, ticker) rendered
+      underneath the intro's copy, so both sets of text drew at once.
+   2. #homepage is the scroll container (100dvh, overflow-y:auto), so it could
+      be scrolled out from under the fixed intro overlay, leaving a blank page
+      with only the global watermark. */
+
+.home-intro-active #homepage {
+  overflow-y: hidden !important;
+  touch-action: none;
+  overscroll-behavior: none;
+}
+
+.home-intro-active #intro-bg-video ~ *,
+.home-intro-active #homepage section > *:not(:first-child) {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
 /* Hide global navigation during intro on home page */
 .home-intro-active #main-nav,
 .home-intro-active #absolute-nav {
