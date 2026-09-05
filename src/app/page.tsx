@@ -543,6 +543,14 @@ export default function HomePage() {
     }
   }, [done]);
 
+  // advance() blurs the background video so the intro copy reads over it. The
+  // hero now shares that same element, so the blur must come off when the intro
+  // does — otherwise the homepage keeps a blurred background for good.
+  const clearIntroBlur = () => {
+    const bgVideo = document.getElementById("intro-bg-video") as HTMLVideoElement | null;
+    if (bgVideo) bgVideo.style.filter = "";
+  };
+
   const advance = () => {
     if (busy || done) return;
     setBusy(true);
@@ -602,6 +610,11 @@ export default function HomePage() {
         onComplete: () => {
           introEl.style.display = "none";
           setIntroVisible(false);
+          // onStart put an inline opacity:0 on #homepage. An inline style beats
+          // the opacity-100 class, so without animating it back the homepage
+          // stays invisible and the intro ends on a black screen.
+          gsap.to(homeEl, { opacity: 1, duration: 0.5, ease: "power2.out" });
+          clearIntroBlur();
           setBusy(false);
           window.dispatchEvent(new CustomEvent("audioChange"));
         },
@@ -646,6 +659,7 @@ export default function HomePage() {
         document.documentElement.classList.add("intro-done");
         document.body.classList.add("intro-done");
         sessionStorage.setItem("maaef-seen", "1");
+        clearIntroBlur();
         setBusy(false);
         window.dispatchEvent(new CustomEvent("audioChange"));
       },
@@ -720,7 +734,7 @@ export default function HomePage() {
           <div id="beats-wrap" className="absolute inset-0 flex items-center pl-[8vw] pr-[5vw] md:pl-[8vw] pointer-events-none select-none">
             <div
               id="beat-1"
-              className={`beat ${step === 0 || step === 1 ? "in" : "out"}`}
+              className={`beat ${step === 1 ? "in" : step > 1 ? "out" : ""}`}
             >
               <div className="beat-index font-mono text-[9px] tracking-[0.28em] uppercase text-white/18 mb-[1.4rem]"></div>
               <div className="beat-label text-[10px] tracking-[0.3em] uppercase text-white/25 mb-[1rem]">Intro</div>
