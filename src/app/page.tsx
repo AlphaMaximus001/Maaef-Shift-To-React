@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { gsap } from "gsap";
 import Footer from "@/components/Footer";
+import { useSlowConnection } from "@/lib/useSlowConnection";
 
 // SECTION METADATA FOR HUD PANEL SLIDES
 const MAAEF_SECTIONS = [
@@ -176,6 +177,7 @@ function HeroSlide({
   isMuted: boolean;
 }) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const slowConnection = useSlowConnection();
   const [isHovered, setIsHovered] = useState(false);
   const [isLaptop, setIsLaptop] = useState(false);
   const [glitchText1, setGlitchText1] = useState("Maaef");
@@ -223,11 +225,14 @@ function HeroSlide({
 
   return (
     <div className="absolute inset-0 overflow-hidden bg-[#0a0405]">
-      {/* Single persistent background video */}
+      {/* Single persistent background video. It is decorative — the intro and
+          the hero both read fine over the poster alone — so on a constrained
+          connection the source is dropped rather than spending minutes pulling
+          a loop the visitor will barely see. */}
       <video
         id="intro-bg-video"
         ref={videoRef}
-        src="/videos/trailer.mp4"
+        src={slowConnection ? undefined : "/videos/trailer.mp4"}
         poster="/videos/trailer-poster.webp"
         autoPlay
         muted={isMuted}

@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { gsap } from "gsap";
 import Footer from "@/components/Footer";
+import { useSlowConnection } from "@/lib/useSlowConnection";
 
 // Brand dial assets
 const DIAL_LOGOS = [
@@ -20,6 +21,12 @@ export default function AboutPage() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [videoSrc, setVideoSrc] = useState("/videos/studio-video1.mp4");
   const [posterSrc, setPosterSrc] = useState("/videos/studio-video1-poster.webp");
+  const slowConnection = useSlowConnection();
+  // Unlike the homepage loop these clips are the point of the page, so a slow
+  // connection only suppresses the automatic load. Turning the dial or opening
+  // fullscreen is explicit intent, and from then on the video loads normally.
+  const [videoRequested, setVideoRequested] = useState(false);
+  const holdVideo = slowConnection && !videoRequested;
   const [isMuted, setIsMuted] = useState(true);
   const [inFullscreen, setInFullscreen] = useState(false);
 
@@ -157,6 +164,7 @@ export default function AboutPage() {
     const targetSrc = DIAL_LOGOS[idx].videoSrc;
     const targetPoster = DIAL_LOGOS[idx].posterSrc;
     loopCountRef.current = 0;
+    setVideoRequested(true);
 
     gsap.to(bgContainer, {
       opacity: 0,
@@ -299,6 +307,8 @@ export default function AboutPage() {
     const el = bgContainerRef.current;
     if (!el) return;
 
+    setVideoRequested(true);
+
     const requestFS = el.requestFullscreen || (el as any).webkitRequestFullscreen;
     if (requestFS) {
       requestFS.call(el).then(() => {
@@ -375,7 +385,7 @@ export default function AboutPage() {
 
             <video
               ref={videoRef}
-              src={videoSrc}
+              src={holdVideo ? undefined : videoSrc}
               poster={posterSrc}
               autoPlay
               muted={isMuted}
