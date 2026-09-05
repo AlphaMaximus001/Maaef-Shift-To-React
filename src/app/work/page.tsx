@@ -4,13 +4,14 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { gsap } from "gsap";
 import Footer from "@/components/Footer";
-import { useSlowConnection } from "@/lib/useSlowConnection";
+import { useSaveData } from "@/lib/useSaveData";
+import { useProgressiveVideo } from "@/lib/useProgressiveVideo";
 
 // Brand dial assets
 const DIAL_LOGOS = [
-  { index: 0, imgSrc: "/images/logo1.png", videoSrc: "/videos/studio-video1.mp4", posterSrc: "/videos/studio-video1-poster.webp", label: "Brand 1" },
-  { index: 1, imgSrc: "/images/logo2.png", videoSrc: "/videos/studio-video2.mp4", posterSrc: "/videos/studio-video2-poster.webp", label: "Brand 2" },
-  { index: 2, imgSrc: "/images/logo3.png", videoSrc: "/videos/studio-video3.mp4", posterSrc: "/videos/studio-video3-poster.webp", label: "Brand 3" },
+  { index: 0, imgSrc: "/images/logo1.png", videoSrc: "/videos/studio-video1.mp4", lowSrc: "/videos/studio-video1-low.mp4", posterSrc: "/videos/studio-video1-poster.webp", label: "Brand 1" },
+  { index: 1, imgSrc: "/images/logo2.png", videoSrc: "/videos/studio-video2.mp4", lowSrc: "/videos/studio-video2-low.mp4", posterSrc: "/videos/studio-video2-poster.webp", label: "Brand 2" },
+  { index: 2, imgSrc: "/images/logo3.png", videoSrc: "/videos/studio-video3.mp4", lowSrc: "/videos/studio-video3-low.mp4", posterSrc: "/videos/studio-video3-poster.webp", label: "Brand 3" },
 ];
 
 export default function AboutPage() {
@@ -19,14 +20,16 @@ export default function AboutPage() {
   const brandDialRef = useRef<HTMLDivElement | null>(null);
 
   const [activeIndex, setActiveIndex] = useState(0);
-  const [videoSrc, setVideoSrc] = useState("/videos/studio-video1.mp4");
-  const [posterSrc, setPosterSrc] = useState("/videos/studio-video1-poster.webp");
-  const slowConnection = useSlowConnection();
-  // Unlike the homepage loop these clips are the point of the page, so a slow
-  // connection only suppresses the automatic load. Turning the dial or opening
-  // fullscreen is explicit intent, and from then on the video loads normally.
-  const [videoRequested, setVideoRequested] = useState(false);
-  const holdVideo = slowConnection && !videoRequested;
+  // Which brand's clip is loaded. The dial drives this; the progressive hook
+  // turns it into a low-then-high pair of sources.
+  const [videoIndex, setVideoIndex] = useState(0);
+  const activeClip = DIAL_LOGOS[videoIndex];
+  const saveData = useSaveData();
+  const progressiveSrc = useProgressiveVideo({
+    videoRef,
+    lowSrc: activeClip.lowSrc,
+    highSrc: activeClip.videoSrc,
+  });
   const [isMuted, setIsMuted] = useState(true);
   const [inFullscreen, setInFullscreen] = useState(false);
 
@@ -52,6 +55,15 @@ export default function AboutPage() {
       if (playPromise !== undefined) playPromise.catch(() => {});
     }
   }, []);
+
+  // React swaps src on the render after videoIndex changes, so playback is
+  // requested here rather than inside switchVideo's animation callback.
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    const playPromise = video.play();
+    if (playPromise !== undefined) playPromise.catch(() => {});
+  }, [videoIndex]);
 
   // Sync mute state on active video tag and listen to global audioChange
   useEffect(() => {
@@ -158,27 +170,17 @@ export default function AboutPage() {
   // Switch video background with custom cross-fade opacity
   const switchVideo = (idx: number) => {
     const bgContainer = bgContainerRef.current;
-    const video = videoRef.current;
-    if (!bgContainer || !video) return;
+    if (!bgContainer) return;
 
-    const targetSrc = DIAL_LOGOS[idx].videoSrc;
-    const targetPoster = DIAL_LOGOS[idx].posterSrc;
     loopCountRef.current = 0;
-    setVideoRequested(true);
 
     gsap.to(bgContainer, {
       opacity: 0,
       duration: 0.3,
       onComplete: () => {
-        // Direct DOM update ensures the new video loads instantly without timing lag or batching delays
-        video.src = targetSrc;
-        video.poster = targetPoster;
-        setVideoSrc(targetSrc);
-        setPosterSrc(targetPoster);
-        video.load();
-        video.currentTime = 0;
-        const p = video.play();
-        if (p !== undefined) p.catch(() => {});
+        // The progressive hook owns src now: pointing it at another brand
+        // restarts that brand on the low tier and upgrades in the background.
+        setVideoIndex(idx);
         gsap.to(bgContainer, { opacity: 1, duration: 0.6 });
       },
     });
@@ -307,8 +309,6 @@ export default function AboutPage() {
     const el = bgContainerRef.current;
     if (!el) return;
 
-    setVideoRequested(true);
-
     const requestFS = el.requestFullscreen || (el as any).webkitRequestFullscreen;
     if (requestFS) {
       requestFS.call(el).then(() => {
@@ -385,8 +385,8 @@ export default function AboutPage() {
 
             <video
               ref={videoRef}
-              src={holdVideo ? undefined : videoSrc}
-              poster={posterSrc}
+              src={saveData ? undefined : progressiveSrc}
+              poster={activeClip.posterSrc}
               autoPlay
               muted={isMuted}
               playsInline
